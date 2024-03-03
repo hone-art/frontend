@@ -1,4 +1,5 @@
-import SignUp from './SignUp'
+import Signup from './SignUp.tsx'
+import Login from './Login.tsx'
 
 import './App.css'
 
@@ -6,7 +7,8 @@ function App() {
   
   return (
     <>
-      <SignUp></SignUp>
+      <Signup></Signup>
+      <Login></Login>
     </>
   )
 }
