@@ -5,8 +5,10 @@
 :root {
   --text-primary: #13131A;
   --text-secondary: #6B6B6B;
+  --text-error: #d90000;
   --bg-primary: #FFFFFF;
   --bg-secondary: #13131A;
+  --bg-tertiary: #6B6B6B;
 
   --headings-font: "Syne", sans-serif;
   --body-font: "Inter", sans-serif;

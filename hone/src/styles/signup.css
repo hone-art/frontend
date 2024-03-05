@@ -1,15 +1,15 @@
-.root-container {
+.section-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
-.login-container {
+.signup-container {
   display: flex;
   flex-direction: column;
   text-align: center;
-  width: 300px;
+  width: 400px;
 }
 
 .title {
@@ -24,8 +24,13 @@
   margin-top: 0.5em;
 }
 
-.login-input {
+.input-group {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
+}
+
+.signup-input {
   margin-top: 1.6em;
   font-weight: 200;
   font-size: 0.9em;
@@ -35,7 +40,7 @@
   box-shadow: 2px 4px 10px 0px #cdcdcd;
 }
 
-.login-button {
+.signup-button {
   width: 100%;
   margin-top: 1.7em;
   font-weight: 200;
@@ -48,18 +53,26 @@
   box-shadow: 2px 4px 10px 0px #cdcdcd;
 }
 
-.login-button:hover {
+.signup-button:hover {
   background-color: var(--bg-tertiary);
 }
 
-.signup-link {
+.login-link {
   margin-top: 2em;
   font-size: 0.7em;
   font-weight: 200;
 }
 
-.signup-link:hover {
+.login-link:hover {
   text-decoration: underline;
+}
+
+.email-input {
+  width: 100%;
+}
+
+.input-half {
+  width: 48%;
 }
 
 .error-message {

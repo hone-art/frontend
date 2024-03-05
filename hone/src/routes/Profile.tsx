@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { User } from "../globals";
+import "../styles/profile.css";
 // import { useParams } from "react-router-dom";
 
 type Props = {
