@@ -1,3 +1,16 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
+:root {
+  --text-primary: #13131A;
+  --text-secondary: #6B6B6B;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #13131A;
+
+  --headings-font: "Syne", sans-serif;
+  --body-font: "Inter", sans-serif;
+
+  color: var(--text-primary);
+  font-family: var(--body-font);
+}
