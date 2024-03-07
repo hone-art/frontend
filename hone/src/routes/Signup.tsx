@@ -2,6 +2,11 @@ import { FC, useState } from "react";
 import "../styles/signup.css"
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from '../utils/firebaseConfig';
+const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com/';
+
+
 
 type Props = {
   user: User | null;
@@ -9,6 +14,7 @@ type Props = {
 }
 
 const Signup: FC<Props> = ({ user, setUser }) => {
+  // dotenv.config();
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -18,12 +24,34 @@ const Signup: FC<Props> = ({ user, setUser }) => {
 
   const navigate = useNavigate();
 
-  const handleOnClick = () => {
-    //gujiaxian
+  const handleOnClick = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    console.log(BACKEND_URL);
+
     // Create user in firebase
+    const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    const uuid: string = userCredential.user.uid;
+
     // Post request to create user in database
+    const reqBody = JSON.stringify({
+      uuid: uuid,
+      display_name: displayName,
+      user_name: username
+    });
+    const response = await fetch(`${BACKEND_URL}/user/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', },
+      body: reqBody,
+    });
     // If okay set returned user object and navigate to "/:username"
-    setUser(null); // replace null with user object
+    setUser({
+      id: uuid,
+      display_name: displayName,
+      username: username,
+      img_id: 
+    }); // replace null with user object
     navigate(`/${user}`); // replace user with user.username
     // Else setErrorMessage to "username is taken"
     setErrorMessage("Username is taken");
