@@ -1,9 +1,11 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { User } from "../globals";
+import { User, Project } from "../globals";
 import "../styles/profile.css";
 import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
+import ProjectCard from "../components/ProjectCard";
 // import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
@@ -12,17 +14,18 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure,
-  MenuGroup
+  useDisclosure
 } from '@chakra-ui/react'
 
 type Props = {
   user: User | null;
+  isLoggedIn: boolean;
 }
 
-const Profile: FC<Props> = ({ user }) => {
+const Profile: FC<Props> = ({ user, isLoggedIn }) => {
+  const navigate = useNavigate();
+  const [projects, setProjects] = useState<Array<Project>>([]);
   // const { username } = useParams<string>();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
   const [isUser, setIsUser] = useState<boolean>(false); // Is logged in user and user profile the same
   const [profilePicture, setProfilePicture] = useState<string>("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png"); // Is logged in user and user profile the same
@@ -33,7 +36,30 @@ const Profile: FC<Props> = ({ user }) => {
   const inputImage = useRef(null); // User upload profile picture
 
   useEffect(() => {
-    if (user !== null) setIsLoggedIn(true);
+    const body = { user_name: "test" }; // CHANGE
+
+    async function fetchUserAndProjects() {
+      const fetchUser = await fetch("http://localhost:8080/users/username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (fetchUser.status != 200) navigate("/")
+      else {
+        const thisProfileUser: User = await fetchUser.json();
+        setUserProfile(thisProfileUser);
+
+        const fetchProjects = await fetch("http://localhost:8080/projects/users/1");
+        const projects = await fetchProjects.json();
+        setProjects(projects);
+        console.log(projects);
+      }
+    }
+
+    fetchUserAndProjects();
     // const thisProfileUser = fetch("/users/username/{username}");
     // setUserProfile(thisProfileUser);
     // if (userProfile.username == user.username) setIsUser(true);
@@ -55,6 +81,23 @@ const Profile: FC<Props> = ({ user }) => {
     onClose();
   }
 
+  function handleNewProjectOnClick() {
+    const body = {
+      title: "Untitled",
+      description: "Write your description here!",
+      img_id: 1, // default project image
+      user_id: user?.id,
+    }
+
+    fetch("http://localhost:8080/projects", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body)
+    })
+  }
+
   return (
     <>
       <LoggedInHeader user={user} />
@@ -62,12 +105,20 @@ const Profile: FC<Props> = ({ user }) => {
       <section className="profile-container">
         <div className="profile-card">
           <img src={profilePicture} alt="profile picture" className="profile-picture" />
-          {/* <h1>{userProfile.display_name}</h1> */}
-          <h1 id="display-name">Yurika</h1>
-          {/* <h2 id="username">@{userProfile.username}</h2> */}
-          <h2 id="username">@yurikahirata</h2>
+          <h1 id="display-name">{userProfile?.display_name != null ? userProfile?.display_name : userProfile?.user_name}</h1>
+          {/* <h1 id="display-name">Yurika</h1> */}
+          <h2 id="username">@{userProfile?.user_name}</h2>
+          {/* <h2 id="username">@yurikahirata</h2> */}
           {/* {isLoggedIn ? <button className="edit-profile-btn">Edit profile</button> : null} */}
-          <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button>
+          {isLoggedIn ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
+        </div>
+        <div className="projects-container">
+          {isLoggedIn ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
+          <div className="project-cards-container">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} user={user} />
+            ))}
+          </div>
         </div>
       </section>
       <Modal isOpen={isOpen} onClose={onClose}>
