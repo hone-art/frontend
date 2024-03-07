@@ -1,0 +1,66 @@
+.profile-container {
+  display: flex;
+  margin: 1em;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+}
+
+.profile-picture {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+#display-name {
+  font-family: var(--headings-font);
+  font-weight: 800;
+  font-size: 1.8em;
+  margin-top: 1em;
+}
+
+#username {
+  color: var(--text-secondary);
+}
+
+.edit-profile-btn {
+  padding: 0.4em 1em;
+  color: var(--text-secondary);
+}
+
+.modal-close-btn {
+  color: var(--text-primary);
+  margin-top: 0.5em;
+}
+
+.modal-btn {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  width: 47%;
+  padding: 0.7em 1em;
+}
+
+.btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-pic-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+
+.margin-bottom {
+  margin-bottom: 1em;
+}
+
+.input-name {
+  border: 1px solid var(--text-secondary);
+}
