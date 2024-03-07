@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
-const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com/';
+// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com/';
+const BACKEND_URL = 'http://localhost:8080/'
 
 
 
@@ -29,29 +30,81 @@ const Signup: FC<Props> = ({ user, setUser }) => {
     setErrorMessage('');
 
     console.log(BACKEND_URL);
+    console.log(await fetch(BACKEND_URL).then(response => {return response.text()}));
+
+    // check if password and confirm password are same. 
+    // If same, clear error message, continue, 
+    // if not, return, stop further function execution.
+    try {
+      await checkPasswordsAreSame(password, confirmPassword);
+      setErrorMessage('');
+    } catch (error) {
+      setPassword('');
+      setConfirmPassword('');
+      setErrorMessage('Passwords do not match. Please try again.')
+      return;
+    }
+
+    console.log('password match==========')
 
     // Create user in firebase
-    const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-    const uuid: string = userCredential.user.uid;
+    // check validation of email, password
+    try {
+      const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+      console.log('firebase succeed');
+    } catch (error:any) {
+      console.log(error.message);
+      const errorMessage:string = error.message;
+      if(errorMessage === 'Firebase: Error (auth/invalid-email).') {
+        setErrorMessage('Invalid Email address');
+        setEmail('');
+      } else if(errorMessage === 'Firebase: Password should be at least 6 characters (auth/weak-password).') {
+        setErrorMessage('Password should be at least 6 characters');
+        setPassword('');
+        setConfirmPassword('');
+      } else if(errorMessage === 'Firebase: Error (auth/email-already-in-use).') {
+        setErrorMessage('Email-already-in-use');
+      }
+      return;
+    }
+
+    console.log('after firebase error');
+
+    
+    
+
+    // Create user in firebase
+    // const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    // const uuid: string = userCredential.user.uid;
 
     // Post request to create user in database
-    const reqBody = JSON.stringify({
-      uuid: uuid,
-      display_name: displayName,
-      user_name: username
-    });
-    const response = await fetch(`${BACKEND_URL}/user/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', },
-      body: reqBody,
-    });
+    // const reqBody = JSON.stringify({
+    //   uuid: uuid,
+    //   display_name: displayName,
+    //   user_name: username
+    // });
+    // const response = await fetch(`${BACKEND_URL}/user/`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json', },
+    //   body: reqBody,
+    // });
     // If okay set returned user object and navigate to "/:username"
-    const user = (await fetch(`${BACKEND_URL}/users/:uuid`)).json()
-    setUser(user); // replace null with user object
-    navigate(`/${user.username}`); // replace user with user.username
-    // Else setErrorMessage to "username is taken"
-    setErrorMessage("Username is taken");
+    // const user = (await fetch(`${BACKEND_URL}/users/:uuid`)).json()
+    // setUser(user); // replace null with user object
+    // navigate(`/${user.username}`); // replace user with user.username
+    // // Else setErrorMessage to "username is taken"
+    // setErrorMessage("Username is taken");
   }
+
+  const checkPasswordsAreSame = async (password: string, confirmPassword: string) => {
+    return new Promise((resolve, reject) => {
+      if (password === confirmPassword) {
+        resolve(true);
+      } else {
+        reject(new Error('Password do not match'));
+      };
+    });
+  };
 
 
   return (
