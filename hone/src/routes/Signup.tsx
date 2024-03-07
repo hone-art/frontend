@@ -44,7 +44,7 @@ const Signup: FC<Props> = ({ user, setUser }) => {
             <input className="signup-input input-half" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <input className="signup-input input-half" type="password" placeholder="confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
           </div>
-          <input type="submit" className="signup-button" value="Create account" onClick={handleOnClick} />
+          <input type="submit" className="signup-button" value="create account" onClick={handleOnClick} />
         </form>
         <p className="error-message">{errorMessage}</p>
         <Link to="/" className="login-link">

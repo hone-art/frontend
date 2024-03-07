@@ -1,0 +1,36 @@
+.hone-button {
+  font-family: var(--headings-font);
+  font-size: 1.4em;
+  box-shadow: none;
+  margin: 0;
+  text-align: left;
+  width: auto;
+}
+
+.hone-button:hover {
+  background-color: transparent;
+}
+
+.menu-button {
+  text-align: right;
+  box-shadow: none;
+  margin: 0;
+  width: auto;
+}
+
+.menu-button:hover {
+  background-color: transparent;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--bg-secondary);
+  color: white;
+  padding: 1em 2em;
+}
+
+.drawer-close-btn {
+  color: var(--text-primary);
+  margin-top: 0.5em;
+}
