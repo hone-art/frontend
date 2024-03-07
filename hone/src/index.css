@@ -16,3 +16,20 @@
   color: var(--text-primary);
   font-family: var(--body-font);
 }
+
+button {
+  width: 100%;
+  margin-top: 1.7em;
+  font-weight: 200;
+  font-size: 0.9em;
+  text-align: center;
+  padding: 0.7em 1em;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  box-shadow: 2px 4px 10px 0px #cdcdcd;
+}
+
+button:hover {
+  background-color: var(--bg-tertiary);
+  color: white;
+}
