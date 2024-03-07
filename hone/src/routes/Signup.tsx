@@ -4,10 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
-// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com/';
-const BACKEND_URL = 'http://localhost:8080';
-
-
+const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
+// const BACKEND_URL = 'http://localhost:8080';
 
 type Props = {
   user: User | null;
@@ -29,23 +27,17 @@ const Signup: FC<Props> = ({ user, setUser }) => {
     e.preventDefault();
     setErrorMessage('');
 
-    // console.log(BACKEND_URL);
-    // console.log(await fetch(BACKEND_URL).then(response => {return response.text()}));
-
     // check if password and confirm password are same. 
     // If same, clear error message, continue, 
     // if not, return, stop further function execution.
     try {
       await checkPasswordsAreSame(password, confirmPassword);
-      setErrorMessage('');
     } catch (error) {
       setPassword('');
       setConfirmPassword('');
       setErrorMessage('Passwords do not match. Please try again.')
       return;
     }
-
-    // console.log('password match==========')
 
     try {
       await checkUserNameIsNotTaken(username);
@@ -56,11 +48,10 @@ const Signup: FC<Props> = ({ user, setUser }) => {
 
     // Create user in firebase
     // check validation of email, password
+    let userCredential = {}
     try {
-      const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-      // console.log('firebase succeed');
+      userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
     } catch (error:any) {
-      // console.log(error.message);
       const errorMessage:string = error.message;
       if(errorMessage === 'Firebase: Error (auth/invalid-email).') {
         setErrorMessage('Invalid Email address');
@@ -73,32 +64,20 @@ const Signup: FC<Props> = ({ user, setUser }) => {
       }
       return;
     }
-    // console.log('after firebase error');
 
-    const userObj = {
+    // insert user into db
+    const reqBody = JSON.stringify({
       display_name: displayName,
       user_name: username,
       uuid: userCredential.user.uid
-    }
+    });
+    const fetchResult = await fetch(`${BACKEND_URL}/users/`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: reqBody
+    });
 
     
-    
-
-    // Create user in firebase
-    // const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-    // const uuid: string = userCredential.user.uid;
-
-    // Post request to create user in database
-    // const reqBody = JSON.stringify({
-    //   uuid: uuid,
-    //   display_name: displayName,
-    //   user_name: username
-    // });
-    // const response = await fetch(`${BACKEND_URL}/user/`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json', },
-    //   body: reqBody,
-    // });
     // If okay set returned user object and navigate to "/:username"
     // const user = (await fetch(`${BACKEND_URL}/users/:uuid`)).json()
     // setUser(user); // replace null with user object
