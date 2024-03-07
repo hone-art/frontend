@@ -5,7 +5,7 @@ import { User } from "../globals";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
 // const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com/';
-const BACKEND_URL = 'http://localhost:8080/'
+const BACKEND_URL = 'http://localhost:8080';
 
 
 
@@ -29,8 +29,8 @@ const Signup: FC<Props> = ({ user, setUser }) => {
     e.preventDefault();
     setErrorMessage('');
 
-    console.log(BACKEND_URL);
-    console.log(await fetch(BACKEND_URL).then(response => {return response.text()}));
+    // console.log(BACKEND_URL);
+    // console.log(await fetch(BACKEND_URL).then(response => {return response.text()}));
 
     // check if password and confirm password are same. 
     // If same, clear error message, continue, 
@@ -45,19 +45,25 @@ const Signup: FC<Props> = ({ user, setUser }) => {
       return;
     }
 
-    console.log('password match==========')
+    // console.log('password match==========')
+
+    try {
+      await checkUserNameIsNotTaken(username);
+    } catch {
+      setErrorMessage('username is already taken. Please choose another one')
+      return;
+    }
 
     // Create user in firebase
     // check validation of email, password
     try {
       const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-      console.log('firebase succeed');
+      // console.log('firebase succeed');
     } catch (error:any) {
-      console.log(error.message);
+      // console.log(error.message);
       const errorMessage:string = error.message;
       if(errorMessage === 'Firebase: Error (auth/invalid-email).') {
         setErrorMessage('Invalid Email address');
-        setEmail('');
       } else if(errorMessage === 'Firebase: Password should be at least 6 characters (auth/weak-password).') {
         setErrorMessage('Password should be at least 6 characters');
         setPassword('');
@@ -67,8 +73,13 @@ const Signup: FC<Props> = ({ user, setUser }) => {
       }
       return;
     }
+    // console.log('after firebase error');
 
-    console.log('after firebase error');
+    const userObj = {
+      display_name: displayName,
+      user_name: username,
+      uuid: userCredential.user.uid
+    }
 
     
     
@@ -105,6 +116,24 @@ const Signup: FC<Props> = ({ user, setUser }) => {
       };
     });
   };
+
+  const checkUserNameIsNotTaken = async (userName: string) => {
+    return new Promise(async (resolve, reject) => {
+      const reqBody = JSON.stringify({
+        user_name: userName
+      });
+      const fetchResult = await fetch(`${BACKEND_URL}/users/username/`,{
+        method:'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: reqBody
+      });
+      if (fetchResult.status === 400) {
+        resolve(true);
+      } else if (fetchResult.status === 200) {
+        reject(new Error('User name is taken'));
+      }
+    })
+  }
 
 
   return (
