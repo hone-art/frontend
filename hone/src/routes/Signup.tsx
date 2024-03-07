@@ -2,6 +2,10 @@ import { FC, useState } from "react";
 import "../styles/signup.css"
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from '../utils/firebaseConfig';
+const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
+// const BACKEND_URL = 'http://localhost:8080';
 
 type Props = {
   user: User | null;
@@ -9,6 +13,7 @@ type Props = {
 }
 
 const Signup: FC<Props> = ({ user, setUser }) => {
+  // dotenv.config();
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -18,14 +23,95 @@ const Signup: FC<Props> = ({ user, setUser }) => {
 
   const navigate = useNavigate();
 
-  const handleOnClick = () => {
+  const handleOnClick = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    // check if password and confirm password are same. 
+    // If same, clear error message, continue, 
+    // if not, return, stop further function execution.
+    try {
+      await checkPasswordsAreSame(password, confirmPassword);
+    } catch (error) {
+      setPassword('');
+      setConfirmPassword('');
+      setErrorMessage('Passwords do not match. Please try again.')
+      return;
+    }
+
+    try {
+      await checkUserNameIsNotTaken(username);
+    } catch {
+      setErrorMessage('username is already taken. Please choose another one')
+      return;
+    }
+
     // Create user in firebase
-    // Post request to create user in database
+    // check validation of email, password
+    let userCredential = {}
+    try {
+      userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    } catch (error:any) {
+      const errorMessage:string = error.message;
+      if(errorMessage === 'Firebase: Error (auth/invalid-email).') {
+        setErrorMessage('Invalid Email address');
+      } else if(errorMessage === 'Firebase: Password should be at least 6 characters (auth/weak-password).') {
+        setErrorMessage('Password should be at least 6 characters');
+        setPassword('');
+        setConfirmPassword('');
+      } else if(errorMessage === 'Firebase: Error (auth/email-already-in-use).') {
+        setErrorMessage('Email-already-in-use');
+      }
+      return;
+    }
+
+    // insert user into db
+    const reqBody = JSON.stringify({
+      display_name: displayName,
+      user_name: username,
+      uuid: userCredential.user.uid
+    });
+    const fetchResult = await fetch(`${BACKEND_URL}/users/`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: reqBody
+    });
+
+    
     // If okay set returned user object and navigate to "/:username"
-    setUser(null); // replace null with user object
-    navigate(`/${user}`); // replace user with user.username
-    // Else setErrorMessage to "username is taken"
-    setErrorMessage("Username is taken");
+    // const user = (await fetch(`${BACKEND_URL}/users/:uuid`)).json()
+    // setUser(user); // replace null with user object
+    // navigate(`/${user.username}`); // replace user with user.username
+    // // Else setErrorMessage to "username is taken"
+    // setErrorMessage("Username is taken");
+  }
+
+  const checkPasswordsAreSame = async (password: string, confirmPassword: string) => {
+    return new Promise((resolve, reject) => {
+      if (password === confirmPassword) {
+        resolve(true);
+      } else {
+        reject(new Error('Password do not match'));
+      };
+    });
+  };
+
+  const checkUserNameIsNotTaken = async (userName: string) => {
+    return new Promise(async (resolve, reject) => {
+      const reqBody = JSON.stringify({
+        user_name: userName
+      });
+      const fetchResult = await fetch(`${BACKEND_URL}/users/username/`,{
+        method:'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: reqBody
+      });
+      if (fetchResult.status === 400) {
+        resolve(true);
+      } else if (fetchResult.status === 200) {
+        reject(new Error('User name is taken'));
+      }
+    })
   }
 
 
