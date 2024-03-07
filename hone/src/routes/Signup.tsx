@@ -19,6 +19,7 @@ const Signup: FC<Props> = ({ user, setUser }) => {
   const navigate = useNavigate();
 
   const handleOnClick = () => {
+    //gujiaxian
     // Create user in firebase
     // Post request to create user in database
     // If okay set returned user object and navigate to "/:username"
