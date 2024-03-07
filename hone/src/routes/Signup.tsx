@@ -46,13 +46,9 @@ const Signup: FC<Props> = ({ user, setUser }) => {
       body: reqBody,
     });
     // If okay set returned user object and navigate to "/:username"
-    setUser({
-      id: uuid,
-      display_name: displayName,
-      username: username,
-      img_id: 
-    }); // replace null with user object
-    navigate(`/${user}`); // replace user with user.username
+    const user = (await fetch(`${BACKEND_URL}/users/:uuid`)).json()
+    setUser(user); // replace null with user object
+    navigate(`/${user.username}`); // replace user with user.username
     // Else setErrorMessage to "username is taken"
     setErrorMessage("Username is taken");
   }
