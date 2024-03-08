@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction, useState, useEffect } from "react";
 import "../styles/root.css"
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
@@ -20,9 +20,12 @@ const Root: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setUser(null);
+    setIsLoggedIn(false);
+  }, [])
   const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-
     try {
       const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
       const uuid = credential.user.uid;
@@ -34,7 +37,7 @@ const Root: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
       console.log(userObj);
       setUser(userObj);
       setIsLoggedIn(true);
-      navigate(`/${user?.user_name}`)
+      navigate(`/${userObj?.user_name}`)
     } catch (error: any) {
       setErrorMessage('Invalid email or password. Please try again');
     }
@@ -54,7 +57,7 @@ const Root: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
         <form action="">
           <input className="login-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <input className="login-input" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <input className="login-button" value="login" onClick={handleOnClick} />
+          <input className="login-button" value='Login' onClick={handleOnClick} />
         </form>
         <p className="error-message">{errorMessage}</p>
         <Link to="/signup" className="signup-link">
