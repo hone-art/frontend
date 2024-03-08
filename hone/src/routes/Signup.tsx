@@ -8,12 +8,11 @@ import { firebaseAuth } from '../utils/firebaseConfig';
 const BACKEND_URL = 'http://localhost:8080';
 
 type Props = {
-  user: User | null;
   setUser: (initialState: User | (() => User | null) | null) => void;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 }
 
-const Signup: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
+const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
   // dotenv.config();
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
