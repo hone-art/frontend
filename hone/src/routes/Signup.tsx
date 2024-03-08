@@ -70,7 +70,7 @@ const Signup: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
 
       if (fetchResult.status === 200) {
         const newUser = await fetchResult.json();
-        await setUser(newUser);
+        setUser(newUser);
         setIsLoggedIn(true);
         navigate(`/${user?.user_name}`);
       }
