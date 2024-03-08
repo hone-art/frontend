@@ -38,7 +38,7 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
           {/* <DrawerHeader>{user?.display_name}</DrawerHeader> */}
           <DrawerHeader>
             <h1>{user?.display_name}</h1>
-            <p>{user?.user_name}</p>
+            <p>@{user?.user_name}</p>
             {/* <h1>{user?.display_name}</h1>
             <p>@{user?.user_name}</p> */}
           </DrawerHeader>
