@@ -52,27 +52,29 @@ const Signup: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 
-      if (displayName.length <= 0)
-        setDisplayName(username);
       // insert user into db
-      const reqBody = JSON.stringify({
+      const reqBody = {
         display_name: displayName,
         user_name: username,
         uuid: userCredential.user.uid,
         img_id: 1
-      });
+      };
+
+
+      if (displayName.length <= 0)
+        reqBody.display_name = username;
 
       const fetchResult = await fetch(`${BACKEND_URL}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
-        body: reqBody,
+        body: JSON.stringify(reqBody),
       });
 
       if (fetchResult.status === 200) {
         const newUser = await fetchResult.json();
         setUser(newUser);
         setIsLoggedIn(true);
-        navigate(`/${user?.user_name}`);
+        navigate(`/${newUser?.user_name}`);
       }
 
     } catch (error: any) {
