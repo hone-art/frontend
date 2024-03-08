@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, Dispatch, SetStateAction } from "react";
 import "../styles/signup.css"
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
@@ -10,9 +10,10 @@ const BACKEND_URL = 'http://localhost:8080';
 type Props = {
   user: User | null;
   setUser: (initialState: User | (() => User | null) | null) => void;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 }
 
-const Signup: FC<Props> = ({ user, setUser }) => {
+const Signup: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
   // dotenv.config();
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -70,6 +71,7 @@ const Signup: FC<Props> = ({ user, setUser }) => {
       if (fetchResult.status === 200) {
         const newUser = await fetchResult.json();
         await setUser(newUser);
+        setIsLoggedIn(true);
         navigate(`/${user?.user_name}`);
       }
 
