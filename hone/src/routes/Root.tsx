@@ -1,26 +1,49 @@
-import { FC, useState } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import "../styles/root.css"
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from '../utils/firebaseConfig';
+
+// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
+const BACKEND_URL = 'http://localhost:8080';
 
 type Props = {
   user: User | null;
   setUser: (initialState: User | (() => User | null) | null) => void;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 }
 
-const Root: FC<Props> = ({ user, setUser }) => {
+const Root: FC<Props> = ({ user, setUser, setIsLoggedIn }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleOnClick = () => {
+  const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    try {
+      const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+      const uuid = credential.user.uid;
+      setErrorMessage('');
+      console.log('success');
+      console.log(uuid);
+      const response = await fetch(`${BACKEND_URL}/users/${uuid}`);
+      const userObj = await response.json();
+      console.log(userObj);
+      setUser(userObj);
+      setIsLoggedIn(true);
+      navigate(`/${user?.user_name}`)
+    } catch (error: any) {
+      setErrorMessage('Invalid email or password. Please try again');
+    }
     // User authentication
     // If authenticated get + set user object from users table and navigate to "/:username"
-    setUser(null); // replace null with user object
-    navigate(`/${user}`); // replace user with user.username
+    // setUser(null); // replace null with user object
+    // navigate(`/${user}`); // replace user with user.username
     // else set errorMessage to "Email or password is incorrect"
-    setErrorMessage("Email or password is incorrect");
+    // setErrorMessage("Email or password is incorrect");
   }
 
   return (
