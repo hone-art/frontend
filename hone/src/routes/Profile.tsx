@@ -55,10 +55,12 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
         setUserProfile(thisProfileUser);
 
         try {
-          const fetchProjects = await fetch(`http://localhost:8080/projects/users/${userProfile?.id}`);
-          const projects = await fetchProjects.json();
-          setProjects(projects);
-          console.log(projects);
+          if (userProfile) {
+            const fetchProjects = await fetch(`http://localhost:8080/projects/users/${userProfile?.id}`);
+            const projects = await fetchProjects.json();
+            setProjects(projects);
+            console.log(projects);
+          }
         }
         catch (e) {
           console.log(e);
