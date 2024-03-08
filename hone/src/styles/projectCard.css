@@ -19,3 +19,17 @@
 .project-title:hover {
   text-decoration: underline;
 }
+
+/* iphone: portrait */
+@media only screen and (min-device-width: 196px) and (max-device-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+  .project-card-container {
+    width: 100%;
+  }
+}
+
+/* iPad: portrait */
+@media only screen and (min-device-width: 768px) and (orientation: portrait) {
+  .project-card-container {
+    width: 100%;
+  }
+}
