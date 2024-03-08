@@ -1,4 +1,4 @@
-import { FC, useState, Dispatch, SetStateAction } from "react";
+import { FC, useState, Dispatch, SetStateAction, useEffect } from "react";
 import "../styles/signup.css"
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
 // const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
 const BACKEND_URL = 'http://localhost:8080';
+
 
 type Props = {
   setUser: (initialState: User | (() => User | null) | null) => void;
@@ -20,6 +21,11 @@ const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    setUser(null);
+    setIsLoggedIn(false);
+  }, [])
 
   const navigate = useNavigate();
 
