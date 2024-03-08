@@ -15,8 +15,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Root user={user} setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/signup" element={<Signup user={user} setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/" element={<Root setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/signup" element={<Signup setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/:username" element={<Profile user={user} isLoggedIn={isLoggedIn} />} />
         <Route path="/:username/:projectId" element={<Project />} />
       </Routes>
