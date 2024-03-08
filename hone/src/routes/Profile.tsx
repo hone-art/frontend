@@ -89,6 +89,7 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
   }
 
   function handleEditOnClick() {
+    // upload photo to bucket, get external link
     // const newImage = fetch("images") POST new image link
     // fetch("/users") PATCH request to edit display name and image_id
     // setProfilePicture to new link

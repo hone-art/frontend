@@ -37,8 +37,8 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
           <DrawerCloseButton className="drawer-close-btn" />
           {/* <DrawerHeader>{user?.display_name}</DrawerHeader> */}
           <DrawerHeader>
-            <h1>Yurika</h1>
-            <p>@yurikahirata</p>
+            <h1>{user?.display_name}</h1>
+            <p>{user?.user_name}</p>
             {/* <h1>{user?.display_name}</h1>
             <p>@{user?.user_name}</p> */}
           </DrawerHeader>
