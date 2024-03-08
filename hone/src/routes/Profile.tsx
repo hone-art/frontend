@@ -6,6 +6,9 @@ import LoggedOutHeader from "../components/LoggedOutHeader";
 import ProjectCard from "../components/ProjectCard";
 // import { useParams } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
+import { storage } from '../firebase';
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+
 import {
   Modal,
   ModalOverlay,
@@ -28,8 +31,9 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
   const { username } = useParams<string>();
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
   const [isUser, setIsUser] = useState<boolean>(false); // Is logged in user and user profile the same
-  const [profilePicture, setProfilePicture] = useState<string>(""); // Is logged in user and user profile the same
+  const [profilePicture, setProfilePicture] = useState<string>("");
   const [newDisplayName, setNewDisplayName] = useState<string>("");
+  const [newProfilePicture, setNewProfilePicture] = useState<File>();
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
 
@@ -85,10 +89,43 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
+    setNewProfilePicture(imageToUpload);
     console.log(imageToUpload);
   }
 
-  function handleEditOnClick() {
+  async function handleEditOnClick() {
+    if (newProfilePicture) {
+      const storageRef = ref(storage, `${newProfilePicture.name}`);
+      const snapshot = await uploadBytes(storageRef, newProfilePicture);
+
+      const imgUrl = await getDownloadURL(snapshot.ref);
+
+      const newPhotoBody = { url: imgUrl };
+      const fetchNewPhoto = await fetch("http://localhost:8080/images", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPhotoBody),
+      });
+
+      const newPhoto = await fetchNewPhoto.json();
+      setProfilePicture(newPhoto.url);
+
+      const updateUserBody = { img_id: newPhoto.id };
+      const fetchUpdatedUser = await fetch(`http://localhost:8080/users/${userProfile?.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateUserBody),
+      });
+
+      const updatedUser = await fetchUpdatedUser.json();
+      setUserProfile(updatedUser);
+    }
+
+    // const fetchNewDisplayName = fetch("http://localhost")
     // upload photo to bucket, get external link
     // const newImage = fetch("images") POST new image link
     // fetch("/users") PATCH request to edit display name and image_id
@@ -125,7 +162,8 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
           <h2 id="username">@{userProfile?.user_name}</h2>
           {/* <h2 id="username">@yurikahirata</h2> */}
           {/* {isLoggedIn ? <button className="edit-profile-btn">Edit profile</button> : null} */}
-          {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
+          <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button>
+          {/* {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null} */}
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
@@ -143,7 +181,7 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
           <ModalCloseButton className="modal-close-btn" />
           <ModalBody>
             <h2 className="margin-bottom">Profile picture:</h2>
-            <input type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} />
+            <input type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
             <p className="margin-bottom">Display name: </p>
             <input type="text" className="input-name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} />
           </ModalBody>
