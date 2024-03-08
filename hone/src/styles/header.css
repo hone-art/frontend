@@ -5,6 +5,7 @@
   margin: 0;
   text-align: left;
   width: auto;
+  color: white;
 }
 
 .hone-button:hover {
@@ -16,6 +17,7 @@
   box-shadow: none;
   margin: 0;
   width: auto;
+  color: white;
 }
 
 .menu-button:hover {
@@ -33,4 +35,8 @@
 .drawer-close-btn {
   color: var(--text-primary);
   margin-top: 0.5em;
+}
+
+.link:hover {
+  text-decoration: underline;
 }

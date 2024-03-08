@@ -1,0 +1,21 @@
+.project-card-container {
+  border: 1;
+  min-width: 48%;
+}
+
+.project-img {
+  width: 100%;
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: 10px;
+  height: 280px;
+}
+
+.project-title {
+  font-weight: 600;
+  margin-top: 0.5em;
+}
+
+.project-title:hover {
+  text-decoration: underline;
+}

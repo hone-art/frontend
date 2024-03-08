@@ -10,13 +10,14 @@ import "./App.css";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Root user={user} setUser={setUser} />} />
         <Route path="/signup" element={<Signup user={user} setUser={setUser} />} />
-        <Route path="/:username" element={<Profile user={user} />} />
+        <Route path="/:username" element={<Profile user={user} isLoggedIn={isLoggedIn} />} />
         <Route path="/:username/:projectId" element={<Project />} />
       </Routes>
     </BrowserRouter>

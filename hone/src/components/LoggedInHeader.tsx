@@ -23,7 +23,8 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
 
   return (
     <header className="header">
-      <button className="hone-button">hone</button>
+      {/* <p>CHANGE TO USERNAME</p> */}
+      <Link to="/null" className="hone-button">hone</Link>
       <button onClick={onOpen} className="menu-button"><span className="material-icons">menu</span></button>
       <Drawer
         isOpen={isOpen}
@@ -38,18 +39,20 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
           <DrawerHeader>
             <h1>Yurika</h1>
             <p>@yurikahirata</p>
+            {/* <h1>{user?.display_name}</h1>
+            <p>@{user?.user_name}</p> */}
           </DrawerHeader>
 
           <DrawerBody>
-            {/* <Link to={`/${user!.user_name}`}>Your profile</Link> */}
+            <Link className="link" to={`/${user?.user_name}`}>Your profile</Link>
           </DrawerBody>
 
           <DrawerFooter>
-            <Link to="/">Logout</Link>
+            <Link className="link" to="/">Logout →</Link>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </header>
+    </header >
 
   )
 }
