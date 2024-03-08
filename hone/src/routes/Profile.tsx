@@ -28,7 +28,7 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
   const { username } = useParams<string>();
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
   const [isUser, setIsUser] = useState<boolean>(false); // Is logged in user and user profile the same
-  const [profilePicture, setProfilePicture] = useState<string>("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png"); // Is logged in user and user profile the same
+  const [profilePicture, setProfilePicture] = useState<string>(""); // Is logged in user and user profile the same
   const [newDisplayName, setNewDisplayName] = useState<string>("");
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
@@ -37,6 +37,7 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
 
   useEffect(() => {
     const body = { user_name: username }; // CHANGE
+
 
     async function fetchUserAndProjects() {
       const fetchUser = await fetch("http://localhost:8080/users/username", {
@@ -52,15 +53,19 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
       }
       else {
         const thisProfileUser: User = await fetchUser.json();
+        const fetchPicture = await fetch(`http://localhost:8080/images/${thisProfileUser.img_id}`);
+        const setPicture = await fetchPicture.json();
+        setProfilePicture(setPicture.url);
+
         setUserProfile(thisProfileUser);
 
+        if (user?.user_name === thisProfileUser?.user_name) setIsUser(true);
+
         try {
-          if (userProfile) {
-            const fetchProjects = await fetch(`http://localhost:8080/projects/users/${userProfile?.id}`);
-            const projects = await fetchProjects.json();
-            setProjects(projects);
-            console.log(projects);
-          }
+          const fetchProjects = await fetch(`http://localhost:8080/projects/users/${thisProfileUser?.id}`);
+          const projects = await fetchProjects.json();
+          setProjects(projects);
+          console.log(projects);
         }
         catch (e) {
           console.log(e);
@@ -119,13 +124,13 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
           <h2 id="username">@{userProfile?.user_name}</h2>
           {/* <h2 id="username">@yurikahirata</h2> */}
           {/* {isLoggedIn ? <button className="edit-profile-btn">Edit profile</button> : null} */}
-          {isLoggedIn ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
+          {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
         </div>
         <div className="projects-container">
-          {isLoggedIn ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
+          {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
           <div className="project-cards-container">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} user={user} />
+              <ProjectCard key={project.id} project={project} userProfile={userProfile} />
             ))}
           </div>
         </div>

@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 type Props = {
   project: Project;
-  user: User | null;
+  userProfile: User | null;
 }
 
 
-const ProjectCard: FC<Props> = ({ project, user }) => {
+const ProjectCard: FC<Props> = ({ project, userProfile }) => {
   const navigate = useNavigate();
   const [image, setImage] = useState<string>("https://htmlcolorcodes.com/assets/images/colors/light-gray-color-solid-background-1920x1080.png");
 
@@ -26,7 +26,7 @@ const ProjectCard: FC<Props> = ({ project, user }) => {
   }, []);
 
   return (
-    <article className="project-card-container" onClick={() => navigate(`/${user?.user_name}/${project.id}`)}>
+    <article className="project-card-container" onClick={() => navigate(`/${userProfile?.user_name}/${project.id}`)}>
       <img className="project-img" src={image} alt="user-artwork" />
       <h2 className="project-title">{project.title} →</h2>
     </article>
