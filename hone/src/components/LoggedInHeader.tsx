@@ -24,7 +24,7 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
   return (
     <header className="header">
       {/* <p>CHANGE TO USERNAME</p> */}
-      <Link to="/null" className="hone-button">hone</Link>
+      <Link to={`/${user?.user_name}`} className="hone-button">hone</Link>
       <button onClick={onOpen} className="menu-button"><span className="material-icons">menu</span></button>
       <Drawer
         isOpen={isOpen}
