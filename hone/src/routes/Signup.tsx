@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
-const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
-// const BACKEND_URL = 'http://localhost:8080';
+// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
+const BACKEND_URL = 'http://localhost:8080';
 
 type Props = {
   user: User | null;
@@ -23,9 +23,9 @@ const Signup: FC<Props> = ({ user, setUser }) => {
 
   const navigate = useNavigate();
 
-  const handleOnClick = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessage("");
 
     // check if password and confirm password are same. 
     // If same, clear error message, continue, 
@@ -48,42 +48,45 @@ const Signup: FC<Props> = ({ user, setUser }) => {
 
     // Create user in firebase
     // check validation of email, password
-    let userCredential = {}
     try {
-      userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-    } catch (error:any) {
-      const errorMessage:string = error.message;
-      if(errorMessage === 'Firebase: Error (auth/invalid-email).') {
+      const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+
+      if (displayName.length <= 0)
+        setDisplayName(username);
+      // insert user into db
+      const reqBody = JSON.stringify({
+        display_name: displayName,
+        user_name: username,
+        uuid: userCredential.user.uid,
+        img_id: 1
+      });
+
+      const fetchResult = await fetch(`${BACKEND_URL}/users/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: reqBody,
+      });
+
+      if (fetchResult.status === 200) {
+        const newUser = await fetchResult.json();
+        await setUser(newUser);
+        navigate(`/${user?.user_name}`);
+      }
+
+    } catch (error: any) {
+      const errorMessage: string = error.message;
+      if (errorMessage === 'Firebase: Error (auth/invalid-email).') {
         setErrorMessage('Invalid Email address');
-      } else if(errorMessage === 'Firebase: Password should be at least 6 characters (auth/weak-password).') {
+      } else if (errorMessage === 'Firebase: Password should be at least 6 characters (auth/weak-password).') {
         setErrorMessage('Password should be at least 6 characters');
         setPassword('');
         setConfirmPassword('');
-      } else if(errorMessage === 'Firebase: Error (auth/email-already-in-use).') {
+      } else if (errorMessage === 'Firebase: Error (auth/email-already-in-use).') {
         setErrorMessage('Email-already-in-use');
       }
       return;
     }
 
-    // insert user into db
-    const reqBody = JSON.stringify({
-      display_name: displayName,
-      user_name: username,
-      uuid: userCredential.user.uid
-    });
-    const fetchResult = await fetch(`${BACKEND_URL}/users/`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json',},
-      body: reqBody
-    });
-
-    
-    // If okay set returned user object and navigate to "/:username"
-    // const user = (await fetch(`${BACKEND_URL}/users/:uuid`)).json()
-    // setUser(user); // replace null with user object
-    // navigate(`/${user.username}`); // replace user with user.username
-    // // Else setErrorMessage to "username is taken"
-    // setErrorMessage("Username is taken");
   }
 
   const checkPasswordsAreSame = async (password: string, confirmPassword: string) => {
@@ -101,8 +104,8 @@ const Signup: FC<Props> = ({ user, setUser }) => {
       const reqBody = JSON.stringify({
         user_name: userName
       });
-      const fetchResult = await fetch(`${BACKEND_URL}/users/username/`,{
-        method:'POST',
+      const fetchResult = await fetch(`${BACKEND_URL}/users/username/`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: reqBody
       });
