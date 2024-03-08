@@ -64,7 +64,8 @@
 }
 
 .input-name {
-  border: 1px solid var(--text-secondary);
+  border-bottom: 1px solid var(--text-secondary);
+  padding: 0.3em 0.5em;
 }
 
 .projects-container {
@@ -77,6 +78,7 @@
 .project-cards-container {
   margin-top: 2em;
   display: flex;
+  flex-wrap: wrap;
   gap: 1em;
   justify-content: space-between;
 }

@@ -22,10 +22,11 @@ import {
 
 type Props = {
   user: User | null;
+  setUser: (initialState: User | (() => User | null) | null) => void;
   isLoggedIn: boolean;
 }
 
-const Profile: FC<Props> = ({ user, isLoggedIn }) => {
+const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Array<Project>>([]);
   const { username } = useParams<string>();
@@ -57,6 +58,7 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
       }
       else {
         const thisProfileUser: User = await fetchUser.json();
+        setNewDisplayName(thisProfileUser.display_name);
         const fetchPicture = await fetch(`http://localhost:8080/images/${thisProfileUser.img_id}`);
         const setPicture = await fetchPicture.json();
         setProfilePicture(setPicture.url);
@@ -97,7 +99,6 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
     if (newProfilePicture) {
       const storageRef = ref(storage, `${newProfilePicture.name}`);
       const snapshot = await uploadBytes(storageRef, newProfilePicture);
-
       const imgUrl = await getDownloadURL(snapshot.ref);
 
       const newPhotoBody = { url: imgUrl };
@@ -113,6 +114,22 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
       setProfilePicture(newPhoto.url);
 
       const updateUserBody = { img_id: newPhoto.id };
+      const fetchUpdatedUser = await fetch(`http://localhost:8080/users/${user?.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateUserBody),
+      });
+
+      const updatedUser = await fetchUpdatedUser.json();
+
+      setUserProfile(updatedUser);
+      setUser(updatedUser);
+    }
+
+    if (newDisplayName !== userProfile?.display_name) {
+      const updateUserBody = { display_name: newDisplayName };
       const fetchUpdatedUser = await fetch(`http://localhost:8080/users/${userProfile?.id}`, {
         method: "PATCH",
         headers: {
@@ -123,9 +140,8 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
 
       const updatedUser = await fetchUpdatedUser.json();
       setUserProfile(updatedUser);
+      setUser(updatedUser);
     }
-
-    // const fetchNewDisplayName = fetch("http://localhost")
     // upload photo to bucket, get external link
     // const newImage = fetch("images") POST new image link
     // fetch("/users") PATCH request to edit display name and image_id
@@ -133,37 +149,35 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
     onClose();
   }
 
-  function handleNewProjectOnClick() {
+  async function handleNewProjectOnClick() {
     const body = {
       title: "Untitled",
       description: "Write your description here!",
       img_id: 2, // default project image
-      user_id: user?.id,
+      user_id: userProfile?.id, //Change to user
     }
 
-    fetch("http://localhost:8080/projects", {
+    const fetchNewProject = await fetch("http://localhost:8080/projects", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body)
-    })
+    });
+
+    const newProject = await fetchNewProject.json();
+    navigate(`/${userProfile?.user_name}/${newProject.id}`); // Change to user
   }
 
   return (
     <>
-      {/* <LoggedInHeader user={user} /> */}
       {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />}
       <section className="profile-container">
         <div className="profile-card">
           <img src={profilePicture} alt="profile picture" className="profile-picture" />
           <h1 id="display-name">{userProfile?.display_name}</h1>
-          {/* <h1 id="display-name">Yurika</h1> */}
           <h2 id="username">@{userProfile?.user_name}</h2>
-          {/* <h2 id="username">@yurikahirata</h2> */}
-          {/* {isLoggedIn ? <button className="edit-profile-btn">Edit profile</button> : null} */}
-          <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button>
-          {/* {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null} */}
+          {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
