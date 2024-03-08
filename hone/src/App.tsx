@@ -20,7 +20,7 @@ function App() {
         <Route path="/signup" element={<Signup setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/:username" element={<Profile user={user} setUser={setUser} isLoggedIn={isLoggedIn} />} />
 
-        <Route path="/:username/:projectId" element={<Project />} />
+        <Route path="/:username/:projectId" element={<Project user={user} isLoggedIn={isLoggedIn} />} />
       </Routes>
     </BrowserRouter>
   )
