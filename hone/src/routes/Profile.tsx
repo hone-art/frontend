@@ -5,7 +5,7 @@ import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
 import ProjectCard from "../components/ProjectCard";
 // import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
@@ -25,7 +25,7 @@ type Props = {
 const Profile: FC<Props> = ({ user, isLoggedIn }) => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Array<Project>>([]);
-  // const { username } = useParams<string>();
+  const { username } = useParams<string>();
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
   const [isUser, setIsUser] = useState<boolean>(false); // Is logged in user and user profile the same
   const [profilePicture, setProfilePicture] = useState<string>("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png"); // Is logged in user and user profile the same
@@ -36,7 +36,7 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
   const inputImage = useRef(null); // User upload profile picture
 
   useEffect(() => {
-    const body = { user_name: "test" }; // CHANGE
+    const body = { user_name: username }; // CHANGE
 
     async function fetchUserAndProjects() {
       const fetchUser = await fetch("http://localhost:8080/users/username", {
@@ -47,15 +47,22 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
         body: JSON.stringify(body),
       });
 
-      if (fetchUser.status != 200) navigate("/")
+      if (fetchUser.status !== 200) {
+        navigate("/")
+      }
       else {
         const thisProfileUser: User = await fetchUser.json();
         setUserProfile(thisProfileUser);
 
-        const fetchProjects = await fetch("http://localhost:8080/projects/users/1");
-        const projects = await fetchProjects.json();
-        setProjects(projects);
-        console.log(projects);
+        try {
+          const fetchProjects = await fetch(`http://localhost:8080/projects/users/${userProfile?.id}`);
+          const projects = await fetchProjects.json();
+          setProjects(projects);
+          console.log(projects);
+        }
+        catch (e) {
+          console.log(e);
+        }
       }
     }
 
@@ -85,7 +92,7 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
     const body = {
       title: "Untitled",
       description: "Write your description here!",
-      img_id: 1, // default project image
+      img_id: 2, // default project image
       user_id: user?.id,
     }
 
@@ -100,12 +107,12 @@ const Profile: FC<Props> = ({ user, isLoggedIn }) => {
 
   return (
     <>
-      <LoggedInHeader user={user} />
-      {/* {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />} */}
+      {/* <LoggedInHeader user={user} /> */}
+      {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />}
       <section className="profile-container">
         <div className="profile-card">
           <img src={profilePicture} alt="profile picture" className="profile-picture" />
-          <h1 id="display-name">{userProfile?.display_name != null ? userProfile?.display_name : userProfile?.user_name}</h1>
+          <h1 id="display-name">{userProfile?.display_name}</h1>
           {/* <h1 id="display-name">Yurika</h1> */}
           <h2 id="username">@{userProfile?.user_name}</h2>
           {/* <h2 id="username">@yurikahirata</h2> */}
