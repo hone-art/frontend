@@ -90,7 +90,10 @@
 }
 
 /* iPhone: portrait */
-@media only screen and (min-device-width: 196px) and (max-device-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+/* only screen and */
+/* and (min-device-width: 196px) */
+/* and (-webkit-min-device-pixel-ratio: 2) */
+@media only screen and (max-width: 768px) {
   .profile-container {
     flex-direction: column;
     align-items: center;
@@ -124,7 +127,8 @@
 }
 
 /* iPad: portrait */
-@media only screen and (min-device-width: 768px) and (-webkit-min-device-pixel-ratio: 1) {
+/* and (-webkit-min-device-pixel-ratio: 1) */
+@media only screen and (min-width: 768px) {
   .profile-container {
     margin: 0.5em;
   }
@@ -134,19 +138,12 @@
   }
 
   .profile-card {
-    padding: 1em;
-    padding-left: 1.7em;
     min-width: 30%;
   }
-
-  /* .profile-picture {
-    width: 170px;
-    height: 170px;
-    object-fit: cover;
-  } */
 }
 
-@media only screen and (min-device-width: 1000px) and (-webkit-min-device-pixel-ratio: 1) {
+/* and (-webkit-min-device-pixel-ratio: 1) */
+@media only screen and (min-width: 1000px) {
   .profile-picture {
     width: 252px;
     align-self: center;
