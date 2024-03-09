@@ -14,16 +14,20 @@ type Props = {
 
 const Project: FC<Props> = ({ user, isLoggedIn }) => {
   const { username, projectId} = useParams<string>();
-  const [viewerUserName, setViewerUserName] = useState<string>(username);
-  const [projectOwnerName, setProjectOwnerName] = useState<string>("");
-
+  const [viewerUserName, setViewerUserName] = useState<string | undefined>(user?.user_name);
+  const [projectOwnerName, setProjectOwnerName] = useState<string | undefined>(username);
+  const [projectTitle, setProjectTitle] = useState<string>("");
+  const [projectDescription, setProjectDescription] = useState<string>("");
+  const [projectImage, setProjectImage] = useState<string>("");
+  
 
 
   return (
     <>
       {isLoggedIn ? <LoggedInHeader user={user}/> : <LoggedOutHeader />}
       {viewerUserName}
-      {}
+      {projectOwnerName}
+      <button>add entry</button>
     </>
   )
 };
