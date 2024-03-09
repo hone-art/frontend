@@ -7,13 +7,15 @@
   display: flex;
   flex-direction: column;
   padding: 2em;
-  min-width: 25%;
+  max-width: 25%;
 }
 
 .profile-picture {
   border-radius: 50%;
-  width: 200px;
-  height: 200px;
+  /* width: 200px; */
+  max-width: 100%;
+  aspect-ratio: 1 /1;
+  /* height: 200px; */
   object-fit: cover;
 }
 
@@ -85,4 +87,65 @@
 
 .new-project-btn {
   padding: 0.7em 1em;
+}
+
+/* iPhone: portrait */
+/* only screen and */
+/* and (min-device-width: 196px) */
+/* and (-webkit-min-device-pixel-ratio: 2) */
+@media only screen and (max-width: 768px) {
+  .profile-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-picture {
+    max-width: 50%;
+  }
+
+  .profile-card {
+    max-width: 90%;
+    margin-top: 1em;
+    padding: 0;
+    align-items: center;
+  }
+
+  .edit-profile-btn {
+    width: 100%;
+    padding: 0.7em 1em;
+  }
+
+  .projects-container {
+    width: 90%;
+    margin-top: 1em;
+    padding: 0;
+  }
+
+  .new-project-btn {
+    margin: 0;
+  }
+}
+
+/* iPad: portrait */
+/* and (-webkit-min-device-pixel-ratio: 1) */
+@media only screen and (min-width: 768px) {
+  .profile-container {
+    margin: 0.5em;
+  }
+
+  .new-project-btn {
+    margin-top: 0.7em;
+  }
+
+  .profile-card {
+    min-width: 30%;
+  }
+}
+
+/* and (-webkit-min-device-pixel-ratio: 1) */
+@media only screen and (min-width: 1000px) {
+  .profile-picture {
+    width: 252px;
+    align-self: center;
+  }
 }
