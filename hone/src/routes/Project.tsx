@@ -21,8 +21,6 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   const { username, projectId } = useParams<string>();
   const [project, setProject] = useState<ProjectInterface>();
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
-  const [projectTitle, setProjectTitle] = useState<string>("");
-  const [projectDescription, setProjectDescription] = useState<string>("");
   const [projectImageURL, setProjectImageURL] = useState<string>("");
   const [isProjectEditable, setIsProjectEditable] = useState<boolean>(false);
   const [entries, setEntries] = useState<Array<EntryInterface>>();
@@ -35,9 +33,6 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       const fetchProject = await fetch(`http://localhost:8080/projects/${parsedProjectId}`);
       const parsedProject: ProjectInterface = await fetchProject.json();
       setProject(parsedProject);
-
-      setProjectTitle(parsedProject.title);
-      setProjectDescription(parsedProject.description);
 
       const fetchProjectImg = await fetch(`http://localhost:8080/images/${parsedProject.img_id}`);
       const projectImg: Image = await fetchProjectImg.json();
@@ -73,9 +68,6 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
           <Entry entry={entry} key={entry.id} isSameUser={isSameUser} />
         ))}
       </section>
-      {/* {viewerUserName}
-      {projectOwnerName} */}
-      {/* <button>add entry</button> */}
     </>
   )
 };
