@@ -1,4 +1,4 @@
-import { useRef, FC } from "react";
+import { useRef, FC, useEffect, useState } from "react";
 import "../styles/header.css";
 import { User } from "../globals";
 import { Link } from "react-router-dom";
@@ -18,8 +18,19 @@ type Props = {
 }
 
 const LoggedInHeader: FC<Props> = ({ user }) => {
+  const [profilePhotoURL, setProfilePhotoURL] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef(null);
+
+  useEffect(() => {
+    async function fetchPhoto() {
+      const fetchPhoto = await fetch(`http://localhost:8080/images/${user?.img_id}`);
+      const photo = await fetchPhoto.json();
+      setProfilePhotoURL(photo.url);
+    }
+
+    fetchPhoto();
+  }, [])
 
   return (
     <header className="header">
@@ -37,14 +48,31 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
           <DrawerCloseButton className="drawer-close-btn" />
           {/* <DrawerHeader>{user?.display_name}</DrawerHeader> */}
           <DrawerHeader>
-            <h1>{user?.display_name}</h1>
-            <p>@{user?.user_name}</p>
+            <div className="drawer-header-container">
+              <img className="profile-photo" src={profilePhotoURL} alt="profile picture" />
+              <div className="drawer-names">
+                <h1>{user?.display_name}</h1>
+                <p className="menu-display-name">@{user?.user_name}</p>
+              </div>
+            </div>
+            <hr />
             {/* <h1>{user?.display_name}</h1>
             <p>@{user?.user_name}</p> */}
           </DrawerHeader>
 
           <DrawerBody>
-            <Link className="link" to={`/${user?.user_name}`}>Your profile</Link>
+            <div className="drawer-link-container">
+              <span className="material-symbols-outlined">
+                account_circle
+              </span>
+              <Link className="link" to={`/${user?.user_name}`}>Your profile</Link>
+            </div>
+            <div className="drawer-link-container">
+              <span className="material-symbols-outlined">
+                calendar_month
+              </span>
+              <Link className="link" to={`/${user?.user_name}/calendar`}>Your calendar</Link>
+            </div>
           </DrawerBody>
 
           <DrawerFooter>
