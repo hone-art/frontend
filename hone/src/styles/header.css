@@ -40,3 +40,33 @@
 .link:hover {
   text-decoration: underline;
 }
+
+.menu-display-name {
+  font-weight: 200;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+}
+
+.drawer-header-container {
+  display: flex;
+  gap: 0.8em;
+}
+
+.drawer-names {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-photo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.drawer-link-container {
+  display: flex;
+  align-content: center;
+  gap: 0.6em;
+  margin-bottom: 1em;
+}
