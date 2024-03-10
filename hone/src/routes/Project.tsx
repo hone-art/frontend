@@ -63,7 +63,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
       const fetchEntries = await fetch(`${BACKEND_URL}/entries/projects/${parsedProject.id}`);
       const entries = await fetchEntries.json();
-      setEntries(entries);
+      setEntries(entries.reverse());
     }
 
     async function fetchCurrentProjectUserId() {
@@ -74,7 +74,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
-  }, [])
+  }, [newEntryImageId])
 
 
   async function handleOnClick() {
