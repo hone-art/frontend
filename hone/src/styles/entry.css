@@ -1,0 +1,33 @@
+.entry-container {
+  margin-top: 1em;
+  border-radius: 8px;
+  display: flex;
+  width: 100%;
+  min-height: 20vh;
+  border: 1px solid black;
+}
+
+.entry-img {
+  width: 30%;
+  height: 30vh;
+  object-fit: contain;
+}
+
+.entry-date-description-container {
+  margin: 0.5em 1em;
+}
+
+.entry-date-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.edit-entry-btn {
+  box-shadow: none;
+  width: auto;
+  margin: 0;
+}
+
+.editable-entry-description {
+  width: 100%;
+}

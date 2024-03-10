@@ -1,0 +1,53 @@
+.project-container {
+  display: flex;
+  flex-direction: column;
+  margin: 2em;
+}
+
+.project-description-container {
+  display: flex;
+}
+
+.project-photo {
+  width: 60%;
+  height: 80vh;
+  object-fit: contain;
+}
+
+.title-description-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 2em;
+  flex-grow: 1;
+}
+
+.project-title-btn-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.project-page-title {
+  flex-grow: 1;
+}
+
+.edit-project-btn {
+  margin-top: 0;
+  box-shadow: none;
+  width: auto;
+}
+
+.editable-title {
+  border: 1px solid var(--text-secondary);
+  border-radius: 5px;
+}
+
+.editable-description {
+  border: 1px solid var(--text-secondary);
+  border-radius: 5px;
+  flex-grow: 1;
+}
+
+.create-entry-btn {
+  width: 50%;
+}
