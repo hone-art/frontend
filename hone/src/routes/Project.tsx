@@ -10,6 +10,8 @@ import EditableProjectDescription from "../components/EditableProjectDescription
 import Entry from "../components/Entry";
 // import { parse } from "dotenv";
 
+// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
+const BACKEND_URL = 'http://localhost:8080';
 
 
 type Props = {
@@ -30,15 +32,15 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
     async function fetchProjectAndEntries() {
       const parsedProjectId: number = parseInt(projectId!);
-      const fetchProject = await fetch(`http://localhost:8080/projects/${parsedProjectId}`);
+      const fetchProject = await fetch(`${BACKEND_URL}/projects/${parsedProjectId}`);
       const parsedProject: ProjectInterface = await fetchProject.json();
       setProject(parsedProject);
 
-      const fetchProjectImg = await fetch(`http://localhost:8080/images/${parsedProject.img_id}`);
+      const fetchProjectImg = await fetch(`${BACKEND_URL}/images/${parsedProject.img_id}`);
       const projectImg: Image = await fetchProjectImg.json();
       setProjectImageURL(projectImg.url);
 
-      const fetchEntries = await fetch(`http://localhost:8080/entries/projects/${parsedProject.id}`);
+      const fetchEntries = await fetch(`${BACKEND_URL}/entries/projects/${parsedProject.id}`);
       const entries = await fetchEntries.json();
       setEntries(entries);
     }

@@ -28,8 +28,3 @@ button {
   border-radius: 8px;
   box-shadow: 2px 4px 10px 0px #cdcdcd;
 }
-
-button:hover {
-  background-color: var(--bg-tertiary);
-  color: white;
-}

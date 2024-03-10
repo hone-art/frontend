@@ -47,3 +47,7 @@
   border-radius: 5px;
   flex-grow: 1;
 }
+
+.create-entry-btn {
+  width: 50%;
+}
