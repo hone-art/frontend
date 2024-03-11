@@ -195,10 +195,8 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
 
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button className="modal-btn" onClick={onClose}>
-                Cancel
-              </button>
-              <button className="modal-btn" onClick={handleEditOnClick}>Edit</button>
+              <button className="modal-btn" onClick={onClose}>Cancel</button>
+              <button className="modal-btn" onClick={handleEditOnClick}>Save</button>
             </div>
           </ModalFooter>
         </ModalContent>

@@ -152,7 +152,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
           <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} />
         ))}
         <div className="delete-project-container">
-          <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button>
+          {isSameUser ? <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button> : null}
         </div>
       </section>
       <Modal isOpen={isNewOpen} onClose={onNewClose}>
