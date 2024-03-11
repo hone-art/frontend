@@ -4,8 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { User } from "../globals";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
-// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
-const BACKEND_URL = 'http://localhost:8080';
 
 
 type Props = {
@@ -14,7 +12,6 @@ type Props = {
 }
 
 const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
-  // dotenv.config();
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -69,7 +66,7 @@ const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
       if (displayName.length <= 0)
         reqBody.display_name = username;
 
-      const fetchResult = await fetch(`${BACKEND_URL}/users/`, {
+      const fetchResult = await fetch(`${process.env.API_URL}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify(reqBody),
@@ -113,7 +110,7 @@ const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
       const reqBody = JSON.stringify({
         user_name: userName
       });
-      const fetchResult = await fetch(`${BACKEND_URL}/users/username/`, {
+      const fetchResult = await fetch(`${process.env.API_URL}/users/username/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: reqBody

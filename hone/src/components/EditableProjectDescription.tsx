@@ -20,7 +20,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
 
   async function handleOnClick() {
     const updateProjectBody = { title: newProjectTitle, description: newProjectDescription }
-    const fetchUpdatedProject = await fetch(`http://localhost:8080/projects/${project?.id}`, {
+    const fetchUpdatedProject = await fetch(`${process.env.API_URL}/projects/${project?.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       const imgUrl = await getDownloadURL(snapshot.ref);
 
       const newPhotoBody = { url: imgUrl };
-      const fetchNewPhoto = await fetch("http://localhost:8080/images", {
+      const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +48,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       setProjectImageURL(newPhoto.url);
 
       const updateProjectBody = { img_id: newPhoto.id };
-      const fetchUpdatedProject = await fetch(`http://localhost:8080/projects/${project?.id}`, {
+      const fetchUpdatedProject = await fetch(`${process.env.API_URL}/projects/${project?.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -57,6 +57,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       });
 
       const updatedProject = await fetchUpdatedProject.json();
+
       setProject(updatedProject);
       setnewProjectPicture(null);
     }
