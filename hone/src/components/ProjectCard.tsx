@@ -26,7 +26,7 @@ const ProjectCard: FC<Props> = ({ project, userProfile }) => {
   }, []);
 
   return (
-    <article className="project-card-container" onClick={() => navigate(`/${userProfile?.user_name}/${project.id}`)}>
+    <article className="project-card-container" onClick={() => navigate(`/${userProfile?.user_name}/projects/${project.id}`)}>
       <img className="project-img" src={image} alt="user-artwork" />
       <h2 className="project-title">{project.title} →</h2>
     </article>
