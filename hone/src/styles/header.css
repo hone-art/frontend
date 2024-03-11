@@ -1,0 +1,72 @@
+.hone-button {
+  font-family: var(--headings-font);
+  font-size: 1.4em;
+  box-shadow: none;
+  margin: 0;
+  text-align: left;
+  width: auto;
+  color: white;
+}
+
+.hone-button:hover {
+  background-color: transparent;
+}
+
+.menu-button {
+  text-align: right;
+  box-shadow: none;
+  margin: 0;
+  width: auto;
+  color: white;
+}
+
+.menu-button:hover {
+  background-color: transparent;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--bg-secondary);
+  color: white;
+  padding: 1em 2em;
+}
+
+.drawer-close-btn {
+  color: var(--text-primary);
+  margin-top: 0.5em;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.menu-display-name {
+  font-weight: 200;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+}
+
+.drawer-header-container {
+  display: flex;
+  gap: 0.8em;
+}
+
+.drawer-names {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-photo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.drawer-link-container {
+  display: flex;
+  align-content: center;
+  gap: 0.6em;
+  margin-bottom: 1em;
+}
