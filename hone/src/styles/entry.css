@@ -5,7 +5,7 @@
   width: 100%;
   min-height: 20vh;
   box-shadow: 2px 4px 10px 0px #cdcdcd;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .entry-img {
@@ -84,5 +84,9 @@
 @media only screen and (max-width: 768px) {
   .entry-img {
     width: 30%;
+  }
+
+  .entry-submit-btn {
+    max-width: 20%;
   }
 }
