@@ -3,7 +3,7 @@
 import dayGridPlugin from "@fullcalendar/daygrid";
 // import interactionPlugin from "@fullcalendar/interaction";
 import { Calendar as CalendarImport } from '@fullcalendar/core';
-import { useEffect, FC } from "react";
+import { useState, useEffect, FC } from "react";
 import { useNavigate } from "react-router";
 import LoggedInHeader from "../components/LoggedInHeader";
 import { User } from "../globals";
@@ -19,14 +19,16 @@ const Calendar: FC<Props> = ({ user }) => {
   useEffect(() => {
     if (user === null) navigate("/");
     const calendarEl = document.getElementById("calendar");
+    const screenWidth = document.body.clientWidth;
+    const isMobile = (screenWidth < 450) ? true : false;
 
     const calendar = new CalendarImport(calendarEl!, {
       plugins: [dayGridPlugin],
-      initialView: 'dayGridMonth',
+      initialView: isMobile ? 'dayGridDay' : 'dayGridMonth',
       headerToolbar: {
         left: 'prev,next',
         center: 'title',
-        right: 'dayGridMonth,dayGridWeek,dayGridDay' // user can switch between the two
+        right: 'dayGridMonth,dayGridWeek,dayGridDay' // user can switch between the three
       }
     })
 
