@@ -29,11 +29,8 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
       const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
       const uuid = credential.user.uid;
       setErrorMessage('');
-      console.log('success');
-      console.log(uuid);
       const response = await fetch(`${BACKEND_URL}/users/${uuid}`);
       const userObj = await response.json();
-      console.log(userObj);
       setUser(userObj);
       setIsLoggedIn(true);
       navigate(`/${userObj?.user_name}`)
