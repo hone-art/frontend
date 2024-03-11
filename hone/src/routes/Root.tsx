@@ -53,7 +53,7 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
         <form action="">
           <input className="login-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <input className="login-input" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <input className="login-button" value='Login' onClick={handleOnClick} />
+          <input className="login-button" value='Login' onClick={handleOnClick} readOnly />
         </form>
         <p className="error-message">{errorMessage}</p>
         <Link to="/signup" className="signup-link">

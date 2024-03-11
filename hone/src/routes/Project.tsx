@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import "../styles/project.css"
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { User, Image } from '../globals';
 import { Project as ProjectInterface, Entry as EntryInterface } from "../globals";
 import LoggedInHeader from "../components/LoggedInHeader";
@@ -46,8 +46,10 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
   const { isOpen: isNewOpen, onOpen: onNewOpen, onClose: onNewClose } = useDisclosure(); // Create new entry modal
   const { isOpen: isFinalOpen, onOpen: onFinalOpen, onClose: onFinalClose } = useDisclosure(); // Final image modal
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure(); // Delete project modal
 
   const inputImage = useRef(null); //User upload new entry photo
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user?.user_name === username) setIsSameUser(true);
@@ -127,6 +129,14 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
     onNewClose();
   }
 
+  async function handleDeleteOnClick() {
+    await fetch(`${BACKEND_URL}/projects/${project!.id}`, {
+      method: "DELETE",
+    });
+
+    navigate(`/${user?.user_name}`);
+  }
+
   return (
     <>
       {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />}
@@ -141,6 +151,9 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
         {entries?.map((entry) => (
           <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} />
         ))}
+        <div className="delete-project-container">
+          <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button>
+        </div>
       </section>
       <Modal isOpen={isNewOpen} onClose={onNewClose}>
         <ModalOverlay />
@@ -167,11 +180,27 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       </Modal>
       <Modal isOpen={isFinalOpen} onClose={onFinalClose}>
         <ModalOverlay />
-        <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems={"center"} boxShadow={"none"}>
-          <ModalCloseButton margin="0" boxShadow={"none"} bg="white" outline={"transparent"} />
+        <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems="center" boxShadow="none">
+          <ModalCloseButton margin="0" boxShadow="none" bg="white" outline="transparent" />
           <ModalBody>
             <img src={projectImageURL} className="entry-img-full" />
           </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader marginTop="0.5em">Are you sure you want to delete this project?</ModalHeader>
+          <ModalCloseButton margin="0.5em 0.5em" />
+          <ModalBody>
+            This action cannot be undone!
+          </ModalBody>
+          <ModalFooter>
+            <div className="btn-container">
+              <button className="modal-btn" onClick={onDeleteClose}>Cancel</button>
+              <button className="modal-btn" onClick={handleDeleteOnClick}>Delete</button>
+            </div>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

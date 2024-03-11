@@ -74,10 +74,12 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       <div className="title-description-container">
         <div className="project-title-btn-container">
           <input type="text" className="project-page-title editable-title" value={newProjectTitle} onChange={(e) => setNewProjectTitle(e.target.value)} />
-          <button className="edit-project-btn" onClick={handleOnClick}><span className="material-symbols-outlined">edit</span></button>
         </div>
-        <textarea className="editable-description" value={newProjectDescription} onChange={(e) => setNewProjectDescription(e.target.value)} />
-        <input type="file" ref={inputImage} onChange={handleChange} accept="image/*" />
+        <textarea className="editable-description" value={newProjectDescription} onChange={(e) => setNewProjectDescription(e.target.value)} autoFocus />
+        <div className="project-upload-submit-container">
+          <input type="file" ref={inputImage} onChange={handleChange} accept="image/*" />
+          <button className="edit-project-submit-btn" onClick={handleOnClick}>Submit</button>
+        </div>
       </div>
     </>
   )
