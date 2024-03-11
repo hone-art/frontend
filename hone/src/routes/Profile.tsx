@@ -166,7 +166,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
     });
 
     const newProject = await fetchNewProject.json();
-    navigate(`/${userProfile?.user_name}/${newProject.id}`); // Change to user
+    navigate(`/${userProfile?.user_name}/projects/${newProject.id}`); // Change to user
   }
 
   return (
