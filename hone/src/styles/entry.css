@@ -1,33 +1,69 @@
 .entry-container {
-  margin-top: 1em;
+  margin-top: 2em;
   border-radius: 8px;
   display: flex;
   width: 100%;
   min-height: 20vh;
-  border: 1px solid black;
+  box-shadow: 2px 4px 10px 0px #cdcdcd;
+  overflow: hidden;
 }
 
 .entry-img {
-  width: 30%;
+  min-width: 30%;
   height: 30vh;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .entry-date-description-container {
-  margin: 0.5em 1em;
+  display: flex;
+  flex-direction: column;
+  margin: 1em 1.5em;
+  width: 100%;
+  height: auto;
 }
 
 .entry-date-button-container {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .edit-entry-btn {
   box-shadow: none;
   width: auto;
   margin: 0;
+  margin-left: 0.5em;
 }
 
 .editable-entry-description {
+  margin-top: 1em;
+  padding: 0.5em 0.7em;
   width: 100%;
+  flex-grow: 1;
+}
+
+.entry-upload {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  justify-self: flex-end;
+}
+
+.entry-date {
+  flex-grow: 1;
+  margin-bottom: 0.5em;
+}
+
+.entry-p {
+  margin-top: 0.7em;
+}
+
+.entry-img-full {
+  max-height: 80vh;
+  max-width: 80vw;
+}
+
+@media only screen and (max-width: 768px) {
+  .entry-img {
+    width: 30%;
+  }
 }

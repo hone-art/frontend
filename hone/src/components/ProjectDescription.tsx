@@ -4,15 +4,13 @@ import "../styles/project.css";
 
 type Props = {
   project: Project | undefined;
-  projectImageURL: string;
   isSameUser: boolean;
   setIsProjectEditable: Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProjectDescription: FC<Props> = ({ project, projectImageURL, isSameUser, setIsProjectEditable }) => {
+const ProjectDescription: FC<Props> = ({ project, isSameUser, setIsProjectEditable }) => {
   return (
-    <div className="project-description-container">
-      <img src={projectImageURL} alt="project photo" className="project-photo" />
+    <>
       <div className="title-description-container">
         <div className="project-title-btn-container">
           <h1 className="project-page-title">{project?.title}</h1>
@@ -20,7 +18,7 @@ const ProjectDescription: FC<Props> = ({ project, projectImageURL, isSameUser, s
         </div>
         <p>{project?.description}</p>
       </div>
-    </div>
+    </>
   )
 }
 

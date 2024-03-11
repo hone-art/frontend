@@ -29,11 +29,8 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
       const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
       const uuid = credential.user.uid;
       setErrorMessage('');
-      console.log('success');
-      console.log(uuid);
       const response = await fetch(`${BACKEND_URL}/users/${uuid}`);
       const userObj = await response.json();
-      console.log(userObj);
       setUser(userObj);
       setIsLoggedIn(true);
       navigate(`/${userObj?.user_name}`)
@@ -56,7 +53,7 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
         <form action="">
           <input className="login-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <input className="login-input" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <input className="login-button" value='Login' onClick={handleOnClick} />
+          <input className="login-button" value='Login' onClick={handleOnClick} readOnly />
         </form>
         <p className="error-message">{errorMessage}</p>
         <Link to="/signup" className="signup-link">
