@@ -28,6 +28,7 @@ type Props = {
 
 const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
   const navigate = useNavigate();
+
   const [projects, setProjects] = useState<Array<Project>>([]);
   const { username } = useParams<string>();
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
@@ -41,11 +42,11 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
   const inputImage = useRef(null); // User upload profile picture
 
   useEffect(() => {
-    const body = { user_name: username }; // CHANGE
+    const body = { user_name: username };
 
 
     async function fetchUserAndProjects() {
-      const fetchUser = await fetch("http://localhost:8080/users/username", {
+      const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,9 +59,12 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       }
       else {
         const thisProfileUser: User = await fetchUser.json();
+
         setNewDisplayName(thisProfileUser.display_name);
-        const fetchPicture = await fetch(`http://localhost:8080/images/${thisProfileUser.img_id}`);
+
+        const fetchPicture = await fetch(`${process.env.API_URL}/images/${thisProfileUser.img_id}`);
         const setPicture = await fetchPicture.json();
+
         setProfilePicture(setPicture.url);
 
         setUserProfile(thisProfileUser);
@@ -68,7 +72,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
         if (user?.user_name === thisProfileUser?.user_name) setIsUser(true);
 
         try {
-          const fetchProjects = await fetch(`http://localhost:8080/projects/users/${thisProfileUser?.id}`);
+          const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
           const projects = await fetchProjects.json();
           setProjects(projects);
         }
@@ -79,19 +83,12 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
     }
 
     fetchUserAndProjects();
-    // const thisProfileUser = fetch("/users/username/{username}");
-    // setUserProfile(thisProfileUser);
-    // if (userProfile.username == user.username) setIsUser(true);
-    // if img_id != null
-    // const fetchProfilePic = fetch("/images/{userProfile.img_id}")
-    // setProfilePicture(fetchProfilePic)
-    // if user.display_name == null, set it to the username
   }, [])
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
+
     setNewProfilePicture(imageToUpload);
-    console.log(imageToUpload);
   }
 
   async function handleEditOnClick() {
@@ -101,7 +98,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       const imgUrl = await getDownloadURL(snapshot.ref);
 
       const newPhotoBody = { url: imgUrl };
-      const fetchNewPhoto = await fetch("http://localhost:8080/images", {
+      const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,10 +107,11 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       });
 
       const newPhoto = await fetchNewPhoto.json();
+
       setProfilePicture(newPhoto.url);
 
       const updateUserBody = { img_id: newPhoto.id };
-      const fetchUpdatedUser = await fetch(`http://localhost:8080/users/${user?.id}`, {
+      const fetchUpdatedUser = await fetch(`${process.env.API_URL}/users/${user?.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +127,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
 
     if (newDisplayName !== userProfile?.display_name) {
       const updateUserBody = { display_name: newDisplayName };
-      const fetchUpdatedUser = await fetch(`http://localhost:8080/users/${userProfile?.id}`, {
+      const fetchUpdatedUser = await fetch(`${process.env.API_URL}/users/${userProfile?.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -141,10 +139,6 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       setUserProfile(updatedUser);
       setUser(updatedUser);
     }
-    // upload photo to bucket, get external link
-    // const newImage = fetch("images") POST new image link
-    // fetch("/users") PATCH request to edit display name and image_id
-    // setProfilePicture to new link
     onClose();
   }
 
@@ -156,7 +150,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       user_id: userProfile?.id, //Change to user
     }
 
-    const fetchNewProject = await fetch("http://localhost:8080/projects", {
+    const fetchNewProject = await fetch(`${process.env.API_URL}/projects`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

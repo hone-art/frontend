@@ -5,9 +5,6 @@ import { User } from "../globals";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
 
-// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
-const BACKEND_URL = 'http://localhost:8080';
-
 type Props = {
   setUser: (initialState: User | (() => User | null) | null) => void;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
@@ -23,26 +20,26 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
     setUser(null);
     setIsLoggedIn(false);
   }, [])
+
   const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
+
     try {
       const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
       const uuid = credential.user.uid;
       setErrorMessage('');
-      const response = await fetch(`${BACKEND_URL}/users/${uuid}`);
+
+      const response = await fetch(`${process.env.API_URL}/users/${uuid}`);
       const userObj = await response.json();
+
       setUser(userObj);
       setIsLoggedIn(true);
+
       navigate(`/${userObj?.user_name}`)
     } catch (error: any) {
+      console.log(error);
       setErrorMessage('Invalid email or password. Please try again');
     }
-    // User authentication
-    // If authenticated get + set user object from users table and navigate to "/:username"
-    // setUser(null); // replace null with user object
-    // navigate(`/${user}`); // replace user with user.username
-    // else set errorMessage to "Email or password is incorrect"
-    // setErrorMessage("Email or password is incorrect");
   }
 
   return (

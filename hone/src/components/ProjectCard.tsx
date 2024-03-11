@@ -16,7 +16,7 @@ const ProjectCard: FC<Props> = ({ project, userProfile }) => {
   useEffect(() => {
     async function fetchImage() {
       if (project.img_id != null) {
-        const result = await fetch(`http://localhost:8080/images/${project.img_id}`);
+        const result = await fetch(`${process.env.API_URL}/images/${project.img_id}`);
         const img = await result.json();
         setImage(img.url);
       }

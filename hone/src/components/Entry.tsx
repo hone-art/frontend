@@ -11,8 +11,6 @@ import {
   ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react'
-// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
-const BACKEND_URL = 'http://localhost:8080';
 
 type Props = {
   entry: EntryInterface;
@@ -33,7 +31,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
 
   useEffect(() => {
     async function fetchImage() {
-      const fetchImage = await fetch(`${BACKEND_URL}/images/${entry?.img_id}`);
+      const fetchImage = await fetch(`${process.env.API_URL}/images/${entry?.img_id}`);
       const image = await fetchImage.json();
       setImageURL(image.url);
     }
@@ -49,7 +47,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
   async function handleEditOnClick() {
     if (isEditable) {
       const updateEntryDescriptionBody = { description: newEntryDescription };
-      const fetchUpdatedEntry = await fetch(`${BACKEND_URL}/entries/${entry?.id}`, {
+      const fetchUpdatedEntry = await fetch(`${process.env.API_URL}/entries/${entry?.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +64,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
         const imgUrl = await getDownloadURL(snapshot.ref);
 
         const newPhotoBody = { url: imgUrl };
-        const fetchNewPhoto = await fetch(`${BACKEND_URL}/images`, {
+        const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -78,7 +76,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
         setImageURL(newPhoto.url);
 
         const updateEntryBody = { img_id: newPhoto.id };
-        await fetch(`${BACKEND_URL}/entries/${entry?.id}`, {
+        await fetch(`${process.env.API_URL}/entries/${entry?.id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -102,13 +100,14 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
       return newArray;
     })
 
-    await fetch(`${BACKEND_URL}/entries/${entry?.id}`, {
+    await fetch(`${process.env.API_URL}/entries/${entry?.id}`, {
       method: "DELETE",
     })
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
+
     setNewEntryImage(imageToUpload);
   }
 

@@ -24,8 +24,9 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
 
   useEffect(() => {
     async function fetchPhoto() {
-      const fetchPhoto = await fetch(`http://localhost:8080/images/${user?.img_id}`);
+      const fetchPhoto = await fetch(`${process.env.API_URL}/images/${user?.img_id}`);
       const photo = await fetchPhoto.json();
+
       setProfilePhotoURL(photo.url);
     }
 

@@ -10,10 +10,6 @@ import EditableProjectDescription from "../components/EditableProjectDescription
 import Entry from "../components/Entry";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-// import { parse } from "dotenv";
-
-// const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
-const BACKEND_URL = 'http://localhost:8080';
 
 import {
   Modal,
@@ -55,22 +51,23 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
     async function fetchProjectAndEntries() {
       const parsedProjectId: number = parseInt(projectId!);
-      const fetchProject = await fetch(`${BACKEND_URL}/projects/${parsedProjectId}`);
+      const fetchProject = await fetch(`${process.env.API_URL}/projects/${parsedProjectId}`);
       const parsedProject: ProjectInterface = await fetchProject.json();
       setProject(parsedProject);
 
-      const fetchProjectImg = await fetch(`${BACKEND_URL}/images/${parsedProject.img_id}`);
+      const fetchProjectImg = await fetch(`${process.env.API_URL}/images/${parsedProject.img_id}`);
       const projectImg: Image = await fetchProjectImg.json();
       setProjectImageURL(projectImg.url);
 
-      const fetchEntries = await fetch(`${BACKEND_URL}/entries/projects/${parsedProject.id}`);
+      const fetchEntries = await fetch(`${process.env.API_URL}/entries/projects/${parsedProject.id}`);
       const entries = await fetchEntries.json();
       setEntries(entries);
     }
 
     async function fetchCurrentProjectUserId() {
-      const fetchResult = await fetch(`${BACKEND_URL}/projects/${projectId}`);
+      const fetchResult = await fetch(`${process.env.API_URL}/projects/${projectId}`);
       const currentProjectObj = await fetchResult.json();
+
       setCurrentProjectUserId(currentProjectObj.user_id);
     }
 
@@ -80,18 +77,20 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const imageToUpload = event.target.files![0];
+
     setNewEntryImage(imageToUpload);
   }
 
   async function handleCreateNewEntry() {
     let newImageId = null;
+
     if (newEntryImage !== null) {
       const storageRef = ref(storage, `${newEntryImage.name}`);
       const snapshot = await uploadBytes(storageRef, newEntryImage);
       const imgUrl = await getDownloadURL(snapshot.ref);
 
       const newImageBody = { url: imgUrl };
-      const fetchNewEntryImage = await fetch(`${BACKEND_URL}/images`, {
+      const fetchNewEntryImage = await fetch(`${process.env.API_URL}/images`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -110,13 +109,15 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       project_id: newProjectId,
       user_id: currentProjectUserId
     }
-    const createNewEntryResponse = await fetch(`${BACKEND_URL}/entries/`, {
+
+    const createNewEntryResponse = await fetch(`${process.env.API_URL}/entries/`, {
       method: 'POST',
       headers: { "Content-Type": "application/json", },
       body: JSON.stringify(newEntryBody),
     })
 
     const newEntry = await createNewEntryResponse.json();
+
     setEntries((prev) => {
       const newArray = prev?.slice();
       newArray?.unshift(newEntry);
@@ -129,7 +130,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   }
 
   async function handleDeleteOnClick() {
-    await fetch(`${BACKEND_URL}/projects/${project!.id}`, {
+    await fetch(`${process.env.API_URL}/projects/${project!.id}`, {
       method: "DELETE",
     });
 
