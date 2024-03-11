@@ -73,6 +73,8 @@
   width: 100%;
   height: 30vh;
   padding: 0.3em 0.5em;
+  border: 1px solid var(--text-secondary);
+  border-radius: 5px;
 }
 
 .edit-project-submit-btn {
