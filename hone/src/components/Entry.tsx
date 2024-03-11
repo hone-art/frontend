@@ -9,7 +9,8 @@ import {
   ModalContent,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  Button
 } from '@chakra-ui/react'
 
 type Props = {
@@ -119,12 +120,15 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
           <div className="entry-date-button-container">
             <p className="entry-date">{dateCreatedString}</p>
             {/* <RelativeTime date={entry.created_date} /><hr /> */}
-            {isSameUser ? <button className="edit-entry-btn" onClick={handleEditOnClick}><span className="material-symbols-outlined">edit</span></button> : null}
+            {(isSameUser && !isEditable) ? <button className="edit-entry-btn" onClick={handleEditOnClick}><span className="material-symbols-outlined">edit</span></button> : null}
             {isSameUser ? <button className="edit-entry-btn" onClick={handleDeleteOnClick}><span className="material-symbols-outlined">delete</span></button> : null}
           </div>
           <hr />
           {isEditable ? <textarea className="editable-entry-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus /> : <p className="entry-p"> {entryDescription}</p>}
-          {isEditable ? <input type="file" ref={inputImage} onChange={handleChange} accept="image/*" className="entry-upload" /> : null}
+          <div className="entry-upload-submit-container">
+            {isEditable ? <input type="file" ref={inputImage} onChange={handleChange} accept="image/*" className="entry-upload" /> : null}
+            {isEditable ? <button className="entry-submit-btn" onClick={handleEditOnClick}>Submit</button> : null}
+          </div>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
