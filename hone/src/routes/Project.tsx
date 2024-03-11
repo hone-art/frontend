@@ -40,7 +40,6 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   const [isProjectEditable, setIsProjectEditable] = useState<boolean>(false);
   const [entries, setEntries] = useState<Array<EntryInterface>>();
   const [newEntryImage, setNewEntryImage] = useState<File | null>(null);
-  const [newEntryImageId, setNewEntryImageId] = useState<number>();
   const [newEntryDescription, setNewEntryDescription] = useState<string>("");
   const [currentProjectUserId, setCurrentProjectUserId] = useState<number>();
 
