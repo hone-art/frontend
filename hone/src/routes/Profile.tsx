@@ -8,6 +8,8 @@ import ProjectCard from "../components/ProjectCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import CalendarHeatmap from 'react-calendar-heatmap';
+import "../styles/contributionGraph.css";
 
 import {
   Modal,
@@ -178,6 +180,16 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
+          <CalendarHeatmap
+            startDate={new Date('2016-01-01')}
+            endDate={new Date('2016-04-01')}
+            values={[
+              { date: '2016-01-01', count: 12 },
+              { date: '2016-01-22', count: 122 },
+              { date: '2016-01-30', count: 38 },
+              // ...and so on
+            ]}
+          />
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}

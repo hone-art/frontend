@@ -10,6 +10,7 @@ import EditableProjectDescription from "../components/EditableProjectDescription
 import Entry from "../components/Entry";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+
 // import { parse } from "dotenv";
 
 // const BACKEND_URL = 'https://hone-backend-6c69d7cab717.herokuapp.com';
