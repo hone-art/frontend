@@ -3,7 +3,7 @@
 import dayGridPlugin from "@fullcalendar/daygrid";
 // import interactionPlugin from "@fullcalendar/interaction";
 import { Calendar as CalendarImport } from '@fullcalendar/core';
-import { useState, useEffect, FC } from "react";
+import { useEffect, FC } from "react";
 import { useNavigate } from "react-router";
 import LoggedInHeader from "../components/LoggedInHeader";
 import { User } from "../globals";

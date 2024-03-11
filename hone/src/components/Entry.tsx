@@ -9,8 +9,7 @@ import {
   ModalContent,
   ModalBody,
   ModalCloseButton,
-  useDisclosure,
-  Button
+  useDisclosure
 } from '@chakra-ui/react'
 
 type Props = {
