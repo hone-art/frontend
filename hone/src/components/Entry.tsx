@@ -45,7 +45,17 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
   }, [])
 
   async function handleEditOnClick() {
+
     if (isEditable) {
+      const submitButtonEl = document.getElementById("entry-submit-btn") as HTMLButtonElement;
+      submitButtonEl.disabled = true;
+
+      const uploadButtonEl = document.getElementById("entry-upload-btn") as HTMLInputElement;
+      uploadButtonEl.disabled = true;
+
+      const entryDescriptionEl = document.getElementById("editable-entry-description") as HTMLTextAreaElement;
+      entryDescriptionEl.disabled = true;
+
       const updateEntryDescriptionBody = { description: newEntryDescription };
       const fetchUpdatedEntry = await fetch(`${process.env.API_URL}/entries/${entry?.id}`, {
         method: "PATCH",
@@ -86,6 +96,9 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
       }
 
       setIsEditable(false);
+      submitButtonEl.disabled = false;
+      uploadButtonEl.disabled = false;
+      entryDescriptionEl.disabled = false;
     } else {
       setIsEditable(true);
     }
@@ -123,10 +136,10 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
             {isSameUser ? <button className="edit-entry-btn" onClick={handleDeleteOnClick}><span className="material-symbols-outlined">delete</span></button> : null}
           </div>
           <hr />
-          {isEditable ? <textarea className="editable-entry-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus /> : <p className="entry-p"> {entryDescription}</p>}
+          {isEditable ? <textarea id="editable-entry-description" className="editable-entry-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus /> : <p className="entry-p"> {entryDescription}</p>}
           <div className="entry-upload-submit-container">
-            {isEditable ? <input type="file" ref={inputImage} onChange={handleChange} accept="image/*" className="entry-upload" /> : null}
-            {isEditable ? <button className="entry-submit-btn" onClick={handleEditOnClick}>Submit</button> : null}
+            {isEditable ? <input id="entry-upload-btn" type="file" ref={inputImage} onChange={handleChange} accept="image/*" className="entry-upload" /> : null}
+            {isEditable ? <button id="entry-submit-btn" className="entry-submit-btn" onClick={handleEditOnClick}>Submit</button> : null}
           </div>
         </div>
       </div>

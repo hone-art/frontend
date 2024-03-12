@@ -92,6 +92,18 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
   }
 
   async function handleEditOnClick() {
+    const cancelButtonEl = document.getElementById("profile-cancel-btn") as HTMLButtonElement;
+    cancelButtonEl.disabled = true;
+
+    const saveButtonEl = document.getElementById("profile-save-btn") as HTMLButtonElement;
+    saveButtonEl.disabled = true;
+
+    const picInputEl = document.getElementById("profile-pic-input") as HTMLInputElement;
+    picInputEl.disabled = true;
+
+    const nameInputEl = document.getElementById("display-name-input") as HTMLInputElement;
+    nameInputEl.disabled = true;
+
     if (newProfilePicture) {
       const storageRef = ref(storage, `${newProfilePicture.name}`);
       const snapshot = await uploadBytes(storageRef, newProfilePicture);
@@ -139,6 +151,11 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       setUserProfile(updatedUser);
       setUser(updatedUser);
     }
+
+    cancelButtonEl.disabled = false;
+    saveButtonEl.disabled = false;
+    picInputEl.disabled = false;
+    nameInputEl.disabled = false;
     onClose();
   }
 
@@ -188,15 +205,15 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
           <ModalCloseButton className="modal-close-btn" />
           <ModalBody>
             <h2 className="margin-bottom">Profile picture:</h2>
-            <input type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
+            <input id="profile-pic-input" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
             <p className="margin-bottom">Display name: </p>
-            <input type="text" className="input-name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} />
+            <input id="display-name-input" type="text" className="input-name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} />
           </ModalBody>
 
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button className="modal-btn" onClick={onClose}>Cancel</button>
-              <button className="modal-btn" onClick={handleEditOnClick}>Save</button>
+              <button id="profile-cancel-btn" className="modal-btn" onClick={onClose}>Cancel</button>
+              <button id="profile-save-btn" className="modal-btn" onClick={handleEditOnClick}>Save</button>
             </div>
           </ModalFooter>
         </ModalContent>
