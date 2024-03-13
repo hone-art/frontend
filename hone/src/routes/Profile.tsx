@@ -166,6 +166,8 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       description: "",
       img_id: 2, // default project image
       user_id: userProfile?.id, //Change to user
+      isPublic: true,
+      isCommentsOn: true,
     }
 
     const fetchNewProject = await fetch(`${process.env.API_URL}/projects`, {

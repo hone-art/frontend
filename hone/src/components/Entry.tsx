@@ -1,8 +1,8 @@
 import { FC, useEffect, useState, useRef, Dispatch } from "react";
-import { Entry as EntryInterface } from "../globals";
+import { Entry as EntryInterface, Image } from "../globals";
 import "../styles/entry.css";
 import { storage } from '../firebase';
-import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytes, getStorage, deleteObject } from "firebase/storage";
 import {
   Modal,
   ModalOverlay,
@@ -19,7 +19,7 @@ type Props = {
 }
 
 const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
-  const [imageURL, setImageURL] = useState<string>("");
+  const [image, setImage] = useState<Image>();
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [entryDescription, setEntryDescription] = useState<string>(entry.description);
   const [newEntryDescription, setNewEntryDescription] = useState<string>(entry.description);
@@ -33,7 +33,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
     async function fetchImage() {
       const fetchImage = await fetch(`${process.env.API_URL}/images/${entry?.img_id}`);
       const image = await fetchImage.json();
-      setImageURL(image.url);
+      setImage(image);
     }
 
     if (entry.img_id != null) fetchImage();
@@ -73,7 +73,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
         const snapshot = await uploadBytes(storageRef, newEntryImage);
         const imgUrl = await getDownloadURL(snapshot.ref);
 
-        const newPhotoBody = { url: imgUrl };
+        const newPhotoBody = { url: imgUrl, filePath: newEntryImage.name };
         const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
           method: "POST",
           headers: {
@@ -83,7 +83,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
         });
 
         const newPhoto = await fetchNewPhoto.json();
-        setImageURL(newPhoto.url);
+        setImage(newPhoto);
 
         const updateEntryBody = { img_id: newPhoto.id };
         await fetch(`${process.env.API_URL}/entries/${entry?.id}`, {
@@ -116,6 +116,14 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
     await fetch(`${process.env.API_URL}/entries/${entry?.id}`, {
       method: "DELETE",
     })
+
+    await fetch(`${process.env.API_URL}/images/${image?.id}`, {
+      method: "DELETE",
+    })
+
+    const storage = getStorage();
+    const deleteRef = ref(storage, image?.filePath);
+    deleteObject(deleteRef);
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
@@ -127,7 +135,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
   return (
     <>
       <div className="entry-container">
-        {imageURL !== "" ? <img src={imageURL} className="entry-img" onClick={onOpen} /> : null}
+        {image ? <img src={image?.url} className="entry-img" onClick={onOpen} /> : null}
         <div className="entry-date-description-container">
           <div className="entry-date-button-container">
             <p className="entry-date">{dateCreatedString}</p>
@@ -148,7 +156,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
         <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems={"center"} boxShadow={"none"}>
           <ModalCloseButton margin="0" boxShadow={"none"} bg="white" outline={"transparent"} />
           <ModalBody>
-            <img src={imageURL} className="entry-img-full" />
+            <img src={image?.url} className="entry-img-full" />
           </ModalBody>
         </ModalContent>
       </Modal>
