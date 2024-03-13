@@ -96,18 +96,19 @@
   .entry-submit-btn {
     max-width: 20%;
   }
+
+  .entry-date-description-container {
+    width: 90%;
+  }
 }
 
-@media only screen and (min-width: 431px) and (max-width: 653px) {
+/* @media only screen and (min-width: 431px) and (max-width: 490px) {
   .entry-date-description-container {
     width: 62%;
   }
-}
+} */
 
 @media only screen and (max-width: 430px) {
-  .entry-date-description-container {
-    width: 55%;
-  }
 
   .entry-upload-submit-container {
     flex-direction: column;
