@@ -8,6 +8,7 @@ import ProjectCard from "../components/ProjectCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import Heatmap from '../components/Heatmap';
 
 import {
   Modal,
@@ -188,6 +189,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
+          <Heatmap></Heatmap>
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
