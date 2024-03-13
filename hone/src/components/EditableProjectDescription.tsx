@@ -12,14 +12,26 @@ type Props = {
 }
 
 const EditableProjectDescription: FC<Props> = ({ project, setProject, setProjectImageURL, setIsProjectEditable }) => {
-  const [newProjectTitle, setNewProjectTitle] = useState<string | undefined>(project?.title);
+  const [newProjectTitle, setNewProjectTitle] = useState<string | undefined>((project?.title) == "Untitled" ? "" : project?.title);
   const [newProjectDescription, setNewProjectDescription] = useState<string | undefined>(project?.description);
   const [newProjectPicture, setnewProjectPicture] = useState<File | null>(null);
 
   const inputImage = useRef(null); // User upload profile picture
 
   async function handleOnClick() {
-    const updateProjectBody = { title: newProjectTitle, description: newProjectDescription }
+    const submitButtonEl = document.getElementById("edit-project-submit-btn") as HTMLButtonElement;
+    submitButtonEl.disabled = true;
+
+    const uploadButtonEl = document.getElementById("project-upload-img") as HTMLInputElement;
+    uploadButtonEl.disabled = true;
+
+    const editDescriptionEl = document.getElementById("editable-description") as HTMLTextAreaElement;
+    editDescriptionEl.disabled = true;
+
+    const editTitleEl = document.getElementById("editable-title") as HTMLInputElement;
+    editTitleEl.disabled = true;
+
+    const updateProjectBody = { title: newProjectTitle == "" ? "Untitled" : newProjectTitle, description: newProjectDescription }
     const fetchUpdatedProject = await fetch(`${process.env.API_URL}/projects/${project?.id}`, {
       method: "PATCH",
       headers: {
@@ -62,6 +74,10 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       setnewProjectPicture(null);
     }
 
+    submitButtonEl.disabled = false;
+    uploadButtonEl.disabled = false;
+    editDescriptionEl.disabled = false;
+    editTitleEl.disabled = false;
     setIsProjectEditable(false);
   }
 
@@ -74,12 +90,12 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
     <>
       <div className="title-description-container">
         <div className="project-title-btn-container">
-          <input type="text" className="project-page-title editable-title" value={newProjectTitle} onChange={(e) => setNewProjectTitle(e.target.value)} />
+          <input id="editable-title" type="text" className="project-page-title editable-title" value={newProjectTitle} onChange={(e) => setNewProjectTitle(e.target.value)} placeholder="Untitled" />
         </div>
-        <textarea className="editable-description" value={newProjectDescription} onChange={(e) => setNewProjectDescription(e.target.value)} autoFocus />
+        <textarea id="editable-description" className="editable-description" value={newProjectDescription} onChange={(e) => setNewProjectDescription(e.target.value)} placeholder="Write your description here!" autoFocus />
         <div className="project-upload-submit-container">
-          <input type="file" ref={inputImage} onChange={handleChange} accept="image/*" />
-          <button className="edit-project-submit-btn" onClick={handleOnClick}>Submit</button>
+          <input id="project-upload-img" type="file" ref={inputImage} onChange={handleChange} accept="image/*" />
+          <button id="edit-project-submit-btn" className="edit-project-submit-btn" onClick={handleOnClick}>Submit</button>
         </div>
       </div>
     </>

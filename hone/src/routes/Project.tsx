@@ -84,6 +84,18 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   async function handleCreateNewEntry() {
     let newImageId = null;
 
+    const uploadInputEl = document.getElementById("new-entry-img") as HTMLInputElement;
+    uploadInputEl.disabled = true;
+
+    const descriptionInputEl = document.getElementById("input-new-description") as HTMLInputElement;
+    descriptionInputEl.disabled = true;
+
+    const cancelButtonEl = document.getElementById("new-entry-cancel-btn") as HTMLButtonElement;
+    cancelButtonEl.disabled = true;
+
+    const createButtonEl = document.getElementById("new-entry-create-btn") as HTMLButtonElement;
+    createButtonEl.disabled = true;
+
     if (newEntryImage !== null) {
       const storageRef = ref(storage, `${newEntryImage.name}`);
       const snapshot = await uploadBytes(storageRef, newEntryImage);
@@ -124,6 +136,10 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       return newArray;
     })
 
+    uploadInputEl.disabled = false;
+    descriptionInputEl.disabled = false;
+    cancelButtonEl.disabled = false;
+    createButtonEl.disabled = false;
     setNewEntryDescription("");
     setNewEntryImage(null);
     onNewClose();
@@ -164,16 +180,16 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
             <p className="margin-bottom">Entry image:</p>
             <input id="new-entry-img" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
             <p className="margin-bottom">Entry description: </p>
-            <textarea className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus></textarea>
+            <textarea id="input-new-description" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus></textarea>
             {/* <input type="text" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} /> */}
           </ModalBody>
 
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button className="modal-btn" onClick={onNewClose}>
+              <button id="new-entry-cancel-btn" className="modal-btn" onClick={onNewClose}>
                 Cancel
               </button>
-              <button className="modal-btn" onClick={handleCreateNewEntry}>Create</button>
+              <button id="new-entry-create-btn" className="modal-btn" onClick={handleCreateNewEntry}>Create</button>
             </div>
           </ModalFooter>
         </ModalContent>
