@@ -162,7 +162,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
   async function handleNewProjectOnClick() {
     const body = {
       title: "Untitled",
-      description: "Write your description here!",
+      description: "",
       img_id: 2, // default project image
       user_id: userProfile?.id, //Change to user
     }
