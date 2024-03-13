@@ -7,6 +7,7 @@ const LoggedOutHeader = () => {
   return (
     <header className="header">
       <button className="hone-button" onClick={() => navigate("/")}>hone</button>
+      <button className="logged-out-header-btn" onClick={() => navigate("/")}>Login</button>
     </header>
   )
 }
