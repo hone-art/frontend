@@ -6,20 +6,11 @@ import { Calendar as CalendarImport } from '@fullcalendar/core';
 import { useEffect, FC } from "react";
 import { useNavigate } from "react-router";
 import LoggedInHeader from "../components/LoggedInHeader";
-import { User } from "../globals";
+import { User, Event } from "../globals";
 import "../styles/calendar.css";
 
 type Props = {
   user: User | null;
-}
-
-interface Event {
-  id: number;
-  description: string;
-  img_id?: number;
-  project_id: number;
-  user_id: number;
-  created_date: Date;
 }
 
 const Calendar: FC<Props> = ({ user }) => {

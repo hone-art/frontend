@@ -9,7 +9,7 @@ import ProjectDescription from "../components/ProjectDescription";
 import EditableProjectDescription from "../components/EditableProjectDescription";
 import Entry from "../components/Entry";
 import { storage } from '../firebase';
-import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytes, getStorage, deleteObject } from "firebase/storage";
 
 import {
   Modal,
@@ -32,7 +32,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   const { username, projectId } = useParams<string>();
   const [project, setProject] = useState<ProjectInterface>();
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
-  const [projectImageURL, setProjectImageURL] = useState<string>("");
+  const [projectImage, setProjectImage] = useState<Image>();
   const [isProjectEditable, setIsProjectEditable] = useState<boolean>(false);
   const [entries, setEntries] = useState<Array<EntryInterface>>();
   const [newEntryImage, setNewEntryImage] = useState<File | null>(null);
@@ -57,7 +57,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
       const fetchProjectImg = await fetch(`${process.env.API_URL}/images/${parsedProject.img_id}`);
       const projectImg: Image = await fetchProjectImg.json();
-      setProjectImageURL(projectImg.url);
+      setProjectImage(projectImg);
 
       const fetchEntries = await fetch(`${process.env.API_URL}/entries/projects/${parsedProject.id}`);
       const entries = await fetchEntries.json();
@@ -101,7 +101,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       const snapshot = await uploadBytes(storageRef, newEntryImage);
       const imgUrl = await getDownloadURL(snapshot.ref);
 
-      const newImageBody = { url: imgUrl };
+      const newImageBody = { url: imgUrl, filePath: newEntryImage.name };
       const fetchNewEntryImage = await fetch(`${process.env.API_URL}/images`, {
         method: 'POST',
         headers: {
@@ -150,6 +150,16 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       method: "DELETE",
     });
 
+    if (projectImage?.id !== 1 && projectImage?.id !== 2) {
+      await fetch(`${process.env.API_URL}/images/${projectImage?.id}`, {
+        method: "DELETE",
+      });
+
+      const storage = getStorage();
+      const deleteRef = ref(storage, projectImage?.filePath);
+      deleteObject(deleteRef);
+    }
+
     navigate(`/${user?.user_name}`);
   }
 
@@ -159,8 +169,8 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       <section className="project-container">
         <Link to={`/${username}`} className="project-back-btn">← Back</Link>
         <div className="project-description-container">
-          <img src={projectImageURL} alt="project photo" className="project-photo" onClick={onFinalOpen} />
-          {isProjectEditable ? <EditableProjectDescription project={project} setProject={setProject} setProjectImageURL={setProjectImageURL} setIsProjectEditable={setIsProjectEditable} /> : <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} />}
+          <img src={projectImage?.url} alt="project photo" className="project-photo" onClick={onFinalOpen} />
+          {isProjectEditable ? <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} /> : <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} />}
 
         </div>
         {isSameUser ? <button onClick={onNewOpen} className="create-entry-btn">+ Create new entry</button> : null}
@@ -199,7 +209,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
         <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems="center" boxShadow="none">
           <ModalCloseButton margin="0" boxShadow="none" bg="white" outline="transparent" />
           <ModalBody>
-            <img src={projectImageURL} className="entry-img-full" />
+            <img src={projectImage?.url} className="entry-img-full" />
           </ModalBody>
         </ModalContent>
       </Modal>
