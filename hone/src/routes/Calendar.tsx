@@ -47,7 +47,7 @@ const Calendar: FC<Props> = ({ user }) => {
             .join("-");
 
           const formattedTime = new Date(thisEvent.created_date).toLocaleTimeString("en-US");
-          const result = { title: (project.title + ": " + formattedTime), start: formattedDate, url: `https://hone-space.art/${user?.user_name}/projects/${thisEvent.project_id}` };
+          const result = { title: (project.title + ": " + formattedTime), start: formattedDate, url: `https://www.hone-art.space/${user?.user_name}/projects/${thisEvent.project_id}` };
           arrayOfEvents.push(result);
         }
 
