@@ -1,5 +1,5 @@
 import { FC, useState, Dispatch, useRef } from "react";
-import { Project } from "../globals";
+import { Image, Project } from "../globals";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import "../styles/project.css";
@@ -8,10 +8,10 @@ type Props = {
   project: Project | undefined;
   setIsProjectEditable: Dispatch<React.SetStateAction<boolean>>;
   setProject: Dispatch<React.SetStateAction<Project | undefined>>;
-  setProjectImageURL: Dispatch<React.SetStateAction<string>>;
+  setProjectImage: Dispatch<React.SetStateAction<Image | undefined>>;
 }
 
-const EditableProjectDescription: FC<Props> = ({ project, setProject, setProjectImageURL, setIsProjectEditable }) => {
+const EditableProjectDescription: FC<Props> = ({ project, setProject, setProjectImage, setIsProjectEditable }) => {
   const [newProjectTitle, setNewProjectTitle] = useState<string | undefined>((project?.title) == "Untitled" ? "" : project?.title);
   const [newProjectDescription, setNewProjectDescription] = useState<string | undefined>(project?.description);
   const [newProjectPicture, setnewProjectPicture] = useState<File | null>(null);
@@ -47,7 +47,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       const snapshot = await uploadBytes(storageRef, newProjectPicture);
       const imgUrl = await getDownloadURL(snapshot.ref);
 
-      const newPhotoBody = { url: imgUrl };
+      const newPhotoBody = { url: imgUrl, filePath: newProjectPicture.name };
       const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
         method: "POST",
         headers: {
@@ -57,7 +57,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       });
 
       const newPhoto = await fetchNewPhoto.json();
-      setProjectImageURL(newPhoto.url);
+      setProjectImage(newPhoto);
 
       const updateProjectBody = { img_id: newPhoto.id };
       const fetchUpdatedProject = await fetch(`${process.env.API_URL}/projects/${project?.id}`, {
