@@ -56,6 +56,7 @@ const Calendar: FC<Props> = ({ user }) => {
           },
           events: arrayOfEvents,
           eventColor: '#222224',
+          dayMaxEvents: 3,
         })
 
         calendar.render();
