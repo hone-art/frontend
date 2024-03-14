@@ -9,15 +9,30 @@ const Heatmap = () => {
     // }
     const [days, setDays] = useState<number[]>([1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1]);
     const [thisMonthTotalEntries, setTotalEntries] = useState<number>(0);
-    const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
-    const [currentDate, setCurrentDate] = useState<number>(new Date().getDate());
-    const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
-    const [currentDateToRender, setCurrentDateToRender] = useState<number>();
+    const [currentMonth, setCurrentMonth] = useState<number>(1);
+    const [currentDate, setCurrentDate] = useState<number>(1);
+    const [currentDay, setCurrentDay] = useState<number>(1);
+    const [currentDateForRender, setCurrentDateForRender] = useState<number>();
     
+    useEffect(() => {
+        getCurrentDate();
+        setTotalEntries(calculateMonthTotalEntries(days));
+        generateDaysForRender(currentDate, currentDay);
+    }, []);
+
+    const getCurrentDate = () => {
+        const newDate: Date = new Date();
+        setCurrentMonth(newDate.getMonth());
+        setCurrentDate(newDate.getDate());
+        setCurrentDay(newDate.getDay());
+    }
+
     const calculateMonthTotalEntries = (days: number[]): number => {
         let result:number = 0;
         for (let i:number = 0; i < days.length; i++) {
-            result += days[i];
+            if (days[i] >= 0) {
+                result += days[i];
+            }
         }
         return result;
     }
@@ -26,14 +41,11 @@ const Heatmap = () => {
         const numberOfDaysToAdd = currentDay + 7 - (currentDate-1) % 7;
         const array: number[] = new Array(numberOfDaysToAdd).fill(-1);
         setDays([...array, ...days]);
-        setCurrentDateToRender(currentDate + numberOfDaysToAdd);
+        setCurrentDateForRender(currentDate + numberOfDaysToAdd);
     }
     
 
-    useEffect(() => {
-        setTotalEntries(calculateMonthTotalEntries(days));
-        generateDaysForRender(currentDate, currentDay);
-    }, []);
+    
 
     function getColor (num: number) {
         if (num === -1) return;
@@ -48,7 +60,7 @@ const Heatmap = () => {
         return (
             <>
                 {days.map((day:number, index:number) => {
-                    let style = (currentDateToRender && (currentDateToRender-1))===index? 
+                    let style = (currentDateForRender && (currentDateForRender-1))===index? 
                     {...getColor(day), border:'solid #5356FF', borderWidth:'medium'}:
                     getColor(day);
                     return (
@@ -61,23 +73,15 @@ const Heatmap = () => {
 
     
     return (
-        
         <section className='heatmap-container'>
             <div id='heatmap-title'>
                 {thisMonthTotalEntries} entries this month
             </div>
             {/* <div>{days.length}</div> */}
             <div className='heatmap-body'>
-                {renderHeatMap(days)}
-                
+                {renderHeatMap(days)}   
             </div>
-            {currentDate}
-                {currentDay}
-                {currentMonth}
-            
         </section>
-            
-        
     )
 }
 

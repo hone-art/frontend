@@ -196,7 +196,7 @@ const Profile: FC = () => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
-          <Heatmap></Heatmap>
+          {/* <Heatmap></Heatmap> */}
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
