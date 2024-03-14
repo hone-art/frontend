@@ -38,15 +38,16 @@ const Heatmap = () => {
     }
     
     const generateDaysForRender = (currentDate:number, currentDay:number):void => {
+        console.log(currentDay);
+        console.log(currentDate);
         const numberOfDaysToAdd = currentDay + 7 - (currentDate-1) % 7;
+        console.log(numberOfDaysToAdd);
         const array: number[] = new Array(numberOfDaysToAdd).fill(-1);
         setDays([...array, ...days]);
+        console.log(days);
         setCurrentDateForRender(currentDate + numberOfDaysToAdd);
     }
     
-
-    
-
     function getColor (num: number) {
         if (num === -1) return;
         if (num ===0) return {backgroundColor:"#e6e6e6"};
