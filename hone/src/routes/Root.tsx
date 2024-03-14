@@ -19,13 +19,13 @@ const Root: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const navigate = useNavigate();
-  const { login, autoLogin, user } = useAuth();
+  const { login, autoLogin } = useAuth();
 
   useEffect(() => {
     async function fetchAutoLogin() {
       const result = await autoLogin();
-      if (result) {
-        navigate(`/${user?.user_name}`)
+      if (result !== null) {
+        navigate(`/${result?.user_name}`)
       }
     }
 

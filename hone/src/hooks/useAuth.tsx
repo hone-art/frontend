@@ -10,7 +10,7 @@ interface AuthContextType {
   setIsLoggedIn: Dispatch<React.SetStateAction<boolean>>;
   login: (data: User) => void;
   logout: () => void;
-  autoLogin: () => Promise<boolean>;
+  autoLogin: () => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,7 +25,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const navigate = useNavigate();
 
   const autoLogin = async () => {
-    console.log("AUTO LOGIN CALLED");
     const autoLogin = await fetch(`${process.env.API_URL}/autoLogin`, {
       method: "GET",
       credentials: "include",
@@ -35,10 +34,10 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       const loggedUser = await autoLogin.json();
       setUser(loggedUser);
       setIsLoggedIn(true);
-      return true;
+      return loggedUser;
     }
 
-    return false;
+    return null;
   };
 
   // call this function when you want to authenticate the user
