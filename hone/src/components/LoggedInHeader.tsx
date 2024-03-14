@@ -1,7 +1,9 @@
 import { useRef, FC, useEffect, useState } from "react";
 import "../styles/header.css";
 import { User } from "../globals";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+// import Cookies from "universal-cookie";
+
 import {
   Drawer,
   DrawerBody,
@@ -21,6 +23,8 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
   const [profilePhotoURL, setProfilePhotoURL] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef(null);
+  const navigate = useNavigate();
+  // const cookies = new Cookies();
 
   useEffect(() => {
     async function fetchPhoto() {
@@ -32,6 +36,15 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
 
     fetchPhoto();
   }, [])
+
+  async function handleLogoutOnClick() {
+    await fetch(`${process.env.API_URL}/logout`, {
+      method: "GET",
+      credentials: "include",
+    });
+    navigate("/");
+    return;
+  }
 
   return (
     <header className="header">
@@ -77,7 +90,7 @@ const LoggedInHeader: FC<Props> = ({ user }) => {
           </DrawerBody>
 
           <DrawerFooter>
-            <Link className="link" to="/">Logout →</Link>
+            <p className="link" onClick={handleLogoutOnClick}> Logout →</p>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
