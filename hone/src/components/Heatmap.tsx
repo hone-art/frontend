@@ -2,11 +2,12 @@ import { Divider } from "@chakra-ui/react";
 import "../styles/heatmap.css";
 import { FC, useState, useEffect, useRef } from "react";
 const Heatmap = () => {
-    const days = [1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0];
+    
     // const colors = {
     //     1: "color: #FFFFFF",
     //     3: "color: #1c0000"
     // }
+    const [days, setDays] = useState<number[]>([1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0]);
     const [thisMonthTotalEntries, setTotalEntries] = useState<number>(0);
     const [currentMonth, setCurrentMonth] = useState<number|undefined>(new Date().getMonth());
     const [currentDate, setCurrentDate] = useState<number|undefined>(new Date().getDate());
@@ -20,6 +21,10 @@ const Heatmap = () => {
         return result;
     }
     
+    const calculateDaysForRender = (currentDate:number, currentDay:number):void => {
+        const numberOfDaysToAdd = currentDate % 7;
+        
+    }
     
 
     useEffect(() => {
