@@ -20,15 +20,18 @@ import {
   ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react'
+import { useAuth } from "../hooks/useAuth";
 
-type Props = {
-  user: User | null;
-  setUser: (initialState: User | (() => User | null) | null) => void;
-  isLoggedIn: boolean;
-}
+// type Props = {
+//   user: User | null;
+//   setUser: (initialState: User | (() => User | null) | null) => void;
+//   isLoggedIn: boolean;
+// }
 
-const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
+// const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
+const Profile: FC = () => {
   const navigate = useNavigate();
+  const { user, setUser, isLoggedIn, autoLogin } = useAuth();
 
   const [projects, setProjects] = useState<Array<Project>>([]);
   const { username } = useParams<string>();
@@ -47,6 +50,8 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
 
 
     async function fetchUserAndProjects() {
+      await autoLogin();
+
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
         headers: {
@@ -184,7 +189,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
 
   return (
     <>
-      {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />}
+      {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
       <section className="profile-container">
         <div className="profile-card">
           <img src={profilePicture} alt="profile picture" className="profile-picture" />

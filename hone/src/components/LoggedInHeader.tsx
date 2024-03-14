@@ -1,6 +1,6 @@
 import { useRef, FC, useEffect, useState } from "react";
 import "../styles/header.css";
-import { User } from "../globals";
+// import { User } from "../globals";
 import { Link, useNavigate } from "react-router-dom";
 // import Cookies from "universal-cookie";
 
@@ -14,15 +14,18 @@ import {
   DrawerCloseButton,
   useDisclosure
 } from '@chakra-ui/react';
+import { useAuth } from "../hooks/useAuth";
 
-type Props = {
-  user: User | null;
-}
+// type Props = {
+//   user: User | null;
+// }
 
-const LoggedInHeader: FC<Props> = ({ user }) => {
+// const LoggedInHeader: FC<Props> = ({ user }) => {
+const LoggedInHeader: FC = () => {
   const [profilePhotoURL, setProfilePhotoURL] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef(null);
+  const { user } = useAuth();
   const navigate = useNavigate();
   // const cookies = new Cookies();
 

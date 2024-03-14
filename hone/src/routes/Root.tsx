@@ -1,43 +1,58 @@
-import { Dispatch, FC, SetStateAction, useState, useEffect } from "react";
+// import { Dispatch, FC, SetStateAction, useState, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import "../styles/root.css"
+// import { Link, useNavigate } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
-import { User } from "../globals";
+// import { User } from "../globals";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
+import { useAuth } from "../hooks/useAuth";
 
-type Props = {
-  setUser: (initialState: User | (() => User | null) | null) => void;
-  setIsLoggedIn: Dispatch<SetStateAction<boolean>>
-}
+// type Props = {
+//   setUser: (initialState: User | (() => User | null) | null) => void;
+//   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
+// }
 
-const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
+// const Root: FC<Props> = () => {
+const Root: FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const navigate = useNavigate();
+  const { login, autoLogin, user } = useAuth();
 
   useEffect(() => {
-    setUser(null);
-    setIsLoggedIn(false);
-
     async function fetchAutoLogin() {
-      const autoLogin = await fetch(`${process.env.API_URL}/autoLogin`, {
-        method: "GET",
-        credentials: "include",
-      })
-
-      if (autoLogin.status == 200) {
-        const loggedUser = await autoLogin.json();
-        console.log(loggedUser);
-        setUser(loggedUser);
-        setIsLoggedIn(true);
-
-        navigate(`/${loggedUser?.user_name}`);
+      const result = await autoLogin();
+      if (result) {
+        navigate(`/${user?.user_name}`)
       }
     }
-    fetchAutoLogin();
 
+    fetchAutoLogin();
   }, [])
+  // useEffect(() => {
+  //   setUser(null);
+  //   setIsLoggedIn(false);
+
+  //   async function fetchAutoLogin() {
+  //     const autoLogin = await fetch(`${process.env.API_URL}/autoLogin`, {
+  //       method: "GET",
+  //       credentials: "include",
+  //     })
+
+  //     if (autoLogin.status == 200) {
+  //       const loggedUser = await autoLogin.json();
+  //       console.log(loggedUser);
+  //       setUser(loggedUser);
+  //       setIsLoggedIn(true);
+
+  //       navigate(`/${loggedUser?.user_name}`);
+  //     }
+  //   }
+  //   fetchAutoLogin();
+
+  // }, [])
 
   const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -53,10 +68,11 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
       });
       const userObj = await response.json();
 
-      setUser(userObj);
-      setIsLoggedIn(true);
+      login(userObj);
+      // setUser(userObj);
+      // setIsLoggedIn(true);
 
-      navigate(`/${userObj?.user_name}`)
+      // navigate(`/${userObj?.user_name}`)
     } catch (error: any) {
       console.log(error);
       setErrorMessage('Invalid email or password. Please try again');
