@@ -7,11 +7,12 @@ const Heatmap = () => {
     //     1: "color: #FFFFFF",
     //     3: "color: #1c0000"
     // }
-    const [days, setDays] = useState<number[]>([1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0]);
+    const [days, setDays] = useState<number[]>([1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1]);
     const [thisMonthTotalEntries, setTotalEntries] = useState<number>(0);
-    const [currentMonth, setCurrentMonth] = useState<number|undefined>(new Date().getMonth());
-    const [currentDate, setCurrentDate] = useState<number|undefined>(new Date().getDate());
-    const [currentDay, setCurrentDay] = useState<number|undefined>(new Date().getDay());
+    const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
+    const [currentDate, setCurrentDate] = useState<number>(new Date().getDate());
+    const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
+    const [currentDateToRender, setCurrentDateToRender] = useState<number>();
     
     const calculateMonthTotalEntries = (days: number[]): number => {
         let result:number = 0;
@@ -21,14 +22,17 @@ const Heatmap = () => {
         return result;
     }
     
-    const calculateDaysForRender = (currentDate:number, currentDay:number):void => {
-        const numberOfDaysToAdd = currentDate % 7;
-        
+    const generateDaysForRender = (currentDate:number, currentDay:number):void => {
+        const numberOfDaysToAdd = currentDay + 7 - (currentDate-1) % 7;
+        const array: number[] = new Array(numberOfDaysToAdd).fill(-1);
+        setDays([...array, ...days]);
+        setCurrentDateToRender(currentDate + numberOfDaysToAdd);
     }
     
 
     useEffect(() => {
         setTotalEntries(calculateMonthTotalEntries(days));
+        generateDaysForRender(currentDate, currentDay);
     }, []);
 
     function getColor (num: number) {
@@ -44,7 +48,7 @@ const Heatmap = () => {
         return (
             <>
                 {days.map((day:number, index:number) => {
-                    let style = (currentDate && (currentDate-1))===index? 
+                    let style = (currentDateToRender && (currentDateToRender-1))===index? 
                     {...getColor(day), border:'solid #5356FF', borderWidth:'medium'}:
                     getColor(day);
                     return (
