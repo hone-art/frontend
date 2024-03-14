@@ -19,6 +19,24 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
   useEffect(() => {
     setUser(null);
     setIsLoggedIn(false);
+
+    async function fetchAutoLogin() {
+      const autoLogin = await fetch(`${process.env.API_URL}/autoLogin`, {
+        method: "GET",
+        credentials: "include",
+      })
+
+      if (autoLogin.status == 200) {
+        const loggedUser = await autoLogin.json();
+        console.log(loggedUser);
+        setUser(loggedUser);
+        setIsLoggedIn(true);
+
+        navigate(`/${loggedUser?.user_name}`);
+      }
+    }
+    fetchAutoLogin();
+
   }, [])
 
   const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
@@ -29,7 +47,10 @@ const Root: FC<Props> = ({ setUser, setIsLoggedIn }) => {
       const uuid = credential.user.uid;
       setErrorMessage('');
 
-      const response = await fetch(`${process.env.API_URL}/users/${uuid}`);
+      const response = await fetch(`${process.env.API_URL}/users/${uuid}`, {
+        method: 'GET',
+        credentials: 'include'
+      });
       const userObj = await response.json();
 
       setUser(userObj);
