@@ -16,7 +16,7 @@ const ProjectDescription: FC<Props> = ({ project, isSameUser, setIsProjectEditab
           <h1 className="project-page-title">{project?.title}</h1>
           {isSameUser ? <button className="edit-project-btn" onClick={() => setIsProjectEditable(true)}><span className="material-symbols-outlined">edit</span></button> : null}
         </div>
-        <p>{project?.description}</p>
+        <p className="title-p">{project?.description}</p>
       </div>
     </>
   )
