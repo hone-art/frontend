@@ -3,24 +3,33 @@
 import dayGridPlugin from "@fullcalendar/daygrid";
 // import interactionPlugin from "@fullcalendar/interaction";
 import { Calendar as CalendarImport } from '@fullcalendar/core';
-import { useEffect, FC } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, FC, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import LoggedInHeader from "../components/LoggedInHeader";
-import { User, Event } from "../globals";
+// import { User, Event } from "../globals";
+import { Event } from "../globals";
 import "../styles/calendar.css";
+import { useAuth } from "../hooks/useAuth";
 
-type Props = {
-  user: User | null;
-}
+// type Props = {
+//   user: User | null;
+// }
 
-const Calendar: FC<Props> = ({ user }) => {
+// const Calendar: FC<Props> = () => {
+const Calendar: FC = () => {
   const navigate = useNavigate();
+  const { user, autoLogin } = useAuth();
+  const { username } = useParams<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (user === null) navigate("/");
-    else {
-      const arrayOfEvents: Array<object> = [];
-      async function fetchEventsAndDisplay() {
+    async function fetchCalendar() {
+      await autoLogin();
+      if (user === null) navigate("/");
+      else if (username !== user.user_name) navigate("/");
+      else {
+        setIsLoading(false);
+        const arrayOfEvents: Array<object> = [];
         const fetchEvents = await fetch(`${process.env.API_URL}/entries/users/${user!.id}`);
         const events: Array<Event> = await fetchEvents.json();
 
@@ -59,15 +68,16 @@ const Calendar: FC<Props> = ({ user }) => {
         })
 
         calendar.render();
-      }
 
-      fetchEventsAndDisplay();
+      }
     }
+
+    fetchCalendar();
   }, []);
 
   return (
     <>
-      <LoggedInHeader user={user} />
+      {isLoading ? null : <LoggedInHeader />}
       <div id="calendar" className="calendar">
       </div>
     </>

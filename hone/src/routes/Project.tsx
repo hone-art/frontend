@@ -1,7 +1,8 @@
 import { FC, useState, useEffect, useRef } from "react";
 import "../styles/project.css"
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { User, Image } from '../globals';
+// import { User, Image } from '../globals';
+import { Image } from '../globals';
 import { Project as ProjectInterface, Entry as EntryInterface } from "../globals";
 import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
@@ -21,15 +22,18 @@ import {
   ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react'
+import { useAuth } from "../hooks/useAuth";
 
 
-type Props = {
-  user: User | null;
-  isLoggedIn: boolean;
-}
+// type Props = {
+//   user: User | null;
+//   isLoggedIn: boolean;
+// }
 
-const Project: FC<Props> = ({ user, isLoggedIn }) => {
+// const Project: FC<Props> = ({ user, isLoggedIn }) => {
+const Project: FC = () => {
   const { username, projectId } = useParams<string>();
+  const { user, isLoggedIn, autoLogin } = useAuth();
   const [project, setProject] = useState<ProjectInterface>();
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [projectImage, setProjectImage] = useState<Image>();
@@ -47,9 +51,11 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user?.user_name === username) setIsSameUser(true);
 
     async function fetchProjectAndEntries() {
+      await autoLogin();
+      if (user?.user_name === username) setIsSameUser(true);
+
       const parsedProjectId: number = parseInt(projectId!);
       const fetchProject = await fetch(`${process.env.API_URL}/projects/${parsedProjectId}`);
       const parsedProject: ProjectInterface = await fetchProject.json();
@@ -165,7 +171,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
   return (
     <>
-      {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />}
+      {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
       <section className="project-container">
         <Link to={`/${username}`} className="project-back-btn">← Back</Link>
         <div className="project-description-container">
