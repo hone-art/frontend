@@ -24,13 +24,17 @@ const Calendar: FC = () => {
 
   useEffect(() => {
     async function fetchCalendar() {
-      await autoLogin();
-      if (user === null) navigate("/");
-      else if (username !== user.user_name) navigate("/");
+      const result = await autoLogin();
+      if (result === null) {
+        navigate("/");
+      }
+      else if (username !== result.user_name) {
+        navigate("/");
+      }
       else {
         setIsLoading(false);
         const arrayOfEvents: Array<object> = [];
-        const fetchEvents = await fetch(`${process.env.API_URL}/entries/users/${user!.id}`);
+        const fetchEvents = await fetch(`${process.env.API_URL}/entries/users/${result!.id}`);
         const events: Array<Event> = await fetchEvents.json();
 
         for (const thisEvent of events) {
@@ -65,6 +69,7 @@ const Calendar: FC = () => {
           },
           events: arrayOfEvents,
           eventColor: '#222224',
+          dayMaxEvents: 3,
         })
 
         calendar.render();
