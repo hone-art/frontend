@@ -9,23 +9,15 @@ const Heatmap = () => {
     // }
     const [days, setDays] = useState<number[]>([1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1]);
     const [thisMonthTotalEntries, setTotalEntries] = useState<number>(0);
-    const [currentMonth, setCurrentMonth] = useState<number>(1);
-    const [currentDate, setCurrentDate] = useState<number>(1);
-    const [currentDay, setCurrentDay] = useState<number>(1);
+    const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
+    const [currentDate, setCurrentDate] = useState<number>(new Date().getDate());
+    const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
     const [currentDateForRender, setCurrentDateForRender] = useState<number>();
     
     useEffect(() => {
-        getCurrentDate();
         setTotalEntries(calculateMonthTotalEntries(days));
         generateDaysForRender(currentDate, currentDay);
     }, []);
-
-    const getCurrentDate = () => {
-        const newDate: Date = new Date();
-        setCurrentMonth(newDate.getMonth());
-        setCurrentDate(newDate.getDate());
-        setCurrentDay(newDate.getDay());
-    }
 
     const calculateMonthTotalEntries = (days: number[]): number => {
         let result:number = 0;
@@ -40,7 +32,7 @@ const Heatmap = () => {
     const generateDaysForRender = (currentDate:number, currentDay:number):void => {
         console.log(currentDay);
         console.log(currentDate);
-        const numberOfDaysToAdd = currentDay + 7 - (currentDate-1) % 7;
+        const numberOfDaysToAdd = (currentDay + (7 - (currentDate-1) % 7)) % 7;
         console.log(numberOfDaysToAdd);
         const array: number[] = new Array(numberOfDaysToAdd).fill(-1);
         setDays([...array, ...days]);
