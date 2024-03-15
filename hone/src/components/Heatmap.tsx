@@ -20,7 +20,6 @@ const Heatmap: FC<Props> = ({ isUser }) => {
     const [currentDateForRender, setCurrentDateForRender] = useState<number>();
 
     useEffect(() => {
-
         generateDaysForRender();
     }, [currentDate, currentDay, currentMonth, currentYear, user]);
 
@@ -48,7 +47,6 @@ const Heatmap: FC<Props> = ({ isUser }) => {
 
         const numberOfDaysToAdd = (currentDay + (7 - (currentDate - 1) % 7)) % 7;
         const array: number[] = new Array(numberOfDaysToAdd).fill(-1);
-        console.log("array=============", array);
         setDays([...array, ...fetchedDaysEntriesArr]);
         setCurrentDateForRender(currentDate + numberOfDaysToAdd);
     }
@@ -79,16 +77,17 @@ const Heatmap: FC<Props> = ({ isUser }) => {
 
     const handleOnClick = () => {
         console.log('clicked');
+        navigate(`/${user?.user_name}/calendar`)
     }
 
 
     return (
         <section className='heatmap-container'>
             {isUser ?
-                <div id='heatmap-title' onClick={handleOnClick}>
+                <div className='heatmap-title heatmap-title-isUser' onClick={handleOnClick}>
                     {MonthTotalEntries} entries this month
                 </div> :
-                <div id='heatmap-title'>
+                <div className='heatmap-title'>
                     {MonthTotalEntries} entries this month
                 </div>}
             {/* <div>{days.length}</div> */}

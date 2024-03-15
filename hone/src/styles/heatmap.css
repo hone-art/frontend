@@ -8,7 +8,7 @@
     /* border: solid black; */
 }
 
-#heatmap-title {
+.heatmap-title {
     width: 100%;
     font-family: var(--headings-font);
     font-weight: 500;
@@ -18,8 +18,15 @@
     text-align: left;
 }
 
-#heatmap-title-isUser {
+.heatmap-title-isUser {
     text-decoration: underline;
+    transition: color 0.2s ease-out;
+}
+.heatmap-title-isUser:hover{
+    text-decoration: none;
+    cursor: pointer;
+    color: #777277;
+    
 }
 
 .heatmap-body {
