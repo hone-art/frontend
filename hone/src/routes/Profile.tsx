@@ -51,7 +51,7 @@ const Profile: FC = () => {
 
 
     async function fetchUserAndProjects() {
-      const result = await autoLogin();
+      if (!isLoggedIn) await autoLogin();
 
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
@@ -76,7 +76,7 @@ const Profile: FC = () => {
 
         setUserProfile(thisProfileUser);
 
-        if (result?.user_name === thisProfileUser?.user_name) setIsUser(true);
+        if (user?.user_name === thisProfileUser?.user_name) setIsUser(true);
 
         try {
           const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
@@ -198,7 +198,7 @@ const Profile: FC = () => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
-          <Heatmap></Heatmap>
+          <Heatmap isUser={isUser}></Heatmap>
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}

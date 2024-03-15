@@ -53,7 +53,7 @@ const Project: FC = () => {
   useEffect(() => {
 
     async function fetchProjectAndEntries() {
-      await autoLogin();
+      if (!isLoggedIn) await autoLogin();
       if (user?.user_name === username) setIsSameUser(true);
 
       const parsedProjectId: number = parseInt(projectId!);
