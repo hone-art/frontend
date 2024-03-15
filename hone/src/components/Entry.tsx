@@ -15,19 +15,26 @@ import {
 type Props = {
   entry: EntryInterface;
   isSameUser: boolean;
-  setEntries: Dispatch<React.SetStateAction<EntryInterface[] | undefined>>
+  setEntries: Dispatch<React.SetStateAction<EntryInterface[] | undefined>>;
+  isCommentsOn: boolean | undefined;
 }
 
-const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
+const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
   const [image, setImage] = useState<Image>();
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [entryDescription, setEntryDescription] = useState<string>(entry.description);
   const [newEntryDescription, setNewEntryDescription] = useState<string>(entry.description);
   const [newEntryImage, setNewEntryImage] = useState<File>();
   const [dateCreatedString, setDateCreated] = useState<string>("");
+  const [comments, setComments] = useState<Comment>();
+  
+  
   const inputImage = useRef(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  //Kiarosh
+  const { isOpen: isCommentsOpen, onOpen: onCommentsOpen, onClose: onCommentsClose } = useDisclosure();
 
   useEffect(() => {
     async function fetchImage() {
@@ -41,6 +48,10 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
     let setDate = new Date(entry.created_date);
     const setDateString = setDate.toLocaleString();
     setDateCreated(setDateString);
+
+    if (isCommentsOn) {
+      // fetch /commments/entries/:entryId
+    }
 
   }, [])
 
@@ -142,6 +153,8 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
             {/* <RelativeTime date={entry.created_date} /><hr /> */}
             {(isSameUser && !isEditable) ? <button className="edit-entry-btn" onClick={handleEditOnClick}><span className="material-symbols-outlined">edit</span></button> : null}
             {isSameUser ? <button className="edit-entry-btn" onClick={handleDeleteOnClick}><span className="material-symbols-outlined">delete</span></button> : null}
+            {/* //**********************Kiarosh */}
+            {(isCommentsOn) ? <button className="view-comments-btn" onClick={onCommentsOpen}><span className="material-symbols-outlined">comment</span></button>: null}
           </div>
           <hr />
           {isEditable ? <textarea id="editable-entry-description" className="editable-entry-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus /> : <p className="entry-p"> {entryDescription}</p>}
@@ -151,6 +164,17 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser }) => {
           </div>
         </div>
       </div>
+
+  <Modal isOpen={isCommentsOpen} onClose={onCommentsClose}>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalCloseButton />
+        <ModalBody>
+          <h2>Test</h2>
+      </ModalBody>
+    </ModalContent>
+  </Modal>
+
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems={"center"} boxShadow={"none"}>
