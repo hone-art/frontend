@@ -58,6 +58,7 @@ const Profile: FC = () => {
         if (resultUser?.user_name === username) setIsUser(true);
       };
 
+
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
         headers: {
