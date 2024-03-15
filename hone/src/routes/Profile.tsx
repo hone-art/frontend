@@ -51,7 +51,9 @@ const Profile: FC = () => {
 
 
     async function fetchUserAndProjects() {
+
       if (!isLoggedIn) await autoLogin();
+
 
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
