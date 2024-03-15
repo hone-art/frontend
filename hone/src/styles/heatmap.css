@@ -8,7 +8,7 @@
     /* border: solid black; */
 }
 
-#heatmap-title {
+.heatmap-title {
     width: 100%;
     font-family: var(--headings-font);
     font-weight: 500;
@@ -16,6 +16,17 @@
     margin-top: 1em;
     margin-bottom: 0.3em;
     text-align: left;
+}
+
+.heatmap-title-isUser {
+    text-decoration: underline;
+    transition: color 0.2s ease-out;
+}
+.heatmap-title-isUser:hover{
+    text-decoration: none;
+    cursor: pointer;
+    color: #777277;
+    
 }
 
 .heatmap-body {
@@ -39,6 +50,39 @@
     aspect-ratio: 1 / 1;
     border-radius: 20%;
 }
+
+.annotation {
+    display: flex;
+    margin-top: 0.7em;
+    font-family: var(--headings-font);
+    font-weight: 400;
+    font-size: 0.9em;
+}
+.annotation-text{
+    margin-left: 0.3em;
+    margin-right: 0.8em;
+}
+.annotation-block {
+    width: 1.5em;
+    aspect-ratio: 1 / 1;
+    border-radius: 20%;
+    margin-right: 0.5em;
+}
+
+#annotation1 {
+    background-color: #adaaac;
+}
+#annotation2 {
+    background-color: #777277;
+}
+#annotation3 {
+    background-color: #434046;
+}
+#annotation4 {
+    background-color: #13131A;
+}
+
+
 
 @media only screen and (max-width: 900px) {
     .heatmap-body {
