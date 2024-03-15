@@ -35,9 +35,9 @@ import { useAuth } from "../hooks/useAuth";
 const Profile: FC = () => {
   const navigate = useNavigate();
   const { user, setUser, isLoggedIn, autoLogin } = useAuth();
+  const { username } = useParams<string>();
 
   const [projects, setProjects] = useState<Array<Project>>([]);
-  const { username } = useParams<string>();
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
   const [isUser, setIsUser] = useState<boolean>(false); // Is logged in user and user profile the same
   const [profilePicture, setProfilePicture] = useState<string>("");

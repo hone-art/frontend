@@ -20,7 +20,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  SkeletonText,
+  Skeleton,
+  Box
 } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
 
@@ -42,6 +45,7 @@ const Project: FC = () => {
   const [newEntryImage, setNewEntryImage] = useState<File | null>(null);
   const [newEntryDescription, setNewEntryDescription] = useState<string>("");
   const [currentProjectUserId, setCurrentProjectUserId] = useState<number>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const { isOpen: isNewOpen, onOpen: onNewOpen, onClose: onNewClose } = useDisclosure(); // Create new entry modal
   const { isOpen: isFinalOpen, onOpen: onFinalOpen, onClose: onFinalClose } = useDisclosure(); // Final image modal
@@ -85,6 +89,7 @@ const Project: FC = () => {
 
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
+    setIsLoaded(true);
   }, [])
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -176,7 +181,7 @@ const Project: FC = () => {
   }
 
   return (
-    <>
+    isLoaded ? <>
       {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
       <section className="project-container">
         <Link to={`/${username}`} className="project-back-btn">← Back</Link>
@@ -241,7 +246,19 @@ const Project: FC = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </> :
+      <>
+        {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
+        <Box className="project-container">
+          <Box className="project-description-container">
+            <Skeleton className="project-photo skeleton-photo" />
+            <Box className="skeleton-box">
+              <Skeleton className="skeleton-project-title" />
+              <SkeletonText className="skeleton-project-description" marginTop="1em" />
+            </Box>
+          </Box>
+        </Box >
+      </>
   )
 };
 
