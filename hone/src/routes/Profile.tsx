@@ -18,7 +18,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  SkeletonCircle,
+  Skeleton,
+  Box
 } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
 
@@ -232,7 +235,27 @@ const Profile: FC = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </> : null
+    </> :
+      <>
+        {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
+        <Box className="profile-container">
+          <Box className="profile-card">
+            <SkeletonCircle className="profile-picture" width="60%" height="inherit" alignSelf="center" />
+            <Skeleton className="skeleton-display-name" />
+            <Skeleton className="skeleton-display-name" />
+            <Skeleton className="skeleton-heat-map" />
+          </Box>
+          <Box className="projects-container">
+            <Box className="project-cards-container">
+              <Skeleton className="skeleton-project" />
+              <Skeleton className="skeleton-project" />
+              <Skeleton className="skeleton-project" />
+              <Skeleton className="skeleton-project" />
+            </Box>
+          </Box>
+        </Box >
+
+      </>
   )
 };
 
