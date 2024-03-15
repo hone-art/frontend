@@ -1,8 +1,7 @@
-import { Divider } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from '../hooks/useAuth'
 import "../styles/heatmap.css";
-import { FC, useState, useEffect, useRef } from "react";
+import { FC, useState, useEffect } from "react";
 
 type Props = {
     isUser: boolean;
@@ -13,11 +12,11 @@ const Heatmap: FC<Props> = ({ isUser }) => {
 
     const [days, setDays] = useState<number[]>([]);
     const [MonthTotalEntries, setTotalEntries] = useState<number>(0);
-    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear())
-    const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
-    const [currentDate, setCurrentDate] = useState<number>(new Date().getDate());
-    const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
     const [currentDateForRender, setCurrentDateForRender] = useState<number>();
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+    const currentDate = new Date().getDate();
+    const currentDay = new Date().getDay();
 
     useEffect(() => {
         generateDaysForRender();
@@ -90,9 +89,16 @@ const Heatmap: FC<Props> = ({ isUser }) => {
                 <div className='heatmap-title'>
                     {MonthTotalEntries} entries this month
                 </div>}
-            {/* <div>{days.length}</div> */}
             <div className='heatmap-body'>
                 {renderHeatMap(days)}
+            </div>
+            <div className='annotation'>
+                <div className='annotation-text'>less</div>
+                <div className='annotation-block' id='annotation1'></div>
+                <div className='annotation-block' id='annotation2'></div>
+                <div className='annotation-block' id='annotation3'></div>
+                <div className='annotation-block' id='annotation4'></div>
+                <div className='annotation-text'>more</div>
             </div>
         </section>
     )

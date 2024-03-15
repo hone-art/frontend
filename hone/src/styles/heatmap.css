@@ -51,6 +51,39 @@
     border-radius: 20%;
 }
 
+.annotation {
+    display: flex;
+    margin-top: 0.7em;
+    font-family: var(--headings-font);
+    font-weight: 400;
+    font-size: 0.9em;
+}
+.annotation-text{
+    margin-left: 0.3em;
+    margin-right: 0.8em;
+}
+.annotation-block {
+    width: 1.5em;
+    aspect-ratio: 1 / 1;
+    border-radius: 20%;
+    margin-right: 0.5em;
+}
+
+#annotation1 {
+    background-color: #adaaac;
+}
+#annotation2 {
+    background-color: #777277;
+}
+#annotation3 {
+    background-color: #434046;
+}
+#annotation4 {
+    background-color: #13131A;
+}
+
+
+
 @media only screen and (max-width: 900px) {
     .heatmap-body {
         column-gap: 0.2em;
