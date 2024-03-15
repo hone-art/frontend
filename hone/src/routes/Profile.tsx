@@ -48,10 +48,15 @@ const Profile: FC = () => {
 
   useEffect(() => {
     const body = { user_name: username };
+    if (user?.user_name === username) setIsUser(true);
 
 
     async function fetchUserAndProjects() {
-      if (!isLoggedIn) await autoLogin();
+      if (!isLoggedIn) {
+        console.log("AUTO LOGIN");
+        const resultUser = await autoLogin();
+        if (resultUser?.user_name === username) setIsUser(true);
+      };
 
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
@@ -76,7 +81,6 @@ const Profile: FC = () => {
 
         setUserProfile(thisProfileUser);
 
-        if (user?.user_name === thisProfileUser?.user_name) setIsUser(true);
 
         try {
           const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
@@ -190,7 +194,7 @@ const Profile: FC = () => {
   }
 
   return (
-    <>
+    isLoaded ? <>
       {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
       <section className="profile-container">
         <div className="profile-card">
@@ -198,7 +202,8 @@ const Profile: FC = () => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
-          <Heatmap isUser={isUser}></Heatmap>
+          {/* <Heatmap isUser={isUser}></Heatmap> */}
+          <Heatmap></Heatmap>
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
@@ -229,7 +234,7 @@ const Profile: FC = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </> : null
   )
 };
 
