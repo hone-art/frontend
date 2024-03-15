@@ -40,6 +40,7 @@ const Profile: FC = () => {
   const [profilePicture, setProfilePicture] = useState<string>("");
   const [newDisplayName, setNewDisplayName] = useState<string>("");
   const [newProfilePicture, setNewProfilePicture] = useState<File>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
 
@@ -50,7 +51,9 @@ const Profile: FC = () => {
 
 
     async function fetchUserAndProjects() {
-      await autoLogin();
+
+      if (!isLoggedIn) await autoLogin();
+
 
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
@@ -86,6 +89,7 @@ const Profile: FC = () => {
           console.log(e);
         }
       }
+      setIsLoaded(true);
     }
 
     fetchUserAndProjects();
@@ -115,7 +119,7 @@ const Profile: FC = () => {
       const snapshot = await uploadBytes(storageRef, newProfilePicture);
       const imgUrl = await getDownloadURL(snapshot.ref);
 
-      const newPhotoBody = { url: imgUrl };
+      const newPhotoBody = { url: imgUrl, filePath: newProfilePicture.name };
       const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
         method: "POST",
         headers: {
@@ -196,7 +200,7 @@ const Profile: FC = () => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
-          <Heatmap></Heatmap>
+          <Heatmap isUser={isUser}></Heatmap>
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}

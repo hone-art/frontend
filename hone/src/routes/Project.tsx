@@ -53,7 +53,8 @@ const Project: FC = () => {
   useEffect(() => {
 
     async function fetchProjectAndEntries() {
-      await autoLogin();
+
+      if (!isLoggedIn) await autoLogin();
       if (user?.user_name === username) setIsSameUser(true);
 
       const parsedProjectId: number = parseInt(projectId!);
@@ -181,7 +182,7 @@ const Project: FC = () => {
         </div>
         {isSameUser ? <button onClick={onNewOpen} className="create-entry-btn">+ Create new entry</button> : null}
         {entries?.map((entry) => (
-          <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} />
+          <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} isCommentsOn={project?.isCommentsOn} />
         ))}
         <div className="delete-project-container">
           {isSameUser ? <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button> : null}
