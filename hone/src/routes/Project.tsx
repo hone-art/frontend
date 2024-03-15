@@ -78,6 +78,7 @@ const Project: FC = () => {
       const fetchEntries = await fetch(`${process.env.API_URL}/entries/projects/${parsedProject.id}`);
       const entries = await fetchEntries.json();
       setEntries(entries);
+      setIsLoaded(true);
     }
 
     async function fetchCurrentProjectUserId() {
@@ -89,7 +90,7 @@ const Project: FC = () => {
 
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
-    setIsLoaded(true);
+    // setIsLoaded(true);
   }, [])
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
