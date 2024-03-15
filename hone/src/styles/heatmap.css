@@ -18,6 +18,10 @@
     text-align: left;
 }
 
+#heatmap-title-isUser {
+    text-decoration: underline;
+}
+
 .heatmap-body {
     /* width: 80%;
     align-self: center;
