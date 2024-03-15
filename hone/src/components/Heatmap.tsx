@@ -8,7 +8,6 @@ type Props = {
     isUser: boolean;
 }
 const Heatmap: FC<Props> = ({ isUser }) => {
-    isUser = true;
     const { user, isLoggedIn, autoLogin } = useAuth();
     const navigate = useNavigate();
     
@@ -22,7 +21,7 @@ const Heatmap: FC<Props> = ({ isUser }) => {
     useEffect(() => {
         const setupUser = async () => {
             await autoLogin();
-            console.log(user);
+            await console.log(user);
         }
         console.log(isUser);
         setupUser();
