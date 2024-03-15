@@ -8,26 +8,21 @@ type Props = {
     isUser: boolean;
 }
 const Heatmap: FC<Props> = ({ isUser }) => {
-    const { user, isLoggedIn, autoLogin } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     
-    const [days, setDays] = useState<number[]>([1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1]);
+    const [days, setDays] = useState<number[]>([]);
     const [thisMonthTotalEntries, setTotalEntries] = useState<number>(0);
+    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear())
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
     const [currentDate, setCurrentDate] = useState<number>(new Date().getDate());
     const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
     const [currentDateForRender, setCurrentDateForRender] = useState<number>();
     
     useEffect(() => {
-        const setupUser = async () => {
-            await autoLogin();
-            await console.log(user);
-        }
-        console.log(isUser);
-        setupUser();
         
-        setTotalEntries(calculateMonthTotalEntries(days));
         generateDaysForRender(currentDate, currentDay);
+        setTotalEntries(calculateMonthTotalEntries(days));
     }, []);
 
     const calculateMonthTotalEntries = (days: number[]): number => {
@@ -37,14 +32,20 @@ const Heatmap: FC<Props> = ({ isUser }) => {
                 result += days[i];
             }
         }
+        console.log("total entries-========", result);
         return result;
     }
     
-    const generateDaysForRender = (currentDate:number, currentDay:number):void => {
-        console.log(currentDay);
-        console.log(currentDate);
+    async function generateDaysForRender(currentDate:number, currentDay:number) {
+        const formattedMonth = (currentMonth + 1).toString().padStart(2, '0');
+        const formattedYearMonth = `${currentYear}-${formattedMonth}`
+        const fetchResponse = await fetch(`${process.env.API_URL}/entries/users/${user?.id}/months/${formattedYearMonth}`)
+        const fetchedDaysEntriesArr = await fetchResponse.json();
+        console.log("fetched days entries array==========",fetchedDaysEntriesArr);
+        setDays(fetchedDaysEntriesArr);
+        console.log("days=========",days);
         const numberOfDaysToAdd = (currentDay + (7 - (currentDate-1) % 7)) % 7;
-        console.log(numberOfDaysToAdd);
+        console.log("number of days to add======",numberOfDaysToAdd);
         const array: number[] = new Array(numberOfDaysToAdd).fill(-1);
         setDays([...array, ...days]);
         console.log(days);
