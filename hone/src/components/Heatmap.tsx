@@ -4,8 +4,10 @@ import { useAuth } from '../hooks/useAuth'
 import "../styles/heatmap.css";
 import { FC, useState, useEffect, useRef } from "react";
 
-
-const Heatmap: FC = ({isUser}) => {
+type Props = {
+    isUser: boolean;
+}
+const Heatmap: FC<Props> = ({ isUser }) => {
     const { user, isLoggedIn, autoLogin } = useAuth();
     const navigate = useNavigate();
     
@@ -17,18 +19,13 @@ const Heatmap: FC = ({isUser}) => {
     const [currentDateForRender, setCurrentDateForRender] = useState<number>();
     
     useEffect(() => {
-        console.log(isUser);
-        const body = { user_name: username };
-        async function fetchUserInfo() {
+        const setupUser = async () => {
             await autoLogin();
-            const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body),
-              });
+            await console.log(user);
         }
+        console.log(isUser);
+        setupUser();
+        
         setTotalEntries(calculateMonthTotalEntries(days));
         generateDaysForRender(currentDate, currentDay);
     }, []);

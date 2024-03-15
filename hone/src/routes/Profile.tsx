@@ -50,12 +50,14 @@ const Profile: FC = () => {
     const body = { user_name: username };
     if (user?.user_name === username) setIsUser(true);
 
+
     async function fetchUserAndProjects() {
       if (!isLoggedIn) {
         console.log("AUTO LOGIN");
         const resultUser = await autoLogin();
         if (resultUser?.user_name === username) setIsUser(true);
       };
+
 
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
