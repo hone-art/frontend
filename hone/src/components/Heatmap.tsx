@@ -1,12 +1,14 @@
 import { Divider } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from '../hooks/useAuth' 
 import "../styles/heatmap.css";
 import { FC, useState, useEffect, useRef } from "react";
-const Heatmap = () => {
+
+
+const Heatmap: FC = ({isUser}) => {
+    const { user, isLoggedIn, autoLogin } = useAuth();
+    const navigate = useNavigate();
     
-    // const colors = {
-    //     1: "color: #FFFFFF",
-    //     3: "color: #1c0000"
-    // }
     const [days, setDays] = useState<number[]>([1,0,0,2,3,4,5,7,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1]);
     const [thisMonthTotalEntries, setTotalEntries] = useState<number>(0);
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
@@ -15,6 +17,18 @@ const Heatmap = () => {
     const [currentDateForRender, setCurrentDateForRender] = useState<number>();
     
     useEffect(() => {
+        console.log(isUser);
+        const body = { user_name: username };
+        async function fetchUserInfo() {
+            await autoLogin();
+            const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+              });
+        }
         setTotalEntries(calculateMonthTotalEntries(days));
         generateDaysForRender(currentDate, currentDay);
     }, []);
