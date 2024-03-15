@@ -40,6 +40,7 @@ const Profile: FC = () => {
   const [profilePicture, setProfilePicture] = useState<string>("");
   const [newDisplayName, setNewDisplayName] = useState<string>("");
   const [newProfilePicture, setNewProfilePicture] = useState<File>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
 
@@ -50,7 +51,7 @@ const Profile: FC = () => {
 
 
     async function fetchUserAndProjects() {
-      await autoLogin();
+      const result = await autoLogin();
 
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
@@ -75,7 +76,7 @@ const Profile: FC = () => {
 
         setUserProfile(thisProfileUser);
 
-        if (user?.user_name === thisProfileUser?.user_name) setIsUser(true);
+        if (result?.user_name === thisProfileUser?.user_name) setIsUser(true);
 
         try {
           const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
@@ -86,6 +87,7 @@ const Profile: FC = () => {
           console.log(e);
         }
       }
+      setIsLoaded(true);
     }
 
     fetchUserAndProjects();
@@ -115,7 +117,7 @@ const Profile: FC = () => {
       const snapshot = await uploadBytes(storageRef, newProfilePicture);
       const imgUrl = await getDownloadURL(snapshot.ref);
 
-      const newPhotoBody = { url: imgUrl };
+      const newPhotoBody = { url: imgUrl, filePath: newProfilePicture.name };
       const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
         method: "POST",
         headers: {
