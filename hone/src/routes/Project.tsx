@@ -23,7 +23,8 @@ import {
   useDisclosure,
   SkeletonText,
   Skeleton,
-  Box
+  Box,
+  Switch
 } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
 
@@ -37,6 +38,7 @@ import { useAuth } from "../hooks/useAuth";
 const Project: FC = () => {
   const { username, projectId } = useParams<string>();
   const { user, isLoggedIn, autoLogin } = useAuth();
+
   const [project, setProject] = useState<ProjectInterface>();
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [projectImage, setProjectImage] = useState<Image>();
@@ -46,10 +48,12 @@ const Project: FC = () => {
   const [newEntryDescription, setNewEntryDescription] = useState<string>("");
   const [currentProjectUserId, setCurrentProjectUserId] = useState<number>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [settings, setSettings] = useState<{ isCommentsOn: boolean, isPublic: boolean }>();
 
   const { isOpen: isNewOpen, onOpen: onNewOpen, onClose: onNewClose } = useDisclosure(); // Create new entry modal
   const { isOpen: isFinalOpen, onOpen: onFinalOpen, onClose: onFinalClose } = useDisclosure(); // Final image modal
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure(); // Delete project modal
+  const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure(); // Project settings modal
 
   const inputImage = useRef(null); //User upload new entry photo
   const navigate = useNavigate();
@@ -70,6 +74,7 @@ const Project: FC = () => {
       const fetchProject = await fetch(`${process.env.API_URL}/projects/${parsedProjectId}`);
       const parsedProject: ProjectInterface = await fetchProject.json();
       setProject(parsedProject);
+      setSettings({ isCommentsOn: parsedProject.isCommentsOn, isPublic: parsedProject.isPublic });
 
       const fetchProjectImg = await fetch(`${process.env.API_URL}/images/${parsedProject.img_id}`);
       const projectImg: Image = await fetchProjectImg.json();
@@ -181,6 +186,29 @@ const Project: FC = () => {
     navigate(`/${user?.user_name}`);
   }
 
+  function handleSwitchOnChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setSettings((prev) => {
+      const newSetting = Object.assign({}, prev);
+      if (event.target.value === "comments")
+        newSetting["isCommentsOn"] = !newSetting["isCommentsOn"];
+      else
+        newSetting["isPublic"] = !newSetting["isPublic"];
+
+      try {
+        fetch(`${process.env.API_URL}/projects/${projectId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newSetting)
+        });
+      } catch (e) {
+        console.log(e);
+      }
+
+      return newSetting;
+    });
+  }
   return (
     isLoaded ? <>
       {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
@@ -188,7 +216,7 @@ const Project: FC = () => {
         <Link to={`/${username}`} className="project-back-btn">← Back</Link>
         <div className="project-description-container">
           <img src={projectImage?.url} alt="project photo" className="project-photo" onClick={onFinalOpen} />
-          {isProjectEditable ? <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} /> : <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} />}
+          {isProjectEditable ? <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} /> : <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} onSettingsOpen={onSettingsOpen} />}
 
         </div>
         {isSameUser ? <button onClick={onNewOpen} className="create-entry-btn">+ Create new entry</button> : null}
@@ -199,6 +227,7 @@ const Project: FC = () => {
           {isSameUser ? <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button> : null}
         </div>
       </section>
+
       <Modal isOpen={isNewOpen} onClose={onNewClose}>
         <ModalOverlay />
         <ModalContent>
@@ -209,9 +238,7 @@ const Project: FC = () => {
             <input id="new-entry-img" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
             <p className="margin-bottom">Entry description: </p>
             <textarea id="input-new-description" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus></textarea>
-            {/* <input type="text" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} /> */}
           </ModalBody>
-
           <ModalFooter className="modal-footer">
             <div className="btn-container">
               <button id="new-entry-cancel-btn" className="modal-btn" onClick={onNewClose}>
@@ -222,6 +249,7 @@ const Project: FC = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
       <Modal isOpen={isFinalOpen} onClose={onFinalClose}>
         <ModalOverlay />
         <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems="center" boxShadow="none">
@@ -231,6 +259,7 @@ const Project: FC = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
+
       <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
         <ModalOverlay />
         <ModalContent>
@@ -244,6 +273,28 @@ const Project: FC = () => {
               <button className="modal-btn" onClick={onDeleteClose}>Cancel</button>
               <button className="modal-btn" onClick={handleDeleteOnClick}>Delete</button>
             </div>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isSettingsOpen} onClose={onSettingsClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader marginTop="0.5em">Settings</ModalHeader>
+          <ModalCloseButton margin="0.5em 0.5em" />
+          <ModalBody>
+            <form>
+              <div className="switch-container">
+                <label htmlFor="project-comments">Comments</label>
+                <Switch id="project-comments" onChange={handleSwitchOnChange} value="comments" isChecked={settings?.isCommentsOn} />
+              </div>
+              <div className="switch-container">
+                <label htmlFor="project-public">Public</label>
+                <Switch id="project-public" onChange={handleSwitchOnChange} value="public" isChecked={settings?.isPublic} />
+              </div>
+            </form>
+          </ModalBody>
+          <ModalFooter>
           </ModalFooter>
         </ModalContent>
       </Modal>

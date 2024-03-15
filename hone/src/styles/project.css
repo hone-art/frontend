@@ -15,6 +15,10 @@
   object-fit: contain;
 }
 
+.project-photo:hover {
+  cursor: pointer;
+}
+
 .title-p {
   white-space: pre-line;
 }
@@ -42,6 +46,7 @@
 
 .edit-project-btn {
   margin-top: 0;
+  margin-left: 0.5em;
   box-shadow: none;
   width: auto;
 }
@@ -136,6 +141,12 @@
 
 .skeleton-photo {
   height: 600px;
+}
+
+.switch-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
 }
 
 @media only screen and (max-width: 768px) {
