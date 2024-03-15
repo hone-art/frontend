@@ -181,7 +181,7 @@ const Project: FC = () => {
         </div>
         {isSameUser ? <button onClick={onNewOpen} className="create-entry-btn">+ Create new entry</button> : null}
         {entries?.map((entry) => (
-          <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} />
+          <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} isCommentsOn={project?.isCommentsOn} />
         ))}
         <div className="delete-project-container">
           {isSameUser ? <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button> : null}
