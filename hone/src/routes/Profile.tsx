@@ -85,9 +85,17 @@ const Profile: FC = () => {
 
 
         try {
-          const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
-          const projects = await fetchProjects.json();
-          setProjects(projects);
+          if (isUser) {
+            const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
+            const projects = await fetchProjects.json();
+            setProjects(projects);
+          } else {
+            console.log("IS NOT USER");
+            const fetchPublicProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}/isPublic`);
+            const publicProjects = await fetchPublicProjects.json();
+            console.log(publicProjects);
+            setProjects(publicProjects);
+          }
         }
         catch (e) {
           console.log(e);
