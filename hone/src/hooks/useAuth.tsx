@@ -41,7 +41,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   };
 
   // call this function when you want to authenticate the user
-  const login = async (data: User) => {
+  const login = (data: User) => {
     setUser(data);
     setIsLoggedIn(true);
     navigate(`/${data?.user_name}`);

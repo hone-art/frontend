@@ -12,11 +12,17 @@
 
 .project-title {
   font-weight: 600;
-  margin-top: 0.5em;
 }
 
 .project-title:hover {
   text-decoration: underline;
+}
+
+.project-card-title-visibility {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5em;
 }
 
 /* iphone: portrait */
