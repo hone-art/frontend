@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../hooks/useAuth'
 import "../styles/heatmap.css";
 import { FC, useState, useEffect } from "react";
 import { User } from "../globals";
@@ -9,7 +9,7 @@ type Props = {
     thisProfileUser: User | undefined;
 }
 const Heatmap: FC<Props> = ({ isUser, thisProfileUser }) => {
-    // const { user } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const [days, setDays] = useState<number[]>([]);
@@ -22,7 +22,7 @@ const Heatmap: FC<Props> = ({ isUser, thisProfileUser }) => {
 
     useEffect(() => {
         generateDaysForRender();
-    }, [currentDate, currentDay, currentMonth, currentYear]);
+    }, [currentDate, currentDay, currentMonth, currentYear, user]);
 
     useEffect(() => {
         const total = calculateMonthTotalEntries(days);
