@@ -2,11 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from '../hooks/useAuth'
 import "../styles/heatmap.css";
 import { FC, useState, useEffect } from "react";
+import { User } from "../globals";
 
 type Props = {
     isUser: boolean;
+    thisProfileUser: User | undefined;
 }
-const Heatmap: FC<Props> = ({ isUser }) => {
+const Heatmap: FC<Props> = ({ isUser, thisProfileUser }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -41,7 +43,7 @@ const Heatmap: FC<Props> = ({ isUser }) => {
     async function generateDaysForRender() {
         const formattedMonth = (currentMonth + 1).toString().padStart(2, '0');
         const formattedYearMonth = `${currentYear}-${formattedMonth}`
-        const fetchResponse = await fetch(`${process.env.API_URL}/entries/users/${user?.id}/months/${formattedYearMonth}`)
+        const fetchResponse = await fetch(`${process.env.API_URL}/entries/users/${thisProfileUser?.id}/months/${formattedYearMonth}`)
         const fetchedDaysEntriesArr = await fetchResponse.json();
 
         const numberOfDaysToAdd = (currentDay + (7 - (currentDate - 1) % 7)) % 7;

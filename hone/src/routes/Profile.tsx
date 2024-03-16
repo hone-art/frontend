@@ -44,16 +44,20 @@ const Profile: FC = () => {
   const [newDisplayName, setNewDisplayName] = useState<string>("");
   const [newProfilePicture, setNewProfilePicture] = useState<File>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [thisProfileUserState, setThisProfileUserState] = useState<User>();
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
 
   const inputImage = useRef(null); // User upload profile picture
 
   useEffect(() => {
-    const body = { user_name: username };
-    if (user?.user_name === username) setIsUser(true);
+    console.log(user);
+    if (user?.user_name === username) {
+      setIsUser(true);
+    }
 
     async function fetchUserAndProjects() {
+      const body = { user_name: username };
       if (!isLoggedIn) {
         console.log("AUTO LOGIN");
         const resultUser = await autoLogin();
@@ -73,6 +77,7 @@ const Profile: FC = () => {
       }
       else {
         const thisProfileUser: User = await fetchUser.json();
+        setThisProfileUserState(thisProfileUser);
 
         setNewDisplayName(thisProfileUser.display_name);
 
@@ -80,7 +85,6 @@ const Profile: FC = () => {
         const setPicture = await fetchPicture.json();
 
         setProfilePicture(setPicture.url);
-
         setUserProfile(thisProfileUser);
 
 
@@ -90,10 +94,8 @@ const Profile: FC = () => {
             const projects = await fetchProjects.json();
             setProjects(projects);
           } else {
-            console.log("IS NOT USER");
             const fetchPublicProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}/isPublic`);
             const publicProjects = await fetchPublicProjects.json();
-            console.log(publicProjects);
             setProjects(publicProjects);
           }
         }
@@ -105,7 +107,7 @@ const Profile: FC = () => {
     }
 
     fetchUserAndProjects();
-  }, [])
+  }, [user, isUser])
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
@@ -212,13 +214,13 @@ const Profile: FC = () => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
-          <Heatmap isUser={isUser}></Heatmap>
+          <Heatmap isUser={isUser} thisProfileUser={thisProfileUserState}></Heatmap>
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
           <div className="project-cards-container">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} userProfile={userProfile} />
+              <ProjectCard key={project.id} project={project} userProfile={userProfile} isUser={isUser} />
             ))}
           </div>
         </div>
