@@ -44,6 +44,7 @@ const Profile: FC = () => {
   const [newDisplayName, setNewDisplayName] = useState<string>("");
   const [newProfilePicture, setNewProfilePicture] = useState<File>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [thisProfileUserState, setThisProfileUserState] = useState<User>();
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
 
@@ -76,6 +77,7 @@ const Profile: FC = () => {
       }
       else {
         const thisProfileUser: User = await fetchUser.json();
+        setThisProfileUserState(thisProfileUser);
 
         setNewDisplayName(thisProfileUser.display_name);
 
@@ -212,7 +214,7 @@ const Profile: FC = () => {
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
-          <Heatmap isUser={isUser}></Heatmap>
+          <Heatmap isUser={isUser} thisProfileUser={thisProfileUserState}></Heatmap>
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
