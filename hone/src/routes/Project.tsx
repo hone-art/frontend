@@ -11,30 +11,10 @@ import EditableProjectDescription from "../components/EditableProjectDescription
 import Entry from "../components/Entry";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes, getStorage, deleteObject } from "firebase/storage";
-
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  SkeletonText,
-  Skeleton,
-  Box,
-  Switch
-} from '@chakra-ui/react'
+import emailjs from "@emailjs/browser";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, SkeletonText, Skeleton, Box, Switch } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
 
-
-// type Props = {
-//   user: User | null;
-//   isLoggedIn: boolean;
-// }
-
-// const Project: FC<Props> = ({ user, isLoggedIn }) => {
 const Project: FC = () => {
   const { username, projectId } = useParams<string>();
   const { user, isLoggedIn, autoLogin } = useAuth();
@@ -54,6 +34,8 @@ const Project: FC = () => {
   const { isOpen: isFinalOpen, onOpen: onFinalOpen, onClose: onFinalClose } = useDisclosure(); // Final image modal
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure(); // Delete project modal
   const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure(); // Project settings modal
+  const { isOpen: isReportOpen, onOpen: onReportOpen, onClose: onReportClose } = useDisclosure(); // Report project modal
+  const { isOpen: isReportSubmittedOpen, onOpen: onReportSubmittedOpen, onClose: onReportSubmittedClose } = useDisclosure(); // Report project submitted modal
 
   const inputImage = useRef(null); //User upload new entry photo
   const navigate = useNavigate();
@@ -65,7 +47,6 @@ const Project: FC = () => {
     async function fetchProjectAndEntries() {
 
       if (!isLoggedIn) {
-        console.log("AUTO LOGIN");
         const resultUser = await autoLogin();
         if (resultUser?.user_name === username) setIsSameUser(true);
       };
@@ -169,6 +150,9 @@ const Project: FC = () => {
   }
 
   async function handleDeleteOnClick() {
+    const deleteBtnEl = document.getElementById("delete-project-btn") as HTMLButtonElement;
+    deleteBtnEl.disabled = true;
+
     await fetch(`${process.env.API_URL}/projects/${project!.id}`, {
       method: "DELETE",
     });
@@ -183,6 +167,7 @@ const Project: FC = () => {
       deleteObject(deleteRef);
     }
 
+    deleteBtnEl.disabled = false;
     navigate(`/${user?.user_name}`);
   }
 
@@ -209,6 +194,35 @@ const Project: FC = () => {
       return newSetting;
     });
   }
+
+  async function handleReportOnClick() {
+    const reportBtnEl = document.getElementById("report-project-btn") as HTMLButtonElement;
+    reportBtnEl.disabled = true;
+
+    emailjs.init(process.env.EMAIL_PUBLIC_KEY!);
+    const serviceId = process.env.EMAIL_SERVICE_ID!;
+    const templateId = process.env.EMAIL_TEMPLATE_ID!;
+    // const siteKey = process.env.EMAIL_SITE_KEY!; TESTING CAPTCHA
+    const reason = document.getElementById("report-project") as HTMLTextAreaElement;
+
+    // grecaptcha.ready(function () {
+    //   grecaptcha.execute(siteKey, { action: 'submit' }).then(function (token) {
+    try {
+      await emailjs.send(serviceId, templateId, {
+        project_id: project!.id,
+        report_reason: reason.value
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    reportBtnEl.disabled = false;
+    onReportClose();
+    onReportSubmittedOpen();
+    //   });
+    // });
+
+  }
+
   return (
     isLoaded ? <>
       {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
@@ -225,6 +239,7 @@ const Project: FC = () => {
         ))}
         <div className="delete-project-container">
           {isSameUser ? <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button> : null}
+          {isSameUser ? null : <button className="delete-project-btn" onClick={onReportOpen}>Report project</button>}
         </div>
       </section>
 
@@ -234,14 +249,14 @@ const Project: FC = () => {
           <ModalHeader>Create new entry</ModalHeader>
           <ModalCloseButton className="modal-close-btn" />
           <ModalBody>
-            <p className="margin-bottom">Entry image:</p>
+            <p className="margin-bottom">Entry image (optional):</p>
             <input id="new-entry-img" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
             <p className="margin-bottom">Entry description: </p>
             <textarea id="input-new-description" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus></textarea>
           </ModalBody>
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button id="new-entry-cancel-btn" className="modal-btn" onClick={onNewClose}>
+              <button id="new-entry-cancel-btn" className="modal-btn cancel-btn" onClick={onNewClose}>
                 Cancel
               </button>
               <button id="new-entry-create-btn" className="modal-btn" onClick={handleCreateNewEntry}>Create</button>
@@ -270,8 +285,8 @@ const Project: FC = () => {
           </ModalBody>
           <ModalFooter>
             <div className="btn-container">
-              <button className="modal-btn" onClick={onDeleteClose}>Cancel</button>
-              <button className="modal-btn" onClick={handleDeleteOnClick}>Delete</button>
+              <button className="modal-btn cancel-btn" onClick={onDeleteClose}>Cancel</button>
+              <button className="modal-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
             </div>
           </ModalFooter>
         </ModalContent>
@@ -293,6 +308,37 @@ const Project: FC = () => {
                 <Switch id="project-public" onChange={handleSwitchOnChange} value="public" isChecked={settings?.isPublic} />
               </div>
             </form>
+          </ModalBody>
+          <ModalFooter>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isReportOpen} onClose={onReportClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader marginTop="0.5em">Report this project?</ModalHeader>
+          <ModalCloseButton margin="0.5em 0.5em" />
+          <ModalBody>
+            <p>Let us know why you would like to report this project:</p>
+            <textarea name="report-project" id="report-project" autoFocus></textarea>
+          </ModalBody>
+          <ModalFooter>
+            <div className="btn-container">
+              <button className="modal-btn cancel-btn" onClick={onReportClose}>Cancel</button>
+              <button id="report-project-btn" className="modal-btn" onClick={handleReportOnClick}>Report</button>
+            </div>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isReportSubmittedOpen} onClose={onReportSubmittedClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader marginTop="0.5em">Project reported</ModalHeader>
+          <ModalCloseButton margin="0.5em 0.5em" />
+          <ModalBody>
+            <p>The project has been reported and our team will investigate this issue as soon as possible! Thank you for your time and consideration.</p>
           </ModalBody>
           <ModalFooter>
           </ModalFooter>

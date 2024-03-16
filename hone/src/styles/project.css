@@ -149,6 +149,18 @@
   margin-bottom: 1em;
 }
 
+#report-project {
+  width: 100%;
+  margin-top: 1em;
+  height: 20vh;
+  padding: 0.3em 0.5em;
+  border: 1px solid var(--bg-secondary);
+}
+
+.cancel-btn {
+  background-color: rgb(76, 76, 76);
+}
+
 @media only screen and (max-width: 768px) {
   .project-description-container {
     flex-direction: column;
