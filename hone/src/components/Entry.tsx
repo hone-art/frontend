@@ -26,14 +26,14 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
   const [newEntryDescription, setNewEntryDescription] = useState<string>(entry.description);
   const [newEntryImage, setNewEntryImage] = useState<File>();
   const [dateCreatedString, setDateCreated] = useState<string>("");
-  const [comments, setComments] = useState<Comment>();
+  //const [comments, setComments] = useState<Comment>();
+  const [comments, setComments] = useState<Comment[]>([]); //use array
   
   
   const inputImage = useRef(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  //Kiarosh
   const { isOpen: isCommentsOpen, onOpen: onCommentsOpen, onClose: onCommentsClose } = useDisclosure();
 
   useEffect(() => {
@@ -50,7 +50,14 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
     setDateCreated(setDateString);
 
     if (isCommentsOn) {
-      // fetch /commments/entries/:entryId
+     // Kiarosh - fetch /commments/entries/:entryId
+      async function fetchComment() {
+        const fetchComment = await fetch(`${process.env.API_URL}/comments/entries/${entry?.id}`);
+        const comments = await fetchComment.json();
+        setComments(comments);
+      }
+      //Kiarosh
+      if (entry.id != null) fetchComment();
     }
 
   }, [])
@@ -153,7 +160,6 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
             {/* <RelativeTime date={entry.created_date} /><hr /> */}
             {(isSameUser && !isEditable) ? <button className="edit-entry-btn" onClick={handleEditOnClick}><span className="material-symbols-outlined">edit</span></button> : null}
             {isSameUser ? <button className="edit-entry-btn" onClick={handleDeleteOnClick}><span className="material-symbols-outlined">delete</span></button> : null}
-            {/* //**********************Kiarosh */}
             {(isCommentsOn) ? <button className="view-comments-btn" onClick={onCommentsOpen}><span className="material-symbols-outlined">comment</span></button>: null}
           </div>
           <hr />
@@ -170,7 +176,16 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
     <ModalContent>
       <ModalCloseButton />
         <ModalBody>
-          <h2>Test</h2>
+        <h2>Comments</h2>
+            {comments.length > 0 ? (
+                <ul>
+                    {comments.map((comment, index) => (
+                        <li key={index}>{comment.textContent}</li> //is textcontent correct?
+                    ))}
+                </ul>
+            ) : (
+                <p>No comments yet.</p>
+            )}
       </ModalBody>
     </ModalContent>
   </Modal>
