@@ -218,7 +218,7 @@ const Profile: FC = () => {
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
           <div className="project-cards-container">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} userProfile={userProfile} />
+              <ProjectCard key={project.id} project={project} userProfile={userProfile} isUser={isUser} />
             ))}
           </div>
         </div>
