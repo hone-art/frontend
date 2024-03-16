@@ -50,10 +50,13 @@ const Profile: FC = () => {
   const inputImage = useRef(null); // User upload profile picture
 
   useEffect(() => {
-    const body = { user_name: username };
-    if (user?.user_name === username) setIsUser(true);
+    console.log(user);
+    if (user?.user_name === username) {
+      setIsUser(true);
+    }
 
     async function fetchUserAndProjects() {
+      const body = { user_name: username };
       if (!isLoggedIn) {
         console.log("AUTO LOGIN");
         const resultUser = await autoLogin();
@@ -80,7 +83,6 @@ const Profile: FC = () => {
         const setPicture = await fetchPicture.json();
 
         setProfilePicture(setPicture.url);
-
         setUserProfile(thisProfileUser);
 
 
@@ -90,10 +92,8 @@ const Profile: FC = () => {
             const projects = await fetchProjects.json();
             setProjects(projects);
           } else {
-            console.log("IS NOT USER");
             const fetchPublicProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}/isPublic`);
             const publicProjects = await fetchPublicProjects.json();
-            console.log(publicProjects);
             setProjects(publicProjects);
           }
         }
@@ -105,7 +105,7 @@ const Profile: FC = () => {
     }
 
     fetchUserAndProjects();
-  }, [])
+  }, [user, isUser])
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
