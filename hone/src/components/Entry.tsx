@@ -11,6 +11,7 @@ import {
   ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react'
+import Comment from "./Comment";
 
 type Props = {
   entry: EntryInterface;
@@ -176,6 +177,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
     <ModalContent>
       <ModalCloseButton />
         <ModalBody>
+        <Comment/>
         <h2>Comments</h2>
             {comments.length > 0 ? (
                 <ul>
