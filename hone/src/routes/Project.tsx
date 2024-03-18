@@ -179,24 +179,21 @@ const Project: FC = () => {
       else
         newSetting["isPublic"] = !newSetting["isPublic"];
 
-      try {
-        async function fetchNewSettings() {
-          await fetch(`${process.env.API_URL}/projects/${projectId}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newSetting)
-          });
-        };
-        fetchNewSettings();
-      } catch (e) {
-        console.log(e);
-      }
+      fetchNewSettings(newSetting);
 
       return newSetting;
     });
   }
+
+  async function fetchNewSettings(newSetting: { isCommentsOn: boolean, isPublic: boolean }) {
+    await fetch(`${process.env.API_URL}/projects/${projectId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newSetting)
+    });
+  };
 
   async function handleReportOnClick() {
     const reportBtnEl = document.getElementById("report-project-btn") as HTMLButtonElement;
