@@ -85,7 +85,7 @@
 
 
 
-@media only screen and (max-width: 900px) {
+/* @media only screen and (max-width: 900px) {
     .heatmap-body {
         column-gap: 0.2em;
         row-gap: 0.2em;
@@ -94,7 +94,7 @@
     .one-day {
         width: 25px;
     }
-}
+} */
 
 @media only screen and (max-width: 768px) {
     .heatmap-container {
