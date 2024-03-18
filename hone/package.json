@@ -19,6 +19,7 @@
     "@fullcalendar/interaction": "^6.1.11",
     "@fullcalendar/react": "^6.1.11",
     "@types/grecaptcha": "^3.0.8",
+    "compressorjs": "^1.2.1",
     "dotenv": "^16.4.5",
     "firebase": "^10.8.1",
     "framer-motion": "^11.0.8",

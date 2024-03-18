@@ -122,7 +122,7 @@ const Profile: FC = () => {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
-    if (imageToUpload.size > 22000000) {
+    if (imageToUpload.size > 21000000) {
       setImageLimitErrorMessage("Image size cannot exceed 20MB. Please choose another one.")
       setNewProfilePicture(undefined);
       return;
