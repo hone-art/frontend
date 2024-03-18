@@ -29,7 +29,6 @@ const Streaks: FC<Props> = ({ thisProfileUser }) => {
 
         const fetchResponse: any = await fetch(`${process.env.API_URL}/entries/users/${thisProfileUser?.id}/streaks/${formattedYearMonthDate}`);
         const fetchedStreaks: any = await fetchResponse.json();
-        console.log(fetchedStreaks);
         setStreaks(fetchedStreaks);
     }
 
