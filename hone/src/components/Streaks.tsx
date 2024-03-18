@@ -16,7 +16,7 @@ const Streaks: FC<Props> = ({ thisProfileUser }) => {
     const currentDate = new Date().getDate();
     const [currentStreak, setCurrentStreak] = useState<number>(0);
     const [longestStreak, setLongestStreak] = useState<number>(0);
-
+    const [totalEntries, setTotalEntries] = useState<string>("");
     useEffect(() => {
         fetchStreaks();
     }, []);
@@ -26,10 +26,12 @@ const Streaks: FC<Props> = ({ thisProfileUser }) => {
         const formattedMonth = (currentMonth + 1).toString().padStart(2, '0');
         const formattedYear = (currentYear).toString()
         const formattedYearMonthDate = `${formattedYear}-${formattedMonth}-${formattedDate}`;
-
-        const fetchResponse: any = await fetch(`${process.env.API_URL}/entries/users/${thisProfileUser?.id}/streaks/${formattedYearMonthDate}`);
-        const fetchedStreaks: any = await fetchResponse.json();
+        const fetchResponse = await fetch(`${process.env.API_URL}/entries/users/${thisProfileUser?.id}/streaks/${formattedYearMonthDate}`);
+        const fetchedStreaks = await fetchResponse.json();
         setStreaks(fetchedStreaks);
+        const totalEntriesFetchResponse = await fetch(`${process.env.API_URL}/entries/users/${thisProfileUser?.id}/limit/all`);
+        const totalEntriesString = await totalEntriesFetchResponse.json();
+        setTotalEntries(totalEntriesString);
     }
 
     function setStreaks(fetchedStreaks: Streaks) {
@@ -48,6 +50,11 @@ const Streaks: FC<Props> = ({ thisProfileUser }) => {
                 <div className='oneStreak'>
                     <div className='streakTitle'>Longest streak:</div>
                     <div className='streakNumber'>{longestStreak} days</div>
+                </div>
+                
+                <div className='oneStreak'>
+                    <div className='streakTitle'>Total entries:</div>
+                    <div className='streakNumber'>{totalEntries} entries</div>
                 </div>
             </div>
         </>
