@@ -40,3 +40,10 @@ export interface Event {
   user_id: number;
   created_date: Date;
 }
+
+export interface Comment {
+  id: number;
+  description: string;
+  user_id: number;
+  entry_id: number;
+}
