@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   padding: 2em;
-  max-width: 25%;
+  max-width: 305px;
 }
 
 .profile-picture {
@@ -209,9 +209,9 @@
     margin-top: 0.7em;
   }
 
-  .profile-card {
+  /* .profile-card {
     min-width: 30%;
-  }
+  } */
 }
 
 /* and (-webkit-min-device-pixel-ratio: 1) */
