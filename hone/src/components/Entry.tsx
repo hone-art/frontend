@@ -33,6 +33,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
   const [comments, setComments] = useState<CommentInterface[]>([]); //use array
   const [newComment, setNewComment] = useState<string>("");
   const { user, isLoggedIn } = useAuth();
+  const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("Image size cannot exceed 20MB. Please choose another one.");
 
   const inputImage = useRef(null);
 
@@ -191,7 +192,12 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
           <hr />
           {isEditable ? <textarea id="editable-entry-description" className="editable-entry-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus /> : <p className="entry-p"> {entryDescription}</p>}
           <div className="entry-upload-submit-container">
-            {isEditable ? <input id="entry-upload-btn" type="file" ref={inputImage} onChange={handleChange} accept="image/*" className="entry-upload" /> : null}
+            {isEditable ? 
+            <>
+              <input id="entry-upload-btn" type="file" ref={inputImage} onChange={handleChange} accept="image/*" className="entry-upload" />
+              <div className="error-message">{imageLimitErrorMessage}</div>
+            </>
+             : null}
             {isEditable ? <button id="entry-submit-btn" className="entry-submit-btn" onClick={handleEditOnClick}>Submit</button> : null}
           </div>
         </div>
