@@ -1,7 +1,7 @@
 import { useRef, FC, useEffect, useState } from "react";
 import "../styles/header.css";
 // import { User } from "../globals";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import Cookies from "universal-cookie";
 
 import {
@@ -25,8 +25,8 @@ const LoggedInHeader: FC = () => {
   const [profilePhotoURL, setProfilePhotoURL] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef(null);
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  // const navigate = useNavigate();
   // const cookies = new Cookies();
 
   useEffect(() => {
@@ -41,11 +41,12 @@ const LoggedInHeader: FC = () => {
   }, [])
 
   async function handleLogoutOnClick() {
-    await fetch(`${process.env.API_URL}/logout`, {
-      method: "GET",
-      credentials: "include",
-    });
-    navigate("/");
+    logout();
+    // await fetch(`${process.env.API_URL}/logout`, {
+    //   method: "GET",
+    //   credentials: "include",
+    // });
+    // navigate("/");
     return;
   }
 
