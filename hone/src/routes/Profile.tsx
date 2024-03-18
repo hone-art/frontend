@@ -50,7 +50,7 @@ const Profile: FC = () => {
   const [thisProfileUserState, setThisProfileUserState] = useState<User>();
   const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("");
 
-  const { isOpen, onOpen:originalOnOpen, onClose:originalOnClose } = useDisclosure(); // Modal
+  const { isOpen, onOpen: originalOnOpen, onClose: originalOnClose } = useDisclosure(); // Modal
   const onOpen = () => {
     setImageLimitErrorMessage('');
     originalOnOpen();
@@ -274,7 +274,7 @@ const Profile: FC = () => {
       <>
         {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
         <Box className="profile-container">
-          <Box className="profile-card">
+          <Box className="skeleton-profile-card">
             <SkeletonCircle className="profile-picture" width="60%" height="inherit" alignSelf="center" />
             <Skeleton className="skeleton-display-name" />
             <Skeleton className="skeleton-display-name" />
