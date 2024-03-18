@@ -15,7 +15,7 @@ const Calendar: FC = () => {
   const navigate = useNavigate();
   const { user, autoLogin } = useAuth();
   const { username } = useParams<string>();
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  // const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [hasStreak, setHasStreak] = useState<boolean>(false);
 
   useEffect(() => {
@@ -84,8 +84,8 @@ const Calendar: FC = () => {
             result.image_url = image.url;
           }
           arrayOfEvents.push(result);
-          setIsLoaded(true);
         }
+        // setIsLoaded(true);
 
         const calendarEl = document.getElementById("calendar");
         const screenWidth = document.body.clientWidth;
@@ -126,8 +126,8 @@ const Calendar: FC = () => {
   return (
     <>
       <LoggedInHeader />
-      {isLoaded ? <div id="calendar" className="calendar">
-      </div> : null}
+      <div id="calendar" className="calendar">
+      </div>
     </>
   )
 };

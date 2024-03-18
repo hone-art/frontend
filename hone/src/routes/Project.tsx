@@ -77,7 +77,7 @@ const Project: FC = () => {
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
     // setIsLoaded(true);
-  }, [])
+  }, [settings])
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const imageToUpload = event.target.files![0];
@@ -243,7 +243,7 @@ const Project: FC = () => {
         </div>
       </section>
 
-      <Modal isOpen={isNewOpen} onClose={onNewClose}>
+      <Modal isOpen={isNewOpen} onClose={onNewClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create new entry</ModalHeader>
@@ -265,7 +265,7 @@ const Project: FC = () => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isFinalOpen} onClose={onFinalClose}>
+      <Modal isOpen={isFinalOpen} onClose={onFinalClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems="center" boxShadow="none">
           <ModalCloseButton margin="0" boxShadow="none" bg="white" outline="transparent" />
@@ -275,7 +275,7 @@ const Project: FC = () => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader marginTop="0.5em">Are you sure you want to delete this project?</ModalHeader>
@@ -292,7 +292,7 @@ const Project: FC = () => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isSettingsOpen} onClose={onSettingsClose}>
+      <Modal isOpen={isSettingsOpen} onClose={onSettingsClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader marginTop="0.5em">Settings</ModalHeader>
@@ -314,7 +314,7 @@ const Project: FC = () => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isReportOpen} onClose={onReportClose}>
+      <Modal isOpen={isReportOpen} onClose={onReportClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader marginTop="0.5em">Report this project?</ModalHeader>
@@ -332,7 +332,7 @@ const Project: FC = () => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isReportSubmittedOpen} onClose={onReportSubmittedClose}>
+      <Modal isOpen={isReportSubmittedOpen} onClose={onReportSubmittedClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader marginTop="0.5em">Project reported</ModalHeader>

@@ -22,6 +22,10 @@
   overflow-y: scroll;
 }
 
+.fc-event-main:hover {
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 768px) {
   #calendar {
     max-width: 90%;
