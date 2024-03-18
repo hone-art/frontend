@@ -15,7 +15,8 @@ const Calendar: FC = () => {
   const navigate = useNavigate();
   const { user, autoLogin } = useAuth();
   const { username } = useParams<string>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [hasStreak, setHasStreak] = useState<boolean>(false);
 
   useEffect(() => {
     if (user?.user_name !== username) navigate("/");
@@ -29,11 +30,39 @@ const Calendar: FC = () => {
         navigate("/");
       }
       else {
-        setIsLoading(false);
         const arrayOfEvents: Array<object> = [];
         const fetchEvents = await fetch(`${process.env.API_URL}/entries/users/${result!.id}`);
         const events: Array<Event> = await fetchEvents.json();
 
+        // Check for streak
+        const currentYear: number = new Date().getFullYear();
+        const currentMonth: number = new Date().getMonth();
+        const currentDate: number = new Date().getDate();
+
+        const formattedDate: string = (currentDate).toString().padStart(2, '0');
+        const formattedMonth: string = (currentMonth + 1).toString().padStart(2, '0');
+        const formattedYear: string = (currentYear).toString()
+        const formattedYearMonthDate: string = `${formattedYear}-${formattedMonth}-${formattedDate}`;
+
+        const fetchResponse = await fetch(`${process.env.API_URL}/entries/users/${user?.id}/streaks/${formattedYearMonthDate}`);
+        const fetchedStreaks = await fetchResponse.json();
+
+        if (fetchedStreaks.current > 0) {
+          const startDate: Date = new Date();
+          startDate.setDate((startDate.getDate() - (fetchedStreaks.current - 1)));
+          // const startDateString = startDate.toISOString().slice(0, 10);
+          // console.log(startDateString);
+
+          const endDate: Date = new Date();
+          endDate.setDate(endDate.getDate() + 1);
+          const endDateString = endDate.toISOString().slice(0, 10);
+          // console.log(endDate);
+          const streakEvent = { title: "Streak!", start: startDate, end: endDateString, allDay: true, backgroundColor: "#F72798", textColor: "#e6e6e6" };
+          arrayOfEvents.push(streakEvent);
+          setHasStreak(true);
+        }
+
+        // Create events from entries
         for (const thisEvent of events) {
           const fetchProject = await fetch(`${process.env.API_URL}/projects/${thisEvent.project_id}`);
           const project = await fetchProject.json();
@@ -48,13 +77,14 @@ const Calendar: FC = () => {
             .join("-");
 
           const formattedTime = new Date(thisEvent.created_date).toLocaleTimeString("en-US");
-          const result = { title: (project.title + ": " + formattedTime), start: formattedDate, url: `https://www.hone-art.space/${user?.user_name}/projects/${thisEvent.project_id}`, image_url: null };
+          const result = { title: (project.title + ": " + formattedTime), start: formattedDate, username: user?.user_name, projectId: thisEvent.project_id, image_url: null };
           if (thisEvent.img_id !== null) {
             const fetchImage = await fetch(`${process.env.API_URL}/images/${thisEvent.img_id}`);
             const image = await fetchImage.json();
             result.image_url = image.url;
           }
           arrayOfEvents.push(result);
+          setIsLoaded(true);
         }
 
         const calendarEl = document.getElementById("calendar");
@@ -71,29 +101,33 @@ const Calendar: FC = () => {
           },
           events: arrayOfEvents,
           eventColor: '#222224',
-          dayMaxEvents: 2,
+          dayMaxEvents: hasStreak ? 2 : 1,
           eventDidMount: function (info) {
-            if (info.event.extendedProps.image_url !== null) {
+            if (info.event.extendedProps.image_url && info.event.extendedProps.image_url !== null) {
               const imgEl = document.createElement("img");
               imgEl.src = info.event.extendedProps.image_url;
               info.el.prepend(imgEl);
             }
           },
+          eventClick: function (info) {
+            const username = info.event.extendedProps.username;
+            const projectId = info.event.extendedProps.projectId;
+            if (info.event.extendedProps.username) navigate(`/${username}/projects/${projectId}`);
+          }
         })
 
         calendar.render();
-
       }
     }
 
     fetchCalendar();
-  }, []);
+  }, [hasStreak]);
 
   return (
     <>
-      {isLoading ? null : <LoggedInHeader />}
-      <div id="calendar" className="calendar">
-      </div>
+      <LoggedInHeader />
+      {isLoaded ? <div id="calendar" className="calendar">
+      </div> : null}
     </>
   )
 };
