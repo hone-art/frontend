@@ -131,7 +131,7 @@ const Profile: FC = () => {
     }
     console.log(imageToUpload.size);
     new Compressor(imageToUpload, {
-      quality: 0.8,
+      quality: 0.6,
       success(result: any) {
         setNewProfilePicture(result);
       }
