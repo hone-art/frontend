@@ -180,13 +180,16 @@ const Project: FC = () => {
         newSetting["isPublic"] = !newSetting["isPublic"];
 
       try {
-        fetch(`${process.env.API_URL}/projects/${projectId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newSetting)
-        });
+        async function fetchNewSettings() {
+          await fetch(`${process.env.API_URL}/projects/${projectId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newSetting)
+          });
+        };
+        fetchNewSettings();
       } catch (e) {
         console.log(e);
       }
