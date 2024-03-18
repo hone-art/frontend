@@ -10,6 +10,8 @@ import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import Heatmap from '../components/Heatmap';
 import Streaks from '../components/Streaks';
+import Compressor from 'compressorjs';
+
 
 import {
   Modal,
@@ -111,8 +113,13 @@ const Profile: FC = () => {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
-
-    setNewProfilePicture(imageToUpload);
+    console.log(imageToUpload.size);
+    new Compressor(imageToUpload, {
+      quality: 0.8,
+      success(result: any) {
+        setNewProfilePicture(result);
+      }
+    })
   }
 
   async function handleEditOnClick() {
@@ -240,7 +247,7 @@ const Profile: FC = () => {
 
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button id="profile-cancel-btn" className="modal-btn" onClick={onClose}>Cancel</button>
+              <button id="profile-cancel-btn" className="modal-btn cancel-btn" onClick={onClose}>Cancel</button>
               <button id="profile-save-btn" className="modal-btn" onClick={handleEditOnClick}>Save</button>
             </div>
           </ModalFooter>
