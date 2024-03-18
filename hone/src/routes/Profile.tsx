@@ -48,8 +48,17 @@ const Profile: FC = () => {
   const [newProfilePicture, setNewProfilePicture] = useState<File>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [thisProfileUserState, setThisProfileUserState] = useState<User>();
+  const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("");
 
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
+  const { isOpen, onOpen:originalOnOpen, onClose:originalOnClose } = useDisclosure(); // Modal
+  const onOpen = () => {
+    setImageLimitErrorMessage('');
+    originalOnOpen();
+  }
+  const onClose = () => {
+    setImageLimitErrorMessage('');
+    originalOnClose();
+  }
 
   const inputImage = useRef(null); // User upload profile picture
 
@@ -113,6 +122,13 @@ const Profile: FC = () => {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
+    if (imageToUpload.size > 20000000) {
+      setImageLimitErrorMessage("Image size cannot exceed 20MB. Please choose another one.")
+      setNewProfilePicture(undefined);
+      return;
+    } else {
+      setImageLimitErrorMessage("");
+    }
     console.log(imageToUpload.size);
     new Compressor(imageToUpload, {
       quality: 0.8,
@@ -240,8 +256,9 @@ const Profile: FC = () => {
           <ModalCloseButton className="modal-close-btn" />
           <ModalBody>
             <h2 className="margin-bottom">Profile picture:</h2>
-            <input id="profile-pic-input" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
-            <p className="margin-bottom">Display name: </p>
+            <input id="profile-pic-input" type="file" ref={inputImage} onChange={handleChange} accept="image/*" />
+            <p className="error-message">{imageLimitErrorMessage}</p>
+            <p className="margin-top margin-bottom">Display name: </p>
             <input id="display-name-input" type="text" className="input-name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} />
           </ModalBody>
 
