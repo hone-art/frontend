@@ -36,13 +36,12 @@ const Heatmap: FC<Props> = ({ isUser, thisProfileUser }) => {
                 result += days[i];
             }
         }
-        console.log("total entries-========", result);
         return result;
     }
 
     async function generateDaysForRender() {
         const formattedMonth = (currentMonth + 1).toString().padStart(2, '0');
-        const formattedYearMonth = `${currentYear}-${formattedMonth}`
+        const formattedYearMonth = `${currentYear}-${formattedMonth}`;
         const fetchResponse = await fetch(`${process.env.API_URL}/entries/users/${thisProfileUser?.id}/months/${formattedYearMonth}`)
         const fetchedDaysEntriesArr = await fetchResponse.json();
 
@@ -77,7 +76,6 @@ const Heatmap: FC<Props> = ({ isUser, thisProfileUser }) => {
     }
 
     const handleOnClick = () => {
-        console.log('clicked');
         navigate(`/${user?.user_name}/calendar`)
     }
 

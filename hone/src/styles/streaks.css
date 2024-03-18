@@ -1,0 +1,29 @@
+.streaks {
+    margin-top: 1em;
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.oneStreak{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.streakTitle{
+    font-family: var(--headings-font);
+    font-weight: 500;
+    font-size: 1.1em;
+    margin-right: 0.5em;
+}
+
+.streakNumber {
+    font-size: 1.1em;
+}
+
+@media only screen and (max-width: 768px){
+    .oneStreak{
+        justify-content: center;
+    }
+}
