@@ -44,17 +44,21 @@ const Streaks: FC<Props> = ({ thisProfileUser }) => {
             <div className='streaks'>
                 <div className='oneStreak'>
                     <div className='streakTitle'>Current streak:</div>
-                    <div className='streakNumber'> {currentStreak} days</div>
+                    <div className='streakNumber'> {currentStreak} 
+                    {currentStreak<=1?<> day</>:<> days</>}
+                    </div>
                 </div>
 
                 <div className='oneStreak'>
                     <div className='streakTitle'>Longest streak:</div>
-                    <div className='streakNumber'>{longestStreak} days</div>
+                    <div className='streakNumber'>{longestStreak}
+                    {longestStreak<=1?<> day</>:<> days</>}
+                    </div>
                 </div>
 
                 <div className='oneStreak'>
                     <div className='streakTitle'>Total entries:</div>
-                    <div className='streakNumber'>{totalEntries} entries</div>
+                    <div className='streakNumber'>{totalEntries}</div>
                 </div>
             </div>
         </>

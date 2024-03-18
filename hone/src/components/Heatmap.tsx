@@ -84,7 +84,9 @@ const Heatmap: FC<Props> = ({ isUser, thisProfileUser }) => {
         <section className='heatmap-container'>
             {isUser ?
                 <div className='heatmap-title heatmap-title-isUser' onClick={handleOnClick}>
-                    {MonthTotalEntries} entries this month
+                    {MonthTotalEntries} entr
+                    {MonthTotalEntries<=1?<>y </>:<>ies </>}
+                     this month
                 </div> :
                 <div className='heatmap-title'>
                     {MonthTotalEntries} entries this month
