@@ -11,18 +11,22 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
+    "@emailjs/browser": "^4.3.3",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@fullcalendar/core": "^6.1.11",
     "@fullcalendar/daygrid": "^6.1.11",
     "@fullcalendar/interaction": "^6.1.11",
     "@fullcalendar/react": "^6.1.11",
+    "@types/grecaptcha": "^3.0.8",
+    "compressorjs": "^1.2.1",
     "dotenv": "^16.4.5",
     "firebase": "^10.8.1",
     "framer-motion": "^11.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.2"
+    "react-router-dom": "^6.22.2",
+    "universal-cookie": "^7.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",

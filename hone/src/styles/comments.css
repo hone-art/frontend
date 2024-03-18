@@ -1,0 +1,28 @@
+.comment-container {
+  display: flex;
+  margin-bottom: 1em;
+}
+
+.comment-profile-picture {
+  width: 35px;
+  aspect-ratio: 1 /1;
+  object-fit: cover;
+  border-radius: 50%;
+  align-self: flex-start;
+}
+
+.profile-name-comment-container {
+  margin-left: 0.7em;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.comment-display-name {
+  font-family: var(--headings-font);
+  font-weight: 700;
+}
+
+.delete-comment-btn {
+  align-self: flex-start;
+}

@@ -1,7 +1,8 @@
 import { FC, useState, useEffect, useRef } from "react";
 import "../styles/project.css"
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { User, Image } from '../globals';
+// import { User, Image } from '../globals';
+import { Image } from '../globals';
 import { Project as ProjectInterface, Entry as EntryInterface } from "../globals";
 import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
@@ -10,26 +11,14 @@ import EditableProjectDescription from "../components/EditableProjectDescription
 import Entry from "../components/Entry";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes, getStorage, deleteObject } from "firebase/storage";
+import emailjs from "@emailjs/browser";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, SkeletonText, Skeleton, Box, Switch } from '@chakra-ui/react'
+import { useAuth } from "../hooks/useAuth";
 
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure
-} from '@chakra-ui/react'
-
-
-type Props = {
-  user: User | null;
-  isLoggedIn: boolean;
-}
-
-const Project: FC<Props> = ({ user, isLoggedIn }) => {
+const Project: FC = () => {
   const { username, projectId } = useParams<string>();
+  const { user, isLoggedIn, autoLogin } = useAuth();
+
   const [project, setProject] = useState<ProjectInterface>();
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [projectImage, setProjectImage] = useState<Image>();
@@ -38,22 +27,35 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   const [newEntryImage, setNewEntryImage] = useState<File | null>(null);
   const [newEntryDescription, setNewEntryDescription] = useState<string>("");
   const [currentProjectUserId, setCurrentProjectUserId] = useState<number>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [settings, setSettings] = useState<{ isCommentsOn: boolean, isPublic: boolean }>();
 
   const { isOpen: isNewOpen, onOpen: onNewOpen, onClose: onNewClose } = useDisclosure(); // Create new entry modal
   const { isOpen: isFinalOpen, onOpen: onFinalOpen, onClose: onFinalClose } = useDisclosure(); // Final image modal
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure(); // Delete project modal
+  const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure(); // Project settings modal
+  const { isOpen: isReportOpen, onOpen: onReportOpen, onClose: onReportClose } = useDisclosure(); // Report project modal
+  const { isOpen: isReportSubmittedOpen, onOpen: onReportSubmittedOpen, onClose: onReportSubmittedClose } = useDisclosure(); // Report project submitted modal
 
   const inputImage = useRef(null); //User upload new entry photo
   const navigate = useNavigate();
 
   useEffect(() => {
+
     if (user?.user_name === username) setIsSameUser(true);
 
     async function fetchProjectAndEntries() {
+
+      if (!isLoggedIn) {
+        const resultUser = await autoLogin();
+        if (resultUser?.user_name === username) setIsSameUser(true);
+      };
+
       const parsedProjectId: number = parseInt(projectId!);
       const fetchProject = await fetch(`${process.env.API_URL}/projects/${parsedProjectId}`);
       const parsedProject: ProjectInterface = await fetchProject.json();
       setProject(parsedProject);
+      setSettings({ isCommentsOn: parsedProject.isCommentsOn, isPublic: parsedProject.isPublic });
 
       const fetchProjectImg = await fetch(`${process.env.API_URL}/images/${parsedProject.img_id}`);
       const projectImg: Image = await fetchProjectImg.json();
@@ -62,6 +64,7 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       const fetchEntries = await fetch(`${process.env.API_URL}/entries/projects/${parsedProject.id}`);
       const entries = await fetchEntries.json();
       setEntries(entries);
+      setIsLoaded(true);
     }
 
     async function fetchCurrentProjectUserId() {
@@ -73,7 +76,8 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
 
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
-  }, [])
+    // setIsLoaded(true);
+  }, [settings])
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const imageToUpload = event.target.files![0];
@@ -146,6 +150,9 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
   }
 
   async function handleDeleteOnClick() {
+    const deleteBtnEl = document.getElementById("delete-project-btn") as HTMLButtonElement;
+    deleteBtnEl.disabled = true;
+
     await fetch(`${process.env.API_URL}/projects/${project!.id}`, {
       method: "DELETE",
     });
@@ -160,43 +167,96 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
       deleteObject(deleteRef);
     }
 
+    deleteBtnEl.disabled = false;
     navigate(`/${user?.user_name}`);
   }
 
+  function handleSwitchOnChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setSettings((prev) => {
+      const newSetting = Object.assign({}, prev);
+      if (event.target.value === "comments")
+        newSetting["isCommentsOn"] = !newSetting["isCommentsOn"];
+      else
+        newSetting["isPublic"] = !newSetting["isPublic"];
+
+      try {
+        fetch(`${process.env.API_URL}/projects/${projectId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newSetting)
+        });
+      } catch (e) {
+        console.log(e);
+      }
+
+      return newSetting;
+    });
+  }
+
+  async function handleReportOnClick() {
+    const reportBtnEl = document.getElementById("report-project-btn") as HTMLButtonElement;
+    reportBtnEl.disabled = true;
+
+    emailjs.init(process.env.EMAIL_PUBLIC_KEY!);
+    const serviceId = process.env.EMAIL_SERVICE_ID!;
+    const templateId = process.env.EMAIL_TEMPLATE_ID!;
+    // const siteKey = process.env.EMAIL_SITE_KEY!; TESTING CAPTCHA
+    const reason = document.getElementById("report-project") as HTMLTextAreaElement;
+
+    // grecaptcha.ready(function () {
+    //   grecaptcha.execute(siteKey, { action: 'submit' }).then(function (token) {
+    try {
+      await emailjs.send(serviceId, templateId, {
+        project_id: project!.id,
+        report_reason: reason.value
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    reportBtnEl.disabled = false;
+    onReportClose();
+    onReportSubmittedOpen();
+    //   });
+    // });
+
+  }
+
   return (
-    <>
-      {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />}
+    isLoaded ? <>
+      {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
       <section className="project-container">
         <Link to={`/${username}`} className="project-back-btn">← Back</Link>
         <div className="project-description-container">
           <img src={projectImage?.url} alt="project photo" className="project-photo" onClick={onFinalOpen} />
-          {isProjectEditable ? <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} /> : <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} />}
+          {isProjectEditable ? <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} /> : <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} onSettingsOpen={onSettingsOpen} />}
 
         </div>
         {isSameUser ? <button onClick={onNewOpen} className="create-entry-btn">+ Create new entry</button> : null}
         {entries?.map((entry) => (
-          <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} />
+          <Entry entry={entry} key={entry.id} isSameUser={isSameUser} setEntries={setEntries} isCommentsOn={project?.isCommentsOn} />
         ))}
         <div className="delete-project-container">
           {isSameUser ? <button className="delete-project-btn" onClick={onDeleteOpen}>Delete project ✕</button> : null}
+          {isSameUser ? null : <button className="delete-project-btn" onClick={onReportOpen}>Report project</button>}
         </div>
       </section>
-      <Modal isOpen={isNewOpen} onClose={onNewClose}>
+
+      <Modal isOpen={isNewOpen} onClose={onNewClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create new entry</ModalHeader>
           <ModalCloseButton className="modal-close-btn" />
           <ModalBody>
-            <p className="margin-bottom">Entry image:</p>
+            <p className="margin-bottom">Entry image (optional):</p>
             <input id="new-entry-img" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
             <p className="margin-bottom">Entry description: </p>
             <textarea id="input-new-description" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus></textarea>
-            {/* <input type="text" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} /> */}
           </ModalBody>
-
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button id="new-entry-cancel-btn" className="modal-btn" onClick={onNewClose}>
+              <button id="new-entry-cancel-btn" className="modal-btn cancel-btn" onClick={onNewClose}>
                 Cancel
               </button>
               <button id="new-entry-create-btn" className="modal-btn" onClick={handleCreateNewEntry}>Create</button>
@@ -204,7 +264,8 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Modal isOpen={isFinalOpen} onClose={onFinalClose}>
+
+      <Modal isOpen={isFinalOpen} onClose={onFinalClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent maxH="90vh" maxW="90vw" color="transparent" bg="transparent" alignItems="center" boxShadow="none">
           <ModalCloseButton margin="0" boxShadow="none" bg="white" outline="transparent" />
@@ -213,7 +274,8 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+
+      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader marginTop="0.5em">Are you sure you want to delete this project?</ModalHeader>
@@ -223,13 +285,78 @@ const Project: FC<Props> = ({ user, isLoggedIn }) => {
           </ModalBody>
           <ModalFooter>
             <div className="btn-container">
-              <button className="modal-btn" onClick={onDeleteClose}>Cancel</button>
-              <button className="modal-btn" onClick={handleDeleteOnClick}>Delete</button>
+              <button className="modal-btn cancel-btn" onClick={onDeleteClose}>Cancel</button>
+              <button className="modal-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
             </div>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+
+      <Modal isOpen={isSettingsOpen} onClose={onSettingsClose} autoFocus={false} returnFocusOnClose={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader marginTop="0.5em">Settings</ModalHeader>
+          <ModalCloseButton margin="0.5em 0.5em" />
+          <ModalBody>
+            <form>
+              <div className="switch-container">
+                <label htmlFor="project-comments">Comments</label>
+                <Switch id="project-comments" onChange={handleSwitchOnChange} value="comments" isChecked={settings?.isCommentsOn} />
+              </div>
+              <div className="switch-container">
+                <label htmlFor="project-public">Public</label>
+                <Switch id="project-public" onChange={handleSwitchOnChange} value="public" isChecked={settings?.isPublic} />
+              </div>
+            </form>
+          </ModalBody>
+          <ModalFooter>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isReportOpen} onClose={onReportClose} autoFocus={false} returnFocusOnClose={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader marginTop="0.5em">Report this project?</ModalHeader>
+          <ModalCloseButton margin="0.5em 0.5em" />
+          <ModalBody>
+            <p>Let us know why you would like to report this project:</p>
+            <textarea name="report-project" id="report-project" autoFocus></textarea>
+          </ModalBody>
+          <ModalFooter>
+            <div className="btn-container">
+              <button className="modal-btn cancel-btn" onClick={onReportClose}>Cancel</button>
+              <button id="report-project-btn" className="modal-btn" onClick={handleReportOnClick}>Report</button>
+            </div>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isReportSubmittedOpen} onClose={onReportSubmittedClose} autoFocus={false} returnFocusOnClose={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader marginTop="0.5em">Project reported</ModalHeader>
+          <ModalCloseButton margin="0.5em 0.5em" />
+          <ModalBody>
+            <p>The project has been reported and our team will investigate this issue as soon as possible! Thank you for your time and consideration.</p>
+          </ModalBody>
+          <ModalFooter>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </> :
+      <>
+        {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
+        <Box className="project-container">
+          <Box className="project-description-container">
+            <Skeleton className="project-photo skeleton-photo" />
+            <Box className="skeleton-box">
+              <Skeleton className="skeleton-project-title" />
+              <SkeletonText className="skeleton-project-description" marginTop="1em" />
+            </Box>
+          </Box>
+        </Box >
+      </>
   )
 };
 

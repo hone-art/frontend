@@ -9,6 +9,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import Heatmap from '../components/Heatmap';
+import Streaks from '../components/Streaks';
+import Compressor from 'compressorjs';
+
 
 import {
   Modal,
@@ -18,35 +21,60 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  SkeletonCircle,
+  Skeleton,
+  Box
 } from '@chakra-ui/react'
+import { useAuth } from "../hooks/useAuth";
 
-type Props = {
-  user: User | null;
-  setUser: (initialState: User | (() => User | null) | null) => void;
-  isLoggedIn: boolean;
-}
+// type Props = {
+//   user: User | null;
+//   setUser: (initialState: User | (() => User | null) | null) => void;
+//   isLoggedIn: boolean;
+// }
 
-const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
+// const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
+const Profile: FC = () => {
   const navigate = useNavigate();
+  const { user, setUser, isLoggedIn, autoLogin } = useAuth();
+  const { username } = useParams<string>();
 
   const [projects, setProjects] = useState<Array<Project>>([]);
-  const { username } = useParams<string>();
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
   const [isUser, setIsUser] = useState<boolean>(false); // Is logged in user and user profile the same
   const [profilePicture, setProfilePicture] = useState<string>("");
   const [newDisplayName, setNewDisplayName] = useState<string>("");
   const [newProfilePicture, setNewProfilePicture] = useState<File>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [thisProfileUserState, setThisProfileUserState] = useState<User>();
+  const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("");
 
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Modal
+  const { isOpen, onOpen:originalOnOpen, onClose:originalOnClose } = useDisclosure(); // Modal
+  const onOpen = () => {
+    setImageLimitErrorMessage('');
+    originalOnOpen();
+  }
+  const onClose = () => {
+    setImageLimitErrorMessage('');
+    originalOnClose();
+  }
 
   const inputImage = useRef(null); // User upload profile picture
 
   useEffect(() => {
-    const body = { user_name: username };
-
+    if (user?.user_name === username) {
+      setIsUser(true);
+    }
 
     async function fetchUserAndProjects() {
+      const body = { user_name: username };
+      if (!isLoggedIn) {
+        console.log("AUTO LOGIN");
+        const resultUser = await autoLogin();
+        if (resultUser?.user_name === username) setIsUser(true);
+      };
+
       const fetchUser = await fetch(`${process.env.API_URL}/users/username`, {
         method: "POST",
         headers: {
@@ -60,6 +88,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       }
       else {
         const thisProfileUser: User = await fetchUser.json();
+        setThisProfileUserState(thisProfileUser);
 
         setNewDisplayName(thisProfileUser.display_name);
 
@@ -67,29 +96,46 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
         const setPicture = await fetchPicture.json();
 
         setProfilePicture(setPicture.url);
-
         setUserProfile(thisProfileUser);
 
-        if (user?.user_name === thisProfileUser?.user_name) setIsUser(true);
 
         try {
-          const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
-          const projects = await fetchProjects.json();
-          setProjects(projects);
+          if (isUser) {
+            const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
+            const projects = await fetchProjects.json();
+            setProjects(projects);
+          } else {
+            const fetchPublicProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}/isPublic`);
+            const publicProjects = await fetchPublicProjects.json();
+            setProjects(publicProjects);
+          }
         }
         catch (e) {
           console.log(e);
         }
       }
+      setIsLoaded(true);
     }
 
     fetchUserAndProjects();
-  }, [])
+  }, [user, isUser])
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
-
-    setNewProfilePicture(imageToUpload);
+    if (imageToUpload.size > 21000000) {
+      setImageLimitErrorMessage("Image size cannot exceed 20MB. Please choose another one.")
+      setNewProfilePicture(undefined);
+      return;
+    } else {
+      setImageLimitErrorMessage("");
+    }
+    console.log(imageToUpload.size);
+    new Compressor(imageToUpload, {
+      quality: 0.6,
+      success(result: any) {
+        setNewProfilePicture(result);
+      }
+    })
   }
 
   async function handleEditOnClick() {
@@ -110,7 +156,7 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
       const snapshot = await uploadBytes(storageRef, newProfilePicture);
       const imgUrl = await getDownloadURL(snapshot.ref);
 
-      const newPhotoBody = { url: imgUrl };
+      const newPhotoBody = { url: imgUrl, filePath: newProfilePicture.name };
       const fetchNewPhoto = await fetch(`${process.env.API_URL}/images`, {
         method: "POST",
         headers: {
@@ -183,21 +229,22 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
   }
 
   return (
-    <>
-      {isLoggedIn ? <LoggedInHeader user={user} /> : <LoggedOutHeader />}
+    isLoaded ? <>
+      {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
       <section className="profile-container">
         <div className="profile-card">
           <img src={profilePicture} alt="profile picture" className="profile-picture" />
           <h1 id="display-name">{userProfile?.display_name}</h1>
           <h2 id="username">@{userProfile?.user_name}</h2>
           {isUser ? <button className="edit-profile-btn" onClick={onOpen}>Edit profile</button> : null}
-          <Heatmap></Heatmap>
+          <Heatmap isUser={isUser} thisProfileUser={thisProfileUserState}></Heatmap>
+          <Streaks thisProfileUser={thisProfileUserState}></Streaks>
         </div>
         <div className="projects-container">
           {isUser ? <button className="new-project-btn" onClick={handleNewProjectOnClick}>+ Create new project</button> : null}
           <div className="project-cards-container">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} userProfile={userProfile} />
+              <ProjectCard key={project.id} project={project} userProfile={userProfile} isUser={isUser} />
             ))}
           </div>
         </div>
@@ -209,20 +256,41 @@ const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
           <ModalCloseButton className="modal-close-btn" />
           <ModalBody>
             <h2 className="margin-bottom">Profile picture:</h2>
-            <input id="profile-pic-input" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
-            <p className="margin-bottom">Display name: </p>
+            <input id="profile-pic-input" type="file" ref={inputImage} onChange={handleChange} accept="image/*" />
+            <p className="error-message">{imageLimitErrorMessage}</p>
+            <p className="margin-top margin-bottom">Display name: </p>
             <input id="display-name-input" type="text" className="input-name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} />
           </ModalBody>
 
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button id="profile-cancel-btn" className="modal-btn" onClick={onClose}>Cancel</button>
+              <button id="profile-cancel-btn" className="modal-btn cancel-btn" onClick={onClose}>Cancel</button>
               <button id="profile-save-btn" className="modal-btn" onClick={handleEditOnClick}>Save</button>
             </div>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </> :
+      <>
+        {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
+        <Box className="profile-container">
+          <Box className="profile-card">
+            <SkeletonCircle className="profile-picture" width="60%" height="inherit" alignSelf="center" />
+            <Skeleton className="skeleton-display-name" />
+            <Skeleton className="skeleton-display-name" />
+            <Skeleton className="skeleton-heat-map" />
+          </Box>
+          <Box className="projects-container">
+            <Box className="project-cards-container">
+              <Skeleton className="skeleton-project" />
+              <Skeleton className="skeleton-project" />
+              <Skeleton className="skeleton-project" />
+              <Skeleton className="skeleton-project" />
+            </Box>
+          </Box>
+        </Box >
+
+      </>
   )
 };
 

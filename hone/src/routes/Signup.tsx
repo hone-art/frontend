@@ -1,30 +1,38 @@
-import { FC, useState, Dispatch, SetStateAction, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
+// import { FC, useState, Dispatch, SetStateAction, useEffect } from "react";
 import "../styles/signup.css"
-import { Link, useNavigate } from "react-router-dom";
-import { User } from "../globals";
+// import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+// import { User } from "../globals";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
+import { useAuth } from "../hooks/useAuth";
 
 
-type Props = {
-  setUser: (initialState: User | (() => User | null) | null) => void;
-  setIsLoggedIn: Dispatch<SetStateAction<boolean>>
-}
+// type Props = {
+//   setUser: (initialState: User | (() => User | null) | null) => void;
+//   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
+// }
 
-const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
+// const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
+const Signup: FC = () => {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const { login, autoLogin } = useAuth();
 
   useEffect(() => {
-    setUser(null);
-    setIsLoggedIn(false);
+    async function waitForAutoLogin() {
+      await autoLogin();
+    }
+
+    waitForAutoLogin();
   }, [])
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -70,13 +78,15 @@ const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify(reqBody),
+        credentials: "include"
       });
 
       if (fetchResult.status === 200) {
         const newUser = await fetchResult.json();
-        setUser(newUser);
-        setIsLoggedIn(true);
-        navigate(`/${newUser?.user_name}`);
+        login(newUser);
+        // setUser(newUser);
+        // setIsLoggedIn(true);
+        // navigate(`/${newUser?.user_name}`);
       }
 
     } catch (error: any) {

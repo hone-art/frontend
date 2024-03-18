@@ -8,7 +8,7 @@
     /* border: solid black; */
 }
 
-#heatmap-title {
+.heatmap-title {
     width: 100%;
     font-family: var(--headings-font);
     font-weight: 500;
@@ -16,6 +16,17 @@
     margin-top: 1em;
     margin-bottom: 0.3em;
     text-align: left;
+}
+
+.heatmap-title-isUser {
+    text-decoration: underline;
+    transition: color 0.2s ease-out;
+}
+.heatmap-title-isUser:hover{
+    text-decoration: none;
+    cursor: pointer;
+    color: #777277;
+    
 }
 
 .heatmap-body {
@@ -26,11 +37,12 @@
     flex-wrap: wrap;
     gap: 6px; */
     /* border: solid red; */
-    width: 100%;
+    width: 20%;
+    aspect-ratio: 1 / 1;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
-    column-gap: 0.6em;
-    row-gap: 0.6em;
+    grid-template-columns: repeat(7, 1fr);
+    column-gap: 0.3em;
+    row-gap: 0.3em;
 }
 
 .one-day {
@@ -40,45 +52,95 @@
     border-radius: 20%;
 }
 
+.annotation {
+    display: flex;
+    margin-top: 0.7em;
+    font-family: var(--headings-font);
+    font-weight: 400;
+    font-size: 0.9em;
+}
+.annotation-text{
+    margin-left: 0.3em;
+    margin-right: 0.8em;
+}
+.annotation-block {
+    width: 1.5em;
+    aspect-ratio: 1 / 1;
+    border-radius: 20%;
+    margin-right: 0.5em;
+}
+
+#annotation1 {
+    background-color: #adaaac;
+}
+#annotation2 {
+    background-color: #777277;
+}
+#annotation3 {
+    background-color: #434046;
+}
+#annotation4 {
+    background-color: #13131A;
+}
+
+
+
+/* @media only screen and (max-width: 900px) {
+    .heatmap-body {
+        column-gap: 0.2em;
+        row-gap: 0.2em;
+    }
+
+    .one-day {
+        width: 25px;
+    }
+} */
+
 @media only screen and (max-width: 768px) {
     .heatmap-container {
-        display: flex;
-        flex-direction: column;
         justify-content: center;
-        align-items: left;
-        flex-wrap: wrap;
+        align-items: center;
         width: 80%;
-        margin-top: 2em;
     }
     
-    #heatmap-title {
-        /* width: 100%;
-        font-family: var(--headings-font);
-        font-weight: 500;
-        font-size: 1.4em;
-        margin-top: 0.5em; */
-        margin-bottom: 0.6em;
+    .heatmap-title {
         text-align: center;
     }
     
     .heatmap-body {
-        /* width: 80%;
-        align-self: center;
-        justify-content: center;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px; */
-        width: 100%;
+        width: 260px;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
-        column-gap: 0.7em;
-        row-gap: 0.7em;
+        grid-template-columns: repeat(7, 1fr);
+        column-gap: 0.1rem;
+        row-gap: 0.1rem;
     }
     
     .one-day {
-        width: 30px;
-        /* margin-right: 10px; */
-        aspect-ratio: 1 / 1;
-        border-radius: 20%;
+        width: 25px;
+        /* aspect-ratio: 1 / 0.8; */
+        border-radius: 25%;
+    }
+}
+
+
+@media only screen and (max-width: 400px) {
+    .heatmap-title {
+        margin-top: 0.6em;
+        margin-bottom: 0.2em;
+        width: 100%;
+        font-size: 1.3em;
+    }
+    .heatmap-body {
+        width: 220px;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        column-gap: 0.1rem;
+        row-gap: 0.1rem;
+    }
+    
+    .one-day {
+        width: 23px;
+        /* aspect-ratio: 1 / 0.8; */
+        border-radius: 25%;
     }
 }
