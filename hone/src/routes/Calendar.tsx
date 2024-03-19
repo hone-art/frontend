@@ -101,7 +101,20 @@ const Calendar: FC = () => {
           },
           events: arrayOfEvents,
           eventColor: '#222224',
-          dayMaxEvents: hasStreak ? 2 : 1,
+          // dayMaxEvents: hasStreak ? 2 : 1,
+          views: {
+            day: {
+              dayMaxEvents: false,
+            },
+            week: {
+              dayMaxEvents: true,
+            },
+            month: {
+              dayMaxEvents: 2
+            }
+          },
+          moreLinkClick: "day",
+          // dayMaxEventRows: true,
           eventDidMount: function (info) {
             if (info.event.extendedProps.image_url && info.event.extendedProps.image_url !== null) {
               const imgEl = document.createElement("img");
