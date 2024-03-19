@@ -51,7 +51,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   // call this function to sign out logged in user
   const logout = async () => {
     await fetch(`${process.env.API_URL}/logout`, {
-      method: "GET",
+      method: "POST",
       credentials: "include",
     });
     setUser(null);
