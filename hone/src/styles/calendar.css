@@ -4,7 +4,7 @@
 }
 
 /* .fc-dayGridDay-view {
-  height: 80vh;
+  height: 70vh;
 } */
 
 .fc .fc-button-primary {
@@ -29,7 +29,7 @@
 .fc-dayGridDay-view {
   width: 500px;
   justify-self: center;
-  height: 70vh;
+  height: 80vh;
 }
 
 .fc-daygrid-body .fc-daygrid-body-unbalanced {

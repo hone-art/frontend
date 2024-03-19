@@ -38,7 +38,7 @@ const LoggedInHeader: FC = () => {
     }
 
     fetchPhoto();
-  }, [])
+  }, [user])
 
   async function handleLogoutOnClick() {
     logout();
