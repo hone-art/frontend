@@ -3,9 +3,9 @@
   margin: 3em auto;
 }
 
-.fc-dayGridDay-view {
-  height: 100vh;
-}
+/* .fc-dayGridDay-view {
+  height: 70vh;
+} */
 
 .fc .fc-button-primary {
   box-shadow: none;
@@ -26,11 +26,25 @@
   cursor: pointer;
 }
 
-@media only screen and (max-width: 768px) {
+.fc-dayGridDay-view {
+  width: 500px;
+  justify-self: center;
+  height: 80vh;
+}
+
+.fc-daygrid-body .fc-daygrid-body-unbalanced {
+  width: 100%;
+}
+
+@media only screen and (max-width: 731px) {
   #calendar {
     max-width: 90%;
     margin: 1em auto;
-    height: 60vh;
+    height: 80vh;
+  }
+
+  .fc-dayGridDay-view {
+    width: 100%;
   }
 
   .fc .fc-toolbar {
