@@ -3,6 +3,7 @@ import { Image, Project } from "../globals";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import "../styles/project.css";
+import Compressor from 'compressorjs';
 
 type Props = {
   project: Project | undefined;

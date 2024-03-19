@@ -14,6 +14,7 @@ import { ref, getDownloadURL, uploadBytes, getStorage, deleteObject } from "fire
 import emailjs from "@emailjs/browser";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, SkeletonText, Skeleton, Box, Switch } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
+import Compressor from 'compressorjs';
 
 const Project: FC = () => {
   const { username, projectId } = useParams<string>();
