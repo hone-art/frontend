@@ -26,7 +26,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
   const autoLogin = async () => {
     const autoLogin = await fetch(`${process.env.API_URL}/autoLogin`, {
-      method: "GET",
+      method: "POST",
       credentials: "include",
     })
 
