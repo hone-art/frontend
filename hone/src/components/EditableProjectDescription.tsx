@@ -15,6 +15,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
   const [newProjectTitle, setNewProjectTitle] = useState<string | undefined>((project?.title) == "Untitled" ? "" : project?.title);
   const [newProjectDescription, setNewProjectDescription] = useState<string | undefined>(project?.description);
   const [newProjectPicture, setnewProjectPicture] = useState<File | null>(null);
+  const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("");
 
   const inputImage = useRef(null); // User upload profile picture
 
@@ -69,11 +70,11 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
       });
 
       const updatedProject = await fetchUpdatedProject.json();
-
+      
       setProject(updatedProject);
       setnewProjectPicture(null);
     }
-
+    setImageLimitErrorMessage("");
     submitButtonEl.disabled = false;
     uploadButtonEl.disabled = false;
     editDescriptionEl.disabled = false;
@@ -83,7 +84,20 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
-    setnewProjectPicture(imageToUpload);
+    if (imageToUpload.size > 21000000) {
+      setImageLimitErrorMessage("Image size cannot exceed 20MB. Please choose another one.")
+      setnewProjectPicture(null);
+      return;
+    } else {
+      setImageLimitErrorMessage("");
+    }
+    console.log(imageToUpload.size);
+    new Compressor(imageToUpload, {
+      quality: 0.6,
+      success(result: any) {
+        setnewProjectPicture(result);
+      }
+    })
   }
 
   return (
@@ -93,6 +107,7 @@ const EditableProjectDescription: FC<Props> = ({ project, setProject, setProject
           <input id="editable-title" type="text" className="project-page-title editable-title" value={newProjectTitle} onChange={(e) => setNewProjectTitle(e.target.value)} placeholder="Untitled" />
         </div>
         <textarea id="editable-description" className="editable-description" value={newProjectDescription} onChange={(e) => setNewProjectDescription(e.target.value)} placeholder="Write your description here!" autoFocus />
+        <p className="error-message">{imageLimitErrorMessage}</p>
         <div className="project-upload-submit-container">
           <input id="project-upload-img" type="file" ref={inputImage} onChange={handleChange} accept="image/*" />
           <button id="edit-project-submit-btn" className="edit-project-submit-btn" onClick={handleOnClick}>Submit</button>

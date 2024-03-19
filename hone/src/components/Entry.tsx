@@ -154,7 +154,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
-    if (imageToUpload.size > 20000000) {
+    if (imageToUpload.size > 21000000) {
       setImageLimitErrorMessage("Image size cannot exceed 20MB. Please choose another one.")
       setNewEntryImage(undefined);
       return;
@@ -168,7 +168,6 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
         setNewEntryImage(result);
       }
     })
-    setNewEntryImage(imageToUpload);
   }
 
   async function handleCommentOnClick() {
