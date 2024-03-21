@@ -13,7 +13,7 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useDisclosure
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useAuth } from "../hooks/useAuth";
 
@@ -55,7 +55,7 @@ const LoggedInHeader: FC = () => {
     <header className="header">
       {/* <p>CHANGE TO USERNAME</p> */}
       <Link to={`/${user?.user_name}`} className="hone-button">hone</Link>
-      <SearchBar className="SearchBar"></SearchBar>
+      <SearchBar></SearchBar>
       <button onClick={onOpen} className="menu-button"><span className="material-icons">menu</span></button>
       <Drawer
         isOpen={isOpen}
