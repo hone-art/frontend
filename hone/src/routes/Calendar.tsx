@@ -116,7 +116,7 @@ const Calendar: FC = () => {
               dayMaxEvents: 2
             }
           },
-          moreLinkClick: "day",
+          // moreLinkClick: "day",
           // dayMaxEventRows: true,
           eventDidMount: function (info) {
             if (info.event.extendedProps.image_url && info.event.extendedProps.image_url !== null) {
