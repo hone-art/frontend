@@ -1,15 +1,10 @@
 .hone-button {
-  font-family: var(--headings-font);
-  font-size: 1.4em;
-  box-shadow: none;
-  margin: 0;
-  text-align: left;
-  width: auto;
-  color: white;
+  width: 79px;
 }
 
 .hone-button:hover {
   background-color: transparent;
+  cursor: pointer;
 }
 
 .menu-button {
