@@ -1,0 +1,111 @@
+.inspiration-container {
+  display: flex;
+  flex-direction: column;
+  margin: 2em;
+}
+
+.inspiration-title-container {
+  display: flex;
+  align-items: baseline;
+}
+
+.inspiration-title {
+  font-family: var(--headings-font);
+  font-weight: 700;
+  font-size: 2em;
+  margin-right: 0.5em;
+}
+
+.inspiration-entries-container {
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: space-between; */
+  gap: 2.5%;
+}
+
+/* .inspiration-entries-container::after {
+  width: 18%;
+  content: "";
+} */
+
+.inspiring-entry {
+  width: 18%;
+  aspect-ratio: 1.5 /2;
+  object-fit: cover;
+  margin-top: 1.5em;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 2px 4px 10px 0px #cdcdcd;
+}
+
+.inspiring-entry-modal-img {
+  width: 100%;
+}
+
+.inspiring-entry-modal-header-container {
+  display: flex;
+}
+
+.inspiring-entry-pfp {
+  width: 40px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: contain;
+  overflow: hidden;
+}
+
+.inspiring-entry-pfp:hover {
+  cursor: pointer;
+}
+
+.inspiring-entry-username:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.inspiring-entry-name-date-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.7em;
+}
+
+.inspiring-entry-date {
+  font-weight: 200;
+  font-size: 0.7em;
+}
+
+.inspiring-entry-description {
+  width: 100%;
+}
+
+@media only screen and (min-width: 756px) and (max-width: 1053px) {
+  .inspiring-entry {
+    width: 23%;
+  }
+}
+
+@media only screen and (min-width: 566px) and (max-width: 755px) {
+  .inspiring-entry {
+    width: 31%;
+  }
+}
+
+@media only screen and (min-width: 377px) and (max-width: 649px) {
+  .inspiring-entry {
+    width: 48%;
+  }
+
+  .inspiration-title-container {
+    flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 376px) {
+  .inspiring-entry {
+    width: 100%;
+  }
+
+  .inspiration-title-container {
+    flex-direction: column;
+  }
+}

@@ -5,6 +5,7 @@ import Signup from './routes/Signup';
 import Profile from './routes/Profile';
 import Project from './routes/Project';
 import Calendar from './routes/Calendar';
+import Inspiration from "./routes/Inspiration";
 // import { User } from "./globals"
 import "./App.css";
 import { AuthProvider } from './hooks/useAuth';
@@ -28,6 +29,7 @@ function App() {
           <Route path="/:username" element={<Profile />} />
           <Route path="/:username/calendar" element={<Calendar />} />
           <Route path="/:username/projects/:projectId" element={<Project />} />
+          <Route path="/inspiration" element={<Inspiration />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
