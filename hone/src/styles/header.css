@@ -1,5 +1,6 @@
 .hone-button {
   width: 79px;
+  min-width: 79px;
 }
 
 .hone-button:hover {

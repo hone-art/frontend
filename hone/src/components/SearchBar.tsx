@@ -30,7 +30,7 @@ const SearchBar = () => {
     }
     return (
         <>
-            <Flex justifyContent="flex-end" alignItems="center" width="full" pr={{ base: 2, md: 4 }}>
+            <Flex justifyContent="flex-end" alignItems="center" width="full" border="white solid" pr={{ base: 2, md: 4 }}>
                 {searchDisplay === 'input' ? (
                     <InputGroup w="250px" onClick={handleOnClick} size="sm">
                         <InputLeftElement
