@@ -38,7 +38,7 @@ const Project: FC = () => {
   const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure(); // Project settings modal
   const { isOpen: isReportOpen, onOpen: onReportOpen, onClose: onReportClose } = useDisclosure(); // Report project modal
   const { isOpen: isReportSubmittedOpen, onOpen: onReportSubmittedOpen, onClose: onReportSubmittedClose } = useDisclosure(); // Report project submitted modal
-  
+
   const inputImage = useRef(null); //User upload new entry photo
   const navigate = useNavigate();
 
@@ -245,11 +245,11 @@ const Project: FC = () => {
         <Link to={`/${username}`} className="project-back-btn">← Back</Link>
         <div className="project-description-container">
           <img src={projectImage?.url} alt="project photo" className="project-photo" onClick={onFinalOpen} />
-          {isProjectEditable 
-          ? 
-          <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} /> 
-          : 
-          <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} onSettingsOpen={onSettingsOpen} />}
+          {isProjectEditable
+            ?
+            <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} />
+            :
+            <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} onSettingsOpen={onSettingsOpen} />}
 
         </div>
         {isSameUser ? <button onClick={onNewOpen} className="create-entry-btn">+ Create new entry</button> : null}
@@ -276,7 +276,7 @@ const Project: FC = () => {
           </ModalBody>
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button id="new-entry-cancel-btn" className="modal-btn cancel-btn" onClick={() => {onNewClose(); setImageLimitErrorMessage("");}}>
+              <button id="new-entry-cancel-btn" className="modal-btn cancel-btn" onClick={() => { onNewClose(); setImageLimitErrorMessage(""); }}>
                 Cancel
               </button>
               <button id="new-entry-create-btn" className="modal-btn" onClick={handleCreateNewEntry}>Create</button>
@@ -306,7 +306,7 @@ const Project: FC = () => {
           <ModalFooter>
             <div className="btn-container">
               <button className="modal-btn cancel-btn" onClick={onDeleteClose}>Cancel</button>
-              <button className="modal-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
+              <button className="modal-btn delete-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
             </div>
           </ModalFooter>
         </ModalContent>
