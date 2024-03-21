@@ -4,6 +4,7 @@ export interface User {
   display_name: string;
   user_name: string;
   uuid: string;
+  isInspiring: boolean;
 }
 
 export interface Project {
