@@ -3,6 +3,7 @@ import "../styles/header.css";
 // import { User } from "../globals";
 import { Link } from "react-router-dom";
 // import Cookies from "universal-cookie";
+import SearchBar from "./SearchBar";
 
 import {
   Drawer,
@@ -54,6 +55,7 @@ const LoggedInHeader: FC = () => {
     <header className="header">
       {/* <p>CHANGE TO USERNAME</p> */}
       <Link to={`/${user?.user_name}`} className="hone-button">hone</Link>
+      <SearchBar className="SearchBar"></SearchBar>
       <button onClick={onOpen} className="menu-button"><span className="material-icons">menu</span></button>
       <Drawer
         isOpen={isOpen}
