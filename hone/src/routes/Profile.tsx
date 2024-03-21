@@ -24,7 +24,8 @@ import {
   useDisclosure,
   SkeletonCircle,
   Skeleton,
-  Box
+  Box,
+  Switch
 } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
 
@@ -49,6 +50,7 @@ const Profile: FC = () => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [thisProfileUserState, setThisProfileUserState] = useState<User>();
   const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("");
+  const [isInspiring, setIsInspiring] = useState<boolean>(false);
 
   const { isOpen, onOpen: originalOnOpen, onClose: originalOnClose } = useDisclosure(); // Modal
   const onOpen = () => {
@@ -89,7 +91,7 @@ const Profile: FC = () => {
       else {
         const thisProfileUser: User = await fetchUser.json();
         setThisProfileUserState(thisProfileUser);
-
+        setIsInspiring(thisProfileUser.isInspiring);
         setNewDisplayName(thisProfileUser.display_name);
 
         const fetchPicture = await fetch(`${process.env.API_URL}/images/${thisProfileUser.img_id}`);
@@ -228,6 +230,23 @@ const Profile: FC = () => {
     navigate(`/${userProfile?.user_name}/projects/${newProject.id}`); // Change to user
   }
 
+  async function handleSwitchOnChange() {
+    setIsInspiring((prev) => {
+      const newBool = !prev;
+
+      const body = { isInspiring: newBool };
+      fetch(`${process.env.API_URL}/users/${user!.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+      });
+
+      return newBool;
+    });
+  }
+
   return (
     isLoaded ? <>
       {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
@@ -260,6 +279,11 @@ const Profile: FC = () => {
             <p className="error-message">{imageLimitErrorMessage}</p>
             <p className="margin-top margin-bottom">Display name: </p>
             <input id="display-name-input" type="text" className="input-name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} />
+            <div className="margin-top  margin-bottom space-between">
+              <label htmlFor="inspiring-switch">Inspiration page</label>
+              <Switch id="inspiring-switch" onChange={handleSwitchOnChange} value="inspiring" isChecked={isInspiring} />
+            </div>
+            <p className="inspiring-warning">Turning this on will make it so your public projects and entries may appear in our community inspiration page</p>
           </ModalBody>
 
           <ModalFooter className="modal-footer">
