@@ -118,7 +118,7 @@ const Profile: FC = () => {
     }
 
     fetchUserAndProjects();
-  }, [user, isUser])
+  }, [user, isUser, username])
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
