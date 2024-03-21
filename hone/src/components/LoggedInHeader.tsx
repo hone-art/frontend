@@ -93,6 +93,12 @@ const LoggedInHeader: FC = () => {
               </span>
               <Link className="link" to={`/${user?.user_name}/calendar`}>Your calendar</Link>
             </div>
+            <div className="drawer-link-container">
+              <span className="material-symbols-outlined">
+                hotel_class
+              </span>
+              <Link className="link" to={"/inspiration"}>Inspiration</Link>
+            </div>
           </DrawerBody>
 
           <DrawerFooter>
