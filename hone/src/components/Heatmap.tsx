@@ -85,13 +85,13 @@ const Heatmap: FC<Props> = ({ isUser, thisProfileUser }) => {
             {isUser ?
                 <div className='heatmap-title heatmap-title-isUser' onClick={handleOnClick}>
                     {MonthTotalEntries} entr
-                    {MonthTotalEntries===1?<>y </>:<>ies </>}
-                     this month
+                    {MonthTotalEntries === 1 ? <>y </> : <>ies </>}
+                    this month →
                 </div> :
                 <div className='heatmap-title'>
                     {MonthTotalEntries} entr
-                    {MonthTotalEntries===1?<>y </>:<>ies </>}
-                     this month
+                    {MonthTotalEntries === 1 ? <>y </> : <>ies </>}
+                    this month
                 </div>}
             <div className='heatmap-body'>
                 {renderHeatMap(days)}

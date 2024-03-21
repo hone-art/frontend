@@ -12,6 +12,7 @@ const Comment: FC<Props> = ({ comment, setComments }) => {
 
   const [userProfile, setUserProfile] = useState<User | null>(null); // User of profile that is shown
   const [profilePicture, setProfilePicture] = useState<Image>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -23,6 +24,7 @@ const Comment: FC<Props> = ({ comment, setComments }) => {
       const fetchPicture = await fetch(`${process.env.API_URL}/images/${thisUser.img_id}`);
       const picture = await fetchPicture.json();
       setProfilePicture(picture);
+      setIsLoaded(true);
     }
 
     fetchUserAndPicture();
@@ -42,7 +44,7 @@ const Comment: FC<Props> = ({ comment, setComments }) => {
   }
 
   return (
-    <section className="comment-container">
+    isLoaded ? <section className="comment-container">
       <img src={profilePicture?.url} alt="profile picture" className="comment-profile-picture" />
       <div className="profile-name-comment-container">
         <h1 className="comment-display-name">{userProfile?.user_name}</h1>
@@ -52,7 +54,7 @@ const Comment: FC<Props> = ({ comment, setComments }) => {
       {/* {comments?.map((comment) => (
           <Comment comment={comment} key={comment.id} setComments={setComments} isCommentsOn={project?.isCommentsOn} />
         ))} */}
-    </section>
+    </section> : null
   )
 }
 

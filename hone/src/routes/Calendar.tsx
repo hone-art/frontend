@@ -60,7 +60,7 @@ const Calendar: FC = () => {
           endDate.setDate(endDate.getDate() + 1);
           const endDateString = endDate.toISOString().slice(0, 10);
           // console.log(endDate);
-          const streakEvent = { title: "Streak!", start: startDate, end: endDateString, allDay: true, backgroundColor: "#F72798", textColor: "#e6e6e6" };
+          const streakEvent = { title: "Streak!", start: startDate, end: endDateString, allDay: true, backgroundColor: "#F72798", textColor: "black" };
           arrayOfEvents.push(streakEvent);
           // setHasStreak(true);
         }
