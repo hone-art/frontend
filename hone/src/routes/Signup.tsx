@@ -137,7 +137,8 @@ const Signup: FC = () => {
   return (
     <section className="section-container">
       <div className="signup-container">
-        <h1 className="title">hone</h1>
+        <img src="/public/hone_black.png" alt="hone logo" className="root-hone-logo" />
+        {/* <h1 className="title">hone</h1> */}
         <h2 className="subtitle">sharpen those art skills.</h2>
         <form>
           <input className="signup-input email-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />

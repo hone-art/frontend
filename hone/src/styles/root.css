@@ -5,6 +5,11 @@
   height: 100vh;
 }
 
+.root-hone-logo {
+  width: 150px;
+  align-self: center;
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
