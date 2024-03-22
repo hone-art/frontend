@@ -55,22 +55,38 @@ const Root: FC = () => {
   }
 
   return (
-    <section className="root-container">
-      <div className="login-container">
-        <img src="/public/hone_black.png" alt="hone logo" className="root-hone-logo" />
-        {/* <h1 className="title">hone</h1> */}
-        <h2 className="subtitle">sharpen those art skills.</h2>
-        <form action="">
-          <input className="login-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input className="login-input" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <input className="login-button" value='Login' onClick={handleOnClick} readOnly />
-        </form>
-        <p className="error-message">{errorMessage}</p>
-        <Link to="/signup" className="signup-link">
-          Don't have an account? Create one here →
-        </Link>
-      </div>
-    </section>
+    <main id="root-page">
+      <section className="root-container">
+        <div className="login-container">
+          <img src="/hone_black.png" alt="hone logo" className="root-hone-logo" />
+          {/* <h1 className="title">hone</h1> */}
+          <h2 className="subtitle">sharpen those art skills.</h2>
+          <form action="">
+            <input className="login-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input className="login-input" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input className="login-button" value='Login' onClick={handleOnClick} readOnly />
+          </form>
+          <p className="error-message">{errorMessage}</p>
+          <Link to="/signup" className="signup-link">
+            Don't have an account? Create one here →
+          </Link>
+        </div>
+      </section>
+      <section className="intro-container">
+        <h2 className="title">Why Hone?</h2>
+        <p className="subtitle">Document your art journey</p>
+        <img className="screenshot margin-top" src="/hone_project.png" alt="project page screenshot" />
+        <img className="screenshot margin-bottom" src="/hone_project_2.png" alt="project page screenshot continued" />
+        <p className="subtitle margin-top">Share your art (if you want)!</p>
+        <img className="screenshot margin-top" src="/hone_header.png" alt="profile page header screenshot" />
+        <img className="screenshot" src="/hone_profile.png" alt="profile page screenshot continued" />
+        <img className="screenshot margin-bottom" src="/hone_profile_2.png" alt="project page screenshot continued" />
+        <p className="subtitle margin-top">Reminisce</p>
+        <img className="screenshot margin-top" src="/hone_header.png" alt="profile page header screenshot" />
+        <img className="screenshot margin-bottom" src="/hone_calendar.png" alt="profile calendar screenshot" />
+        <p className="subtitle margin-top">And more!</p>
+      </section>
+    </main>
   )
 };
 

@@ -135,29 +135,31 @@ const Signup: FC = () => {
 
 
   return (
-    <section className="section-container">
-      <div className="signup-container">
-        <img src="/public/hone_black.png" alt="hone logo" className="root-hone-logo" />
-        {/* <h1 className="title">hone</h1> */}
-        <h2 className="subtitle">sharpen those art skills.</h2>
-        <form>
-          <input className="signup-input email-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <div className="input-group">
-            <input className="signup-input input-half" type="text" placeholder="enter a username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-            <input className="signup-input input-half" type="text" placeholder="enter a display name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-          </div>
-          <div className="input-group">
-            <input className="signup-input input-half" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <input className="signup-input input-half" type="password" placeholder="confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-          </div>
-          <input type="submit" className="signup-button" value="create account" onClick={handleOnClick} />
-        </form>
-        <p className="error-message">{errorMessage}</p>
-        <Link to="/" className="login-link">
-          Already have an account? Login here →
-        </Link>
-      </div>
-    </section >
+    <main id="signup-page">
+      <section className="section-container">
+        <div className="signup-container">
+          <img src="/hone_black.png" alt="hone logo" className="root-hone-logo" />
+          {/* <h1 className="title">hone</h1> */}
+          <h2 className="subtitle">sharpen those art skills.</h2>
+          <form>
+            <input className="signup-input email-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <div className="input-group">
+              <input className="signup-input input-half" type="text" placeholder="enter a username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+              <input className="signup-input input-half" type="text" placeholder="enter a display name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+            </div>
+            <div className="input-group">
+              <input className="signup-input input-half" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <input className="signup-input input-half" type="password" placeholder="confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+            </div>
+            <input type="submit" className="signup-button" value="create account" onClick={handleOnClick} />
+          </form>
+          <p className="error-message">{errorMessage}</p>
+          <Link to="/" className="login-link">
+            Already have an account? Login here →
+          </Link>
+        </div>
+      </section >
+    </main>
   )
 };
 
