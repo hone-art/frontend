@@ -79,7 +79,7 @@ const Project: FC = () => {
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
     // setIsLoaded(true);
-  }, [settings?.isCommentsOn])
+  }, [settings?.isCommentsOn, projectId])
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const imageToUpload = event.target.files![0];
