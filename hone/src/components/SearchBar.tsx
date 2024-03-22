@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from "../hooks/useAuth";
-import "../styles/searchbar.css";
 import { User, Project } from "../globals";
-import SearchResultRow from './SearchResultRow';
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -11,14 +9,12 @@ import {
     ModalOverlay,
     ModalContent,
     ModalHeader,
-    ModalCloseButton,
     ModalBody,
     useDisclosure,
     InputGroup,
     InputLeftElement,
     Icon,
     Flex,
-    IconButton,
     useBreakpointValue,
     Text
 } from '@chakra-ui/react';
