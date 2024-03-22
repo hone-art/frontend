@@ -72,7 +72,6 @@ const Profile: FC = () => {
     async function fetchUserAndProjects() {
       const body = { user_name: username };
       if (!isLoggedIn) {
-        console.log("AUTO LOGIN");
         const resultUser = await autoLogin();
         if (resultUser?.user_name === username) setIsUser(true);
       };
@@ -104,8 +103,8 @@ const Profile: FC = () => {
         try {
           if (isUser) {
             const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
-            const projects = await fetchProjects.json();
-            setProjects(projects);
+            const allProjects = await fetchProjects.json();
+            setProjects(allProjects);
           } else {
             const fetchPublicProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}/isPublic`);
             const publicProjects = await fetchPublicProjects.json();
@@ -131,7 +130,6 @@ const Profile: FC = () => {
     } else {
       setImageLimitErrorMessage("");
     }
-    console.log(imageToUpload.size);
     new Compressor(imageToUpload, {
       quality: 0.6,
       success(result: any) {

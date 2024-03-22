@@ -81,7 +81,7 @@
   margin-top: 1em;
 }
 
-@media only screen and (max-device-width: 448px) and (-webkit-min-device-pixel-ratio: 2) {
+@media only screen and (max-width: 448px) and (-webkit-min-device-pixel-ratio: 2) {
   .input-group {
     flex-direction: column;
   }
