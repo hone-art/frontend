@@ -19,15 +19,17 @@ import {
     Icon,
     Flex,
     IconButton,
-    useBreakpointValue
+    useBreakpointValue,
+    Text
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
+import { BsFolder2 } from "react-icons/bs";
 
 const SearchBar = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const searchDisplay = useBreakpointValue({ base: 'icon', md: 'input' });
-    const [searchInput, setSearchInput] = useState<string>("``");
+    const [searchInput, setSearchInput] = useState<string>("");
     const [allProjects, setAllProjects] = useState<Array<Project>>([]);
 
 
@@ -51,12 +53,23 @@ const SearchBar = () => {
     };
 
     const filteredProjects = allProjects.filter(project => {
-        if (searchInput === "") {
-            return project.id === -1;
-        } else {
-            return project.title.toLowerCase().includes(searchInput.toLowerCase());
-        }
+        return project.title.toLowerCase().includes(searchInput.toLowerCase());
     })
+
+    const highlightMatch = (text:string, query:string) => {
+        const parts = text.split(new RegExp(`(${query})`, 'gi'));
+        return (
+          <>
+            {parts.map((part, index) =>
+              query.toLowerCase() === part.toLowerCase() ? (
+                <strong key={index}>{part}</strong>
+              ) : (
+                part
+              )
+            )}
+          </>
+        );
+      };
 
     return (
         <>
@@ -108,11 +121,28 @@ const SearchBar = () => {
                             />
                         </InputGroup>
                     </ModalHeader>
-                    <ModalBody className='search-results' maxHeight="70vh" overflowY="auto">
+                    <ModalBody className='search-results' maxHeight="70vh" overflowY="auto" pl={10}>
+                        {searchInput === "" && (
+                            <Text fontSize="lg" fontWeight="semibold" mb={4}>
+                                Projects
+                            </Text>
+                        )}
                         {filteredProjects.map((project) => (
-                            <div className="one-search-result" onClick={() => { handleSearchResultClick(project) }}>
-                                {project.title}
-                            </div>
+                            <Flex
+                                key={project.id}
+                                align="center"
+                                p={2}
+                                mb={0.5}
+                                borderRadius="md"
+                                _hover={{ bg: 'gray.200', cursor: 'pointer' }}
+                                onClick={() => handleSearchResultClick(project)}
+                            >
+                                <Icon as={BsFolder2} color="gray.500" boxSize={5} mr={2} />
+                                <Text fontSize="md" fontWeight="normal">
+                                    {highlightMatch(project.title, searchInput)}
+                                </Text>
+                            </Flex>
+
                         ))}
                     </ModalBody>
                 </ModalContent>
