@@ -78,12 +78,10 @@ const Root: FC = () => {
         <img className="screenshot margin-top" src="/hone_project.png" alt="project page screenshot" />
         <img className="screenshot margin-bottom" src="/hone_project_2.png" alt="project page screenshot continued" />
         <p className="subtitle margin-top">Share your art (if you want)!</p>
-        <img className="screenshot margin-top" src="/hone_header.png" alt="profile page header screenshot" />
-        <img className="screenshot" src="/hone_profile.png" alt="profile page screenshot continued" />
-        <img className="screenshot margin-bottom" src="/hone_profile_2.png" alt="project page screenshot continued" />
+        <img className="screenshot margin-top margin-bottom" src="/hone_profile.png" alt="profile page screenshot" />
         <p className="subtitle margin-top">Reminisce</p>
-        <img className="screenshot margin-top" src="/hone_header.png" alt="profile page header screenshot" />
-        <img className="screenshot margin-bottom" src="/hone_calendar.png" alt="profile calendar screenshot" />
+        <img className="screenshot margin-top" src="/hone_header.png" alt="header screenshot" />
+        <img className="screenshot margin-bottom" src="/hone_calendar.png" alt="calendar screenshot" />
         <p className="subtitle margin-top">And more!</p>
       </section>
     </main>

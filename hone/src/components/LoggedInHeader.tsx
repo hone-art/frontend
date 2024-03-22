@@ -55,7 +55,7 @@ const LoggedInHeader: FC = () => {
     <header className="header">
       {/* <p>CHANGE TO USERNAME</p> */}
       <Link to={`/${user?.user_name}`} className="hone-button">
-        <img src="../../public/hone_white.png" alt="hone image" />
+        <img src="/hone_white.png" alt="hone image" />
       </Link>
       <SearchBar></SearchBar>
       <button onClick={onOpen} className="menu-button"><span className="material-icons">menu</span></button>
