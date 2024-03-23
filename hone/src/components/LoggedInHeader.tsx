@@ -3,6 +3,7 @@ import "../styles/header.css";
 // import { User } from "../globals";
 import { Link } from "react-router-dom";
 // import Cookies from "universal-cookie";
+import SearchBar from "./SearchBar";
 
 import {
   Drawer,
@@ -12,7 +13,7 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useDisclosure
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useAuth } from "../hooks/useAuth";
 
@@ -38,7 +39,7 @@ const LoggedInHeader: FC = () => {
     }
 
     fetchPhoto();
-  }, [])
+  }, [user])
 
   async function handleLogoutOnClick() {
     logout();
@@ -53,7 +54,10 @@ const LoggedInHeader: FC = () => {
   return (
     <header className="header">
       {/* <p>CHANGE TO USERNAME</p> */}
-      <Link to={`/${user?.user_name}`} className="hone-button">hone</Link>
+      <Link to={`/${user?.user_name}`} className="hone-button">
+        <img src="/hone_white.png" alt="hone image" />
+      </Link>
+      <SearchBar></SearchBar>
       <button onClick={onOpen} className="menu-button"><span className="material-icons">menu</span></button>
       <Drawer
         isOpen={isOpen}
@@ -90,6 +94,12 @@ const LoggedInHeader: FC = () => {
                 calendar_month
               </span>
               <Link className="link" to={`/${user?.user_name}/calendar`}>Your calendar</Link>
+            </div>
+            <div className="drawer-link-container">
+              <span className="material-symbols-outlined">
+                hotel_class
+              </span>
+              <Link className="link" to={"/inspiration"}>Inspiration</Link>
             </div>
           </DrawerBody>
 

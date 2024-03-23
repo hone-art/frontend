@@ -1,8 +1,36 @@
+#root-page {
+  background-image: url("/hone_background.png"), url("/hone_background_bottom.png");
+  background-size: 1700px;
+  background-position: top center, bottom center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+}
+
 .root-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 97vh;
+}
+
+.intro-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.intro-container::after {
+  content: "";
+  height: 45vh;
+}
+
+.root-hone-logo {
+  width: 150px;
+  align-self: center;
 }
 
 .login-container {
@@ -14,7 +42,7 @@
 
 .title {
   font-family: var(--headings-font);
-  font-size: 2em;
+  font-size: 1.3em;
   font-weight: 600;
 }
 
@@ -68,8 +96,35 @@
   margin-top: 1em;
 }
 
+.screenshot {
+  width: 60%;
+}
+
+.margin-top {
+  margin-top: 2em;
+}
+
+.margin-bottom {
+  margin-bottom: 3em;
+}
+
+@media only screen and (max-width: 1039px) {
+  #root-page {
+    background-size: 1300px;
+  }
+}
+
 @media only screen and (max-width: 448px) and (-webkit-min-device-pixel-ratio: 2) {
   .login-container {
     width: 80%
+  }
+
+  #root-page {
+    background-image: url("/hone_background_phone.png"), url("/hone_background_phone_bottom.png");
+    background-size: 448px;
+  }
+
+  .intro-container::after {
+    height: 20vh;
   }
 }

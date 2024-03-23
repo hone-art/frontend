@@ -154,7 +154,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
-    if (imageToUpload.size > 20000000) {
+    if (imageToUpload.size > 21000000) {
       setImageLimitErrorMessage("Image size cannot exceed 20MB. Please choose another one.")
       setNewEntryImage(undefined);
       return;
@@ -168,7 +168,6 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
         setNewEntryImage(result);
       }
     })
-    setNewEntryImage(imageToUpload);
   }
 
   async function handleCommentOnClick() {
@@ -202,13 +201,13 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
             {/* <RelativeTime date={entry.created_date} /><hr /> */}
             {(isSameUser && !isEditable) ? <button className="edit-entry-btn" onClick={handleEditOnClick}><span className="material-symbols-outlined">edit</span></button> : null}
             {isSameUser ? <button className="edit-entry-btn" onClick={onDeleteOpen}><span className="material-symbols-outlined">delete</span></button> : null}
-            {(isCommentsOn) ? <button className="edit-entry-btn" onClick={onCommentsOpen}><span className="material-symbols-outlined">comment</span></button> : null}
+            {(isCommentsOn) ? ((comments.length > 0) ? <button className="edit-entry-btn" onClick={onCommentsOpen}><span className="material-symbols-outlined">mark_unread_chat_alt</span></button> : <button className="edit-entry-btn" onClick={onCommentsOpen}><span className="material-symbols-outlined">chat</span></button>) : null}
           </div>
           <hr />
           {isEditable ? <textarea id="editable-entry-description" className="editable-entry-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus /> : <p className="entry-p"> {entryDescription}</p>}
           <div className="error-message">{imageLimitErrorMessage}</div>
           <div className="entry-upload-submit-container">
-            {isEditable ? 
+            {isEditable ?
               <input id="entry-upload-btn" type="file" ref={inputImage} onChange={handleChange} accept="image/*" className="entry-upload" />
               : null}
             {isEditable ? <button id="entry-submit-btn" className="entry-submit-btn" onClick={handleEditOnClick}>Submit</button> : null}
@@ -258,7 +257,7 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
           <ModalFooter>
             <div className="btn-container">
               <button className="modal-btn cancel-btn" onClick={onDeleteClose}>Cancel</button>
-              <button className="modal-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
+              <button className="modal-btn delete-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
             </div>
           </ModalFooter>
         </ModalContent>

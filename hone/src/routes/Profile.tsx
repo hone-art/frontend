@@ -24,7 +24,8 @@ import {
   useDisclosure,
   SkeletonCircle,
   Skeleton,
-  Box
+  Box,
+  Switch
 } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
 
@@ -49,6 +50,7 @@ const Profile: FC = () => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [thisProfileUserState, setThisProfileUserState] = useState<User>();
   const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("");
+  const [isInspiring, setIsInspiring] = useState<boolean>(false);
 
   const { isOpen, onOpen: originalOnOpen, onClose: originalOnClose } = useDisclosure(); // Modal
   const onOpen = () => {
@@ -70,7 +72,6 @@ const Profile: FC = () => {
     async function fetchUserAndProjects() {
       const body = { user_name: username };
       if (!isLoggedIn) {
-        console.log("AUTO LOGIN");
         const resultUser = await autoLogin();
         if (resultUser?.user_name === username) setIsUser(true);
       };
@@ -89,7 +90,7 @@ const Profile: FC = () => {
       else {
         const thisProfileUser: User = await fetchUser.json();
         setThisProfileUserState(thisProfileUser);
-
+        setIsInspiring(thisProfileUser.isInspiring);
         setNewDisplayName(thisProfileUser.display_name);
 
         const fetchPicture = await fetch(`${process.env.API_URL}/images/${thisProfileUser.img_id}`);
@@ -102,8 +103,8 @@ const Profile: FC = () => {
         try {
           if (isUser) {
             const fetchProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}`);
-            const projects = await fetchProjects.json();
-            setProjects(projects);
+            const allProjects = await fetchProjects.json();
+            setProjects(allProjects);
           } else {
             const fetchPublicProjects = await fetch(`${process.env.API_URL}/projects/users/${thisProfileUser?.id}/isPublic`);
             const publicProjects = await fetchPublicProjects.json();
@@ -118,7 +119,7 @@ const Profile: FC = () => {
     }
 
     fetchUserAndProjects();
-  }, [user, isUser])
+  }, [user, isUser, username, isLoaded])
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) { // Upload image
     const imageToUpload = event.target.files![0];
@@ -129,7 +130,6 @@ const Profile: FC = () => {
     } else {
       setImageLimitErrorMessage("");
     }
-    console.log(imageToUpload.size);
     new Compressor(imageToUpload, {
       quality: 0.6,
       success(result: any) {
@@ -228,6 +228,23 @@ const Profile: FC = () => {
     navigate(`/${userProfile?.user_name}/projects/${newProject.id}`); // Change to user
   }
 
+  async function handleSwitchOnChange() {
+    setIsInspiring((prev) => {
+      const newBool = !prev;
+
+      const body = { isInspiring: newBool };
+      fetch(`${process.env.API_URL}/users/${user!.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+      });
+
+      return newBool;
+    });
+  }
+
   return (
     isLoaded ? <>
       {isLoggedIn ? <LoggedInHeader /> : <LoggedOutHeader />}
@@ -260,6 +277,11 @@ const Profile: FC = () => {
             <p className="error-message">{imageLimitErrorMessage}</p>
             <p className="margin-top margin-bottom">Display name: </p>
             <input id="display-name-input" type="text" className="input-name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} />
+            <div className="margin-top  margin-bottom space-between">
+              <label htmlFor="inspiring-switch">Inspiration page</label>
+              <Switch id="inspiring-switch" onChange={handleSwitchOnChange} value="inspiring" isChecked={isInspiring} />
+            </div>
+            <p className="inspiring-warning">Turning this on will make it so your public projects and entries may appear in our community inspiration page</p>
           </ModalBody>
 
           <ModalFooter className="modal-footer">

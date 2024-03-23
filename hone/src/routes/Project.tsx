@@ -14,6 +14,7 @@ import { ref, getDownloadURL, uploadBytes, getStorage, deleteObject } from "fire
 import emailjs from "@emailjs/browser";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, SkeletonText, Skeleton, Box, Switch } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
+import Compressor from 'compressorjs';
 
 const Project: FC = () => {
   const { username, projectId } = useParams<string>();
@@ -29,6 +30,7 @@ const Project: FC = () => {
   const [currentProjectUserId, setCurrentProjectUserId] = useState<number>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [settings, setSettings] = useState<{ isCommentsOn: boolean, isPublic: boolean }>();
+  const [imageLimitErrorMessage, setImageLimitErrorMessage] = useState<string>("");
 
   const { isOpen: isNewOpen, onOpen: onNewOpen, onClose: onNewClose } = useDisclosure(); // Create new entry modal
   const { isOpen: isFinalOpen, onOpen: onFinalOpen, onClose: onFinalClose } = useDisclosure(); // Final image modal
@@ -77,12 +79,24 @@ const Project: FC = () => {
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
     // setIsLoaded(true);
-  }, [settings?.isCommentsOn])
+  }, [settings?.isCommentsOn, projectId])
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const imageToUpload = event.target.files![0];
-
-    setNewEntryImage(imageToUpload);
+    if (imageToUpload.size > 21000000) {
+      setImageLimitErrorMessage("Image size cannot exceed 20MB. Please choose another one.")
+      setNewEntryImage(null);
+      return;
+    } else {
+      setImageLimitErrorMessage("");
+    }
+    console.log(imageToUpload.size);
+    new Compressor(imageToUpload, {
+      quality: 0.6,
+      success(result: any) {
+        setNewEntryImage(result);
+      }
+    })
   }
 
   async function handleCreateNewEntry() {
@@ -146,6 +160,7 @@ const Project: FC = () => {
     createButtonEl.disabled = false;
     setNewEntryDescription("");
     setNewEntryImage(null);
+    setImageLimitErrorMessage("");
     onNewClose();
   }
 
@@ -230,7 +245,11 @@ const Project: FC = () => {
         <Link to={`/${username}`} className="project-back-btn">← Back</Link>
         <div className="project-description-container">
           <img src={projectImage?.url} alt="project photo" className="project-photo" onClick={onFinalOpen} />
-          {isProjectEditable ? <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} /> : <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} onSettingsOpen={onSettingsOpen} />}
+          {isProjectEditable
+            ?
+            <EditableProjectDescription project={project} setProject={setProject} setProjectImage={setProjectImage} setIsProjectEditable={setIsProjectEditable} />
+            :
+            <ProjectDescription project={project} isSameUser={isSameUser} setIsProjectEditable={setIsProjectEditable} onSettingsOpen={onSettingsOpen} />}
 
         </div>
         {isSameUser ? <button onClick={onNewOpen} className="create-entry-btn">+ Create new entry</button> : null}
@@ -251,12 +270,13 @@ const Project: FC = () => {
           <ModalBody>
             <p className="margin-bottom">Entry image (optional):</p>
             <input id="new-entry-img" type="file" className="margin-bottom" ref={inputImage} onChange={handleChange} accept="image/*" />
+            <p className="error-message">{imageLimitErrorMessage}</p>
             <p className="margin-bottom">Entry description: </p>
             <textarea id="input-new-description" className="input-new-description" value={newEntryDescription} onChange={(e) => setNewEntryDescription(e.target.value)} autoFocus></textarea>
           </ModalBody>
           <ModalFooter className="modal-footer">
             <div className="btn-container">
-              <button id="new-entry-cancel-btn" className="modal-btn cancel-btn" onClick={onNewClose}>
+              <button id="new-entry-cancel-btn" className="modal-btn cancel-btn" onClick={() => { onNewClose(); setImageLimitErrorMessage(""); }}>
                 Cancel
               </button>
               <button id="new-entry-create-btn" className="modal-btn" onClick={handleCreateNewEntry}>Create</button>
@@ -286,7 +306,7 @@ const Project: FC = () => {
           <ModalFooter>
             <div className="btn-container">
               <button className="modal-btn cancel-btn" onClick={onDeleteClose}>Cancel</button>
-              <button className="modal-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
+              <button className="modal-btn delete-btn" id="delete-project-btn" onClick={handleDeleteOnClick}>Delete</button>
             </div>
           </ModalFooter>
         </ModalContent>

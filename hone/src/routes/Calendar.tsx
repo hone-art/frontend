@@ -4,7 +4,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 // import React, { ReactNode } from "react";
 // import interactionPlugin from "@fullcalendar/interaction";
 import { Calendar as CalendarImport } from '@fullcalendar/core';
-import { useEffect, FC, useState } from "react";
+// import { useEffect, FC, useState } from "react";
+import { useEffect, FC } from "react";
 import { useNavigate, useParams } from "react-router";
 import LoggedInHeader from "../components/LoggedInHeader";
 import { Event } from "../globals";
@@ -13,25 +14,27 @@ import { useAuth } from "../hooks/useAuth";
 
 const Calendar: FC = () => {
   const navigate = useNavigate();
-  const { user, autoLogin } = useAuth();
+  const { user, autoLogin, isLoggedIn } = useAuth();
   const { username } = useParams<string>();
   // const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [hasStreak, setHasStreak] = useState<boolean>(false);
+  // const [hasStreak, setHasStreak] = useState<boolean>(false);
 
   useEffect(() => {
-    if (user?.user_name !== username) navigate("/");
 
     async function fetchCalendar() {
-      const result = await autoLogin();
-      if (result === null) {
-        navigate("/");
+      if (!isLoggedIn) {
+        const result = await autoLogin();
+        if (result === null) {
+          navigate("/");
+        }
       }
-      else if (username !== result.user_name) {
+      else if (username !== user!.user_name) {
         navigate("/");
       }
       else {
         const arrayOfEvents: Array<object> = [];
-        const fetchEvents = await fetch(`${process.env.API_URL}/entries/users/${result!.id}`);
+        // const fetchEvents = await fetch(`${process.env.API_URL}/entries/users/${result!.id}`);
+        const fetchEvents = await fetch(`${process.env.API_URL}/entries/users/${user!.id}`);
         const events: Array<Event> = await fetchEvents.json();
 
         // Check for streak
@@ -57,9 +60,9 @@ const Calendar: FC = () => {
           endDate.setDate(endDate.getDate() + 1);
           const endDateString = endDate.toISOString().slice(0, 10);
           // console.log(endDate);
-          const streakEvent = { title: "Streak!", start: startDate, end: endDateString, allDay: true, backgroundColor: "#F72798", textColor: "#e6e6e6" };
+          const streakEvent = { title: "Streak!", start: startDate, end: endDateString, allDay: true, backgroundColor: "#F72798", textColor: "black" };
           arrayOfEvents.push(streakEvent);
-          setHasStreak(true);
+          // setHasStreak(true);
         }
 
         // Create events from entries
@@ -113,7 +116,7 @@ const Calendar: FC = () => {
               dayMaxEvents: 2
             }
           },
-          moreLinkClick: "day",
+          // moreLinkClick: "day",
           // dayMaxEventRows: true,
           eventDidMount: function (info) {
             if (info.event.extendedProps.image_url && info.event.extendedProps.image_url !== null) {
@@ -134,7 +137,7 @@ const Calendar: FC = () => {
     }
 
     fetchCalendar();
-  }, [hasStreak]);
+  }, [user]); //hasStreak
 
   return (
     <>

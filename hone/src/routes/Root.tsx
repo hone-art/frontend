@@ -31,28 +31,6 @@ const Root: FC = () => {
 
     fetchAutoLogin();
   }, [])
-  // useEffect(() => {
-  //   setUser(null);
-  //   setIsLoggedIn(false);
-
-  //   async function fetchAutoLogin() {
-  //     const autoLogin = await fetch(`${process.env.API_URL}/autoLogin`, {
-  //       method: "GET",
-  //       credentials: "include",
-  //     })
-
-  //     if (autoLogin.status == 200) {
-  //       const loggedUser = await autoLogin.json();
-  //       console.log(loggedUser);
-  //       setUser(loggedUser);
-  //       setIsLoggedIn(true);
-
-  //       navigate(`/${loggedUser?.user_name}`);
-  //     }
-  //   }
-  //   fetchAutoLogin();
-
-  // }, [])
 
   const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -69,10 +47,7 @@ const Root: FC = () => {
       const userObj = await response.json();
 
       login(userObj);
-      // setUser(userObj);
-      // setIsLoggedIn(true);
 
-      // navigate(`/${userObj?.user_name}`)
     } catch (error: any) {
       console.log(error);
       setErrorMessage('Invalid email or password. Please try again');
@@ -80,21 +55,36 @@ const Root: FC = () => {
   }
 
   return (
-    <section className="root-container">
-      <div className="login-container">
-        <h1 className="title">hone</h1>
-        <h2 className="subtitle">sharpen those art skills.</h2>
-        <form action="">
-          <input className="login-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input className="login-input" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <input className="login-button" value='Login' onClick={handleOnClick} readOnly />
-        </form>
-        <p className="error-message">{errorMessage}</p>
-        <Link to="/signup" className="signup-link">
-          Don't have an account? Create one here →
-        </Link>
-      </div>
-    </section>
+    <main id="root-page">
+      <section className="root-container">
+        <div className="login-container">
+          <img src="/hone_black.png" alt="hone logo" className="root-hone-logo" />
+          {/* <h1 className="title">hone</h1> */}
+          <h2 className="subtitle">sharpen those art skills.</h2>
+          <form action="">
+            <input className="login-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input className="login-input" type="password" placeholder="enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input className="login-button" value='Login' onClick={handleOnClick} readOnly />
+          </form>
+          <p className="error-message">{errorMessage}</p>
+          <Link to="/signup" className="signup-link">
+            Don't have an account? Create one here →
+          </Link>
+        </div>
+      </section>
+      <section className="intro-container">
+        <h2 className="title">Why Hone?</h2>
+        <p className="subtitle">Document your art journey</p>
+        <img className="screenshot margin-top" src="/hone_project.png" alt="project page screenshot" />
+        <img className="screenshot margin-bottom" src="/hone_project_2.png" alt="project page screenshot continued" />
+        <p className="subtitle margin-top">Share your art (if you want)!</p>
+        <img className="screenshot margin-top margin-bottom" src="/hone_profile.png" alt="profile page screenshot" />
+        <p className="subtitle margin-top">Reminisce</p>
+        <img className="screenshot margin-top" src="/hone_header.png" alt="header screenshot" />
+        <img className="screenshot margin-bottom" src="/hone_calendar.png" alt="calendar screenshot" />
+        <p className="subtitle margin-top">And more!</p>
+      </section>
+    </main>
   )
 };
 
