@@ -78,6 +78,7 @@
 
 .login-button:hover {
   background-color: var(--bg-tertiary);
+  cursor: pointer;
 }
 
 .signup-link {
