@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from "../hooks/useAuth";
-import { User, Project } from "../globals";
+import { Project } from "../globals";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -52,20 +52,20 @@ const SearchBar = () => {
         return project.title.toLowerCase().includes(searchInput.toLowerCase());
     })
 
-    const highlightMatch = (text:string, query:string) => {
+    const highlightMatch = (text: string, query: string) => {
         const parts = text.split(new RegExp(`(${query})`, 'gi'));
         return (
-          <>
-            {parts.map((part, index) =>
-              query.toLowerCase() === part.toLowerCase() ? (
-                <strong key={index}>{part}</strong>
-              ) : (
-                part
-              )
-            )}
-          </>
+            <>
+                {parts.map((part, index) =>
+                    query.toLowerCase() === part.toLowerCase() ? (
+                        <strong key={index}>{part}</strong>
+                    ) : (
+                        part
+                    )
+                )}
+            </>
         );
-      };
+    };
 
     return (
         <>
