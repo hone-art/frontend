@@ -44,13 +44,14 @@
 
 .inspiring-entry-modal-header-container {
   display: flex;
+  align-items: center;
 }
 
 .inspiring-entry-pfp {
   width: 40px;
-  aspect-ratio: 1 / 1;
+  height: 40px;
   border-radius: 50%;
-  object-fit: contain;
+  object-fit: cover;
   overflow: hidden;
 }
 
