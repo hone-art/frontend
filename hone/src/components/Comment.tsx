@@ -51,9 +51,6 @@ const Comment: FC<Props> = ({ comment, setComments }) => {
         <p>{comment.description}</p>
       </div>
       {(user!.id === comment.user_id) ? <button className="edit-entry-btn delete-comment-btn" onClick={handleDeleteOnClick}><span className="material-symbols-outlined">delete</span></button> : null}
-      {/* {comments?.map((comment) => (
-          <Comment comment={comment} key={comment.id} setComments={setComments} isCommentsOn={project?.isCommentsOn} />
-        ))} */}
     </section> : null
   )
 }

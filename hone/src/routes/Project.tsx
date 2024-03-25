@@ -1,7 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import "../styles/project.css"
 import { useParams, Link, useNavigate } from "react-router-dom";
-// import { User, Image } from '../globals';
 import { Image } from '../globals';
 import { Project as ProjectInterface, Entry as EntryInterface } from "../globals";
 import LoggedInHeader from "../components/LoggedInHeader";
@@ -79,7 +78,7 @@ const Project: FC = () => {
 
     fetchProjectAndEntries();
     fetchCurrentProjectUserId();
-    // setIsLoaded(true);
+
   }, [settings?.isCommentsOn, projectId])
 
   async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -91,7 +90,6 @@ const Project: FC = () => {
     } else {
       setImageLimitErrorMessage("");
     }
-    console.log(imageToUpload.size);
     new Compressor(imageToUpload, {
       quality: 0.6,
       success(result: any) {
@@ -218,11 +216,8 @@ const Project: FC = () => {
     emailjs.init(process.env.EMAIL_PUBLIC_KEY!);
     const serviceId = process.env.EMAIL_SERVICE_ID!;
     const templateId = process.env.EMAIL_TEMPLATE_ID!;
-    // const siteKey = process.env.EMAIL_SITE_KEY!; TESTING CAPTCHA
     const reason = document.getElementById("report-project") as HTMLTextAreaElement;
 
-    // grecaptcha.ready(function () {
-    //   grecaptcha.execute(siteKey, { action: 'submit' }).then(function (token) {
     try {
       await emailjs.send(serviceId, templateId, {
         project_id: project!.id,
@@ -232,10 +227,9 @@ const Project: FC = () => {
       console.log(error);
     }
     reportBtnEl.disabled = false;
+
     onReportClose();
     onReportSubmittedOpen();
-    //   });
-    // });
 
   }
 

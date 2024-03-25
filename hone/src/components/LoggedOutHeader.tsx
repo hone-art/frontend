@@ -1,6 +1,5 @@
 import "../styles/header.css";
 import { useNavigate } from "react-router-dom";
-// import { Link } from "react-router-dom";
 
 const LoggedOutHeader = () => {
   const navigate = useNavigate();
