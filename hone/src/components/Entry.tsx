@@ -161,7 +161,6 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
     } else {
       setImageLimitErrorMessage("");
     }
-    console.log(imageToUpload.size);
     new Compressor(imageToUpload, {
       quality: 0.6,
       success(result: any) {
@@ -198,7 +197,6 @@ const Entry: FC<Props> = ({ entry, setEntries, isSameUser, isCommentsOn }) => {
         <div className="entry-date-description-container">
           <div className="entry-date-button-container">
             <p className="entry-date">{dateCreatedString}</p>
-            {/* <RelativeTime date={entry.created_date} /><hr /> */}
             {(isSameUser && !isEditable) ? <button className="edit-entry-btn" onClick={handleEditOnClick}><span className="material-symbols-outlined">edit</span></button> : null}
             {isSameUser ? <button className="edit-entry-btn" onClick={onDeleteOpen}><span className="material-symbols-outlined">delete</span></button> : null}
             {(isCommentsOn) ? ((comments.length > 0) ? <button className="edit-entry-btn" onClick={onCommentsOpen}><span className="material-symbols-outlined">mark_unread_chat_alt</span></button> : <button className="edit-entry-btn" onClick={onCommentsOpen}><span className="material-symbols-outlined">chat</span></button>) : null}

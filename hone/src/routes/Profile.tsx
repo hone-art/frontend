@@ -5,7 +5,6 @@ import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
 import ProjectCard from "../components/ProjectCard";
 import Footer from "../components/Footer";
-// import { useParams } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
@@ -30,13 +29,6 @@ import {
 } from '@chakra-ui/react'
 import { useAuth } from "../hooks/useAuth";
 
-// type Props = {
-//   user: User | null;
-//   setUser: (initialState: User | (() => User | null) | null) => void;
-//   isLoggedIn: boolean;
-// }
-
-// const Profile: FC<Props> = ({ user, setUser, isLoggedIn }) => {
 const Profile: FC = () => {
   const navigate = useNavigate();
   const { user, setUser, isLoggedIn, autoLogin } = useAuth();
