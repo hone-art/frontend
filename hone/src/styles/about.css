@@ -1,0 +1,97 @@
+.about-container {
+  display: flex;
+  flex-direction: column;
+  margin: 2em;
+  min-height: 100vh;
+}
+
+.about-title {
+  font-family: var(--headings-font);
+  font-weight: 700;
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
+.team-members-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.team-member-container {
+  display: flex;
+  width: 30%;
+}
+
+.member-description {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1em;
+}
+
+.about-pfp {
+  width: 50%;
+  object-fit: cover;
+}
+
+.about-name {
+  font-family: var(--headings-font);
+  font-weight: 600;
+  font-size: 1.3em;
+}
+
+.member-role {
+  font-size: 1.1em;
+  font-style: italic;
+  margin-bottom: 1em;
+}
+
+.about-ul {
+  list-style: circle;
+  margin-left: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.social-media {
+  display: flex;
+  margin-top: auto;
+}
+
+.social-icon {
+  width: 40px;
+  aspect-ratio: 1 / 1;
+  margin-right: 0.5em;
+}
+
+@media only screen and (max-width: 924px) {
+  .team-members-container {
+    flex-direction: column;
+  }
+
+  .team-member-container {
+    width: 100%;
+    margin-bottom: 2em;
+  }
+
+  .about-pfp {
+    width: 300px;
+  }
+
+  .about-name {
+    font-size: 1.5em;
+  }
+}
+
+@media only screen and (max-width: 573px) {
+  .about-pfp {
+    width: 40%;
+  }
+
+  .about-name {
+    font-size: 1.5em;
+  }
+
+  .social-icon {
+    width: 30px;
+  }
+}
