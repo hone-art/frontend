@@ -1,8 +1,6 @@
 import { useRef, FC, useEffect, useState } from "react";
 import "../styles/header.css";
-// import { User } from "../globals";
 import { Link } from "react-router-dom";
-// import Cookies from "universal-cookie";
 import SearchBar from "./SearchBar";
 
 import {
@@ -17,18 +15,11 @@ import {
 } from '@chakra-ui/react';
 import { useAuth } from "../hooks/useAuth";
 
-// type Props = {
-//   user: User | null;
-// }
-
-// const LoggedInHeader: FC<Props> = ({ user }) => {
 const LoggedInHeader: FC = () => {
   const [profilePhotoURL, setProfilePhotoURL] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef(null);
   const { user, logout } = useAuth();
-  // const navigate = useNavigate();
-  // const cookies = new Cookies();
 
   useEffect(() => {
     async function fetchPhoto() {
@@ -43,17 +34,11 @@ const LoggedInHeader: FC = () => {
 
   async function handleLogoutOnClick() {
     logout();
-    // await fetch(`${process.env.API_URL}/logout`, {
-    //   method: "GET",
-    //   credentials: "include",
-    // });
-    // navigate("/");
     return;
   }
 
   return (
     <header className="header">
-      {/* <p>CHANGE TO USERNAME</p> */}
       <Link to={`/${user?.user_name}`} className="hone-button">
         <img src="/hone_white.png" alt="hone image" />
       </Link>
@@ -68,7 +53,6 @@ const LoggedInHeader: FC = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton className="drawer-close-btn" />
-          {/* <DrawerHeader>{user?.display_name}</DrawerHeader> */}
           <DrawerHeader>
             <div className="drawer-header-container">
               <img className="profile-photo" src={profilePhotoURL} alt="profile picture" />
@@ -78,8 +62,6 @@ const LoggedInHeader: FC = () => {
               </div>
             </div>
             <hr />
-            {/* <h1>{user?.display_name}</h1>
-            <p>@{user?.user_name}</p> */}
           </DrawerHeader>
 
           <DrawerBody>

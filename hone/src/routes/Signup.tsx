@@ -1,20 +1,10 @@
 import { FC, useState, useEffect } from "react";
-// import { FC, useState, Dispatch, SetStateAction, useEffect } from "react";
 import "../styles/signup.css"
-// import { Link, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-// import { User } from "../globals";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from '../utils/firebaseConfig';
 import { useAuth } from "../hooks/useAuth";
 
-
-// type Props = {
-//   setUser: (initialState: User | (() => User | null) | null) => void;
-//   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
-// }
-
-// const Signup: FC<Props> = ({ setUser, setIsLoggedIn }) => {
 const Signup: FC = () => {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -31,8 +21,6 @@ const Signup: FC = () => {
 
     waitForAutoLogin();
   }, [])
-
-  // const navigate = useNavigate();
 
   const handleOnClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -139,7 +127,6 @@ const Signup: FC = () => {
       <section className="section-container">
         <div className="signup-container">
           <img src="/hone_black.png" alt="hone logo" className="root-hone-logo" />
-          {/* <h1 className="title">hone</h1> */}
           <h2 className="subtitle">sharpen those art skills.</h2>
           <form>
             <input className="signup-input email-input" type="email" placeholder="enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
