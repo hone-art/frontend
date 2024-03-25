@@ -5,9 +5,10 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 // import interactionPlugin from "@fullcalendar/interaction";
 import { Calendar as CalendarImport } from '@fullcalendar/core';
 // import { useEffect, FC, useState } from "react";
-import { useEffect, FC } from "react";
+import { useEffect, FC, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import LoggedInHeader from "../components/LoggedInHeader";
+import Footer from "../components/Footer";
 import { Event } from "../globals";
 import "../styles/calendar.css";
 import { useAuth } from "../hooks/useAuth";
@@ -16,7 +17,7 @@ const Calendar: FC = () => {
   const navigate = useNavigate();
   const { user, autoLogin, isLoggedIn } = useAuth();
   const { username } = useParams<string>();
-  // const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   // const [hasStreak, setHasStreak] = useState<boolean>(false);
 
   useEffect(() => {
@@ -133,6 +134,7 @@ const Calendar: FC = () => {
         })
 
         calendar.render();
+        setIsLoaded(true);
       }
     }
 
@@ -144,6 +146,7 @@ const Calendar: FC = () => {
       <LoggedInHeader />
       <div id="calendar" className="calendar">
       </div>
+      {isLoaded ? <Footer /> : null}
     </>
   )
 };

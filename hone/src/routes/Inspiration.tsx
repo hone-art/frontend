@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
 import InspiringEntry from "../components/InspiringEntry";
+import Footer from "../components/Footer";
 import { useAuth } from "../hooks/useAuth";
 import "../styles/inspiration.css";
 
@@ -46,6 +47,7 @@ const Inspiration = () => {
           ))}
         </div>
       </section>
+      <Footer />
     </>
   );
 }

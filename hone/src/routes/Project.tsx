@@ -9,6 +9,7 @@ import LoggedOutHeader from "../components/LoggedOutHeader";
 import ProjectDescription from "../components/ProjectDescription";
 import EditableProjectDescription from "../components/EditableProjectDescription";
 import Entry from "../components/Entry";
+import Footer from "../components/Footer";
 import { storage } from '../firebase';
 import { ref, getDownloadURL, uploadBytes, getStorage, deleteObject } from "firebase/storage";
 import emailjs from "@emailjs/browser";
@@ -261,6 +262,7 @@ const Project: FC = () => {
           {isSameUser ? null : <button className="delete-project-btn" onClick={onReportOpen}>Report project</button>}
         </div>
       </section>
+      <Footer />
 
       <Modal isOpen={isNewOpen} onClose={onNewClose} autoFocus={false} returnFocusOnClose={false}>
         <ModalOverlay />
