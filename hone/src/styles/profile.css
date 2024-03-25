@@ -1,6 +1,7 @@
 .profile-container {
   display: flex;
   margin: 1em;
+  min-height: 100vh;
 }
 
 .profile-card {

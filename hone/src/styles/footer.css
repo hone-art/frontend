@@ -1,0 +1,35 @@
+#footer {
+  margin-top: 3em;
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+  background-color: var(--bg-secondary);
+  color: white;
+  padding: 2em 2em;
+  width: 100%;
+}
+
+.footer-item {
+  font-size: 0.8em;
+}
+
+.footer-item:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.term-heading {
+  font-weight: 700;
+}
+
+.ordered-list {
+  max-height: 50vh;
+  overflow: scroll;
+  list-style: auto;
+  margin: 0.1em 1.5em;
+}
+
+.unordered-list {
+  list-style: circle;
+  margin-left: 2em;
+}

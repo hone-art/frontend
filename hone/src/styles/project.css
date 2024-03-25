@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   margin: 2em 3em;
+  min-height: 100vh;
 }
 
 .project-description-container {

@@ -4,6 +4,7 @@ import "../styles/profile.css";
 import LoggedInHeader from "../components/LoggedInHeader";
 import LoggedOutHeader from "../components/LoggedOutHeader";
 import ProjectCard from "../components/ProjectCard";
+import Footer from "../components/Footer";
 // import { useParams } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import { storage } from '../firebase';
@@ -266,6 +267,7 @@ const Profile: FC = () => {
           </div>
         </div>
       </section>
+      <Footer />
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
